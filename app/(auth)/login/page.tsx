@@ -16,7 +16,11 @@ export default function LoginPage() {
     const supabase = createClient();
     await supabase.auth.signInWithOAuth({
       provider: "kakao",
-      options: { redirectTo: `${window.location.origin}/callback` },
+      options: {
+        redirectTo: `${window.location.origin}/callback`,
+        // 이메일 동의항목 미사용(비즈니스 앱 전환 전) → 닉네임만 요청
+        scopes: "profile_nickname",
+      },
     });
   }
 
