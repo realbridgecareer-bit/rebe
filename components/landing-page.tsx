@@ -650,14 +650,35 @@ export default function LandingPage() {
             <div className="grid gap-8 p-8 md:grid-cols-2">
               <div className="space-y-5">
                 {[
-                  "국내오피스 실물 투자에 주력하는 자산운용사 투자팀 면접에서 해외 재간접 투자 역량을 강조하면 어떨까요?",
-                  "지방 자산에 수시로 방문해 운전이 필수인 물류센터 자산관리팀에, 운전면허가 없는 분이 지원하면 어떨까요?",
-                ].map((t, i) => (
+                  {
+                    tone: "warn",
+                    text: "국내오피스 실물 투자에 주력하는 자산운용사 투자팀 면접에서 데이터센터 투자 경험을 강조하면 어떨까요?",
+                  },
+                  {
+                    tone: "warn",
+                    text: "지방 자산에 수시로 방문해 운전이 필수인 물류센터 자산관리팀에, 운전면허가 없는 분이 지원하면 어떨까요?",
+                  },
+                  {
+                    tone: "tip",
+                    text: "채용공고엔 없지만 해외 투자자가 주요 고객인 팀이라면? 영어·글로벌 역량을 적극 어필하면 같은 스펙의 경쟁자보다 합격 가능성이 높아집니다.",
+                  },
+                ].map((c, i) => (
                   <div key={i} className="flex gap-3">
-                    <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-rose-50 text-sm font-bold text-rose-500">
+                    <span
+                      className={`flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold ${
+                        c.tone === "tip"
+                          ? "bg-accent-soft text-accent"
+                          : "bg-rose-50 text-rose-500"
+                      }`}
+                    >
                       {i + 1}
                     </span>
-                    <p className="text-sm leading-relaxed text-slate-600">{t}</p>
+                    <p
+                      className="text-sm leading-relaxed text-slate-600"
+                      style={{ textWrap: "pretty" }}
+                    >
+                      {c.text}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -665,11 +686,14 @@ export default function LandingPage() {
                 <div className="text-lg font-bold text-accent">
                   Real Bridge의 해결책
                 </div>
-                <p className="mt-3 text-sm leading-relaxed text-slate-600">
-                  채용공고에는 드러나지 않지만 실제 채용 시 ‘광탈’ 사유가 되는
-                  결정적 요소들을 현직자의 경험을 바탕으로 미리 짚어 대비합니다.
-                  지원 직무를 정확히 이해해 이력서·면접 준비 시간을 훨씬
-                  효율적으로 씁니다.
+                <p
+                  className="mt-3 text-sm leading-relaxed text-slate-600"
+                  style={{ textWrap: "pretty" }}
+                >
+                  채용공고에는 드러나지 않지만 합격을 가르는 결정적 요소를 —
+                  탈락 사유부터 합격을 높이는 어필 포인트까지 — 현직자의 경험을
+                  바탕으로 미리 짚어 대비합니다. 지원 직무를 정확히 이해해
+                  이력서·면접 준비 시간을 훨씬 효율적으로 씁니다.
                 </p>
               </div>
             </div>
