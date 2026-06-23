@@ -12,6 +12,14 @@ export default function LoginPage() {
   const [status, setStatus] = useState<Status>("idle");
   const [msg, setMsg] = useState("");
 
+  async function handleKakao() {
+    const supabase = createClient();
+    await supabase.auth.signInWithOAuth({
+      provider: "kakao",
+      options: { redirectTo: `${window.location.origin}/callback` },
+    });
+  }
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("loading");
@@ -67,6 +75,18 @@ export default function LoginPage() {
           {status === "loading" ? "로그인 중..." : "로그인"}
         </button>
       </form>
+
+      <div className="my-5 flex items-center gap-3 text-xs text-slate-400">
+        <span className="h-px flex-1 bg-line" />또는<span className="h-px flex-1 bg-line" />
+      </div>
+      <button
+        type="button"
+        onClick={handleKakao}
+        className="flex w-full items-center justify-center gap-2 rounded-full bg-[#FEE500] py-3 font-semibold text-[#191600] transition hover:brightness-95"
+      >
+        카카오로 시작하기
+      </button>
+
       <p className="mt-4 text-center text-sm text-slate-500">
         아직 회원이 아니신가요?{" "}
         <Link href="/signup" className="font-medium text-accent hover:underline">
