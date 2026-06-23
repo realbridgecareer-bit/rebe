@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BrandWordmark } from "@/components/icons";
+import { BrandLockup } from "@/components/icons";
 
 const navItems = [
   { href: "/#about", label: "브랜드 소개" },
@@ -12,11 +12,8 @@ export function SiteHeader() {
   return (
     <header className="border-b border-line bg-white">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
-        <Link href="/" className="flex flex-col items-start leading-none">
-          <BrandWordmark className="text-xl font-bold tracking-tight" />
-          <span className="mt-1 text-[10px] tracking-tight text-slate-400">
-            부동산 금융업 취업의 지름길
-          </span>
+        <Link href="/" className="flex">
+          <BrandLockup />
         </Link>
 
         <nav className="flex items-center gap-6 text-sm">

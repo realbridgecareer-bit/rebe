@@ -1,14 +1,11 @@
 import Link from "next/link";
-import { BrandWordmark } from "@/components/icons";
+import { BrandLockup } from "@/components/icons";
 
 export function SiteFooter() {
   return (
     <footer className="mt-auto border-t border-line bg-white py-10 text-slate-600">
       <div className="mx-auto max-w-7xl px-5 text-sm sm:px-8">
-        <div className="flex items-center text-navy">
-          <BrandWordmark className="text-xl font-bold" />
-        </div>
-        <p className="mt-3 text-slate-500">부동산 금융업 취업 컨설팅</p>
+        <BrandLockup />
 
         <div className="mt-4 flex flex-wrap items-center gap-4 text-slate-500">
           <Link href="/" className="hover:text-accent">

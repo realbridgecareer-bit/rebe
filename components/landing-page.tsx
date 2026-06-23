@@ -21,6 +21,7 @@ import {
   Play,
   UserRound,
   BrandWordmark,
+  BrandLockup,
 } from "@/components/icons";
 
 export default function LandingPage() {
@@ -345,14 +346,8 @@ export default function LandingPage() {
         }`}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 sm:px-8">
-          <button
-            onClick={() => scrollToSection("home")}
-            className="flex flex-col items-start leading-none"
-          >
-            <BrandWordmark className="text-xl font-bold tracking-tight" />
-            <span className="mt-1 text-[10px] tracking-tight text-slate-400">
-              부동산 금융업 취업의 지름길
-            </span>
+          <button onClick={() => scrollToSection("home")} className="flex">
+            <BrandLockup />
           </button>
 
           <div className="hidden items-center gap-8 md:flex">
@@ -1097,12 +1092,7 @@ export default function LandingPage() {
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
           <div className="grid gap-8 md:grid-cols-4">
             <div>
-              <div className="flex items-center text-navy">
-                <BrandWordmark className="text-xl font-bold" />
-              </div>
-              <p className="mt-4 text-sm text-slate-500">
-                부동산 금융업 취업 컨설팅
-              </p>
+              <BrandLockup />
             </div>
 
             <div>

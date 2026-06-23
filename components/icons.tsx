@@ -126,6 +126,16 @@ export const BrandWordmark = ({ className }: { className?: string }) => (
   </span>
 );
 
+/** 로고 + 태그라인 묶음 (태그라인은 로고 폭 기준 가운데 정렬). 헤더·푸터 공용. */
+export const BrandLockup = ({ className }: { className?: string }) => (
+  <span className={`inline-flex flex-col items-center leading-none ${className ?? ""}`}>
+    <BrandWordmark className="text-xl font-bold tracking-tight" />
+    <span className="mt-1 text-[10px] tracking-tight text-slate-400">
+      부동산 금융업 취업의 지름길
+    </span>
+  </span>
+);
+
 /**
  * REBE 브랜드 로고 마크.
  * 컨셉: 현수교(suspension bridge) — 구직자와 현직자를 잇는 '다리'.
