@@ -33,6 +33,20 @@ body {
   overflow-wrap: break-word;
 }
 
+/* 제목은 줄을 균형 있게 나눠 어색한 위치 줄바꿈 방지 */
+h1,
+h2,
+h3,
+h4 {
+  text-wrap: balance;
+}
+
+/* 본문·항목은 마지막 줄에 한 단어만 떨어지는 현상(고아 단어) 방지 */
+p,
+li {
+  text-wrap: pretty;
+}
+
 html {
   scroll-behavior: smooth;
 }

@@ -429,7 +429,7 @@ export default function LandingPage() {
       <section id="home" className="bg-surface pt-40 pb-28">
         <div className="mx-auto grid max-w-7xl items-center gap-14 px-5 sm:px-8 md:grid-cols-2">
           <motion.div {...fadeInUp}>
-            <div className="mb-6 inline-flex items-center rounded-full border border-accent/30 bg-white px-4 py-1.5 text-xs font-semibold tracking-wide text-accent">
+            <div className="mb-6 inline-flex items-center rounded-full border border-accent/30 bg-white px-4 py-1.5 text-xs font-semibold tracking-wide whitespace-nowrap text-accent">
               부동산 · 금융업 취업의 지름길
             </div>
             <h1 className="text-4xl leading-tight font-bold tracking-tight text-navy sm:text-5xl">
@@ -437,7 +437,10 @@ export default function LandingPage() {
               <br />
               <span className="text-accent">취업 전략 컨설팅</span>
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-600">
+            <p
+              className="mt-6 max-w-xl text-lg leading-relaxed text-slate-600"
+              style={{ textWrap: "pretty" }}
+            >
               Real Bridge는 부동산·금융업 출신 현직자가 기획한 플랫폼입니다. 실제
               채용 구조를 기반으로, 단순한 스펙이 아닌 회사가 원하는 인재상과 핵심
               역량을 타겟팅하여 합격으로 이끕니다.
@@ -686,8 +689,16 @@ export default function LandingPage() {
                 className="rounded-xl border border-line bg-white p-6 transition-colors hover:border-navy/25"
               >
                 <div className="text-3xl font-bold text-accent/80">0{i + 1}</div>
-                <h3 className="mt-3 font-bold text-navy">{point.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate-500">
+                <h3
+                  className="mt-3 font-bold text-navy"
+                  style={{ textWrap: "balance" }}
+                >
+                  {point.title}
+                </h3>
+                <p
+                  className="mt-2 text-sm leading-relaxed text-slate-500"
+                  style={{ textWrap: "pretty" }}
+                >
                   {point.description}
                 </p>
               </motion.div>
@@ -799,7 +810,7 @@ export default function LandingPage() {
                   }`}
                 >
                   {featured && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-accent px-4 py-1 text-xs font-bold text-white">
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-accent px-4 py-1 text-xs font-bold whitespace-nowrap text-white">
                       인기 패키지
                     </div>
                   )}
@@ -891,10 +902,16 @@ export default function LandingPage() {
                 <span className="mt-5 rounded-full bg-navy px-3 py-1 text-xs font-bold text-white">
                   {tag}
                 </span>
-                <h3 className="mt-3 flex min-h-[3rem] items-center justify-center text-lg font-bold text-navy">
+                <h3
+                  className="mt-3 flex min-h-[3rem] items-center justify-center text-lg font-bold text-navy"
+                  style={{ textWrap: "balance" }}
+                >
                   {title}
                 </h3>
-                <p className="mt-1 flex-1 text-sm leading-relaxed text-slate-500">
+                <p
+                  className="mt-1 flex-1 text-sm leading-relaxed text-slate-500"
+                  style={{ textWrap: "pretty" }}
+                >
                   {description}
                 </p>
               </motion.div>
@@ -1221,11 +1238,19 @@ function SectionHeading({
       <div className="mb-3 text-xs font-semibold tracking-[0.2em] text-accent uppercase">
         {eyebrow}
       </div>
-      <h2 className="text-3xl font-bold tracking-tight text-navy sm:text-4xl">
+      <h2
+        className="text-3xl font-bold tracking-tight text-navy sm:text-4xl"
+        style={{ textWrap: "balance" }}
+      >
         {title}
       </h2>
       <div className="mx-auto mt-4 h-px w-16 bg-accent/50" />
-      <p className="mt-5 leading-relaxed text-slate-600">{desc}</p>
+      <p
+        className="mt-5 leading-relaxed text-slate-600"
+        style={{ textWrap: "pretty" }}
+      >
+        {desc}
+      </p>
     </motion.div>
   );
 }
