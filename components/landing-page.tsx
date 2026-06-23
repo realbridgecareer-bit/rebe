@@ -1039,26 +1039,26 @@ export default function LandingPage() {
       </section>
 
       {/* ===== Footer ===== */}
-      <footer className="bg-navy-600 py-14 text-white/70">
+      <footer className="border-t border-line bg-white py-14 text-slate-600">
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
           <div className="grid gap-8 md:grid-cols-4">
             <div>
-              <div className="flex items-center text-white">
+              <div className="flex items-center text-navy">
                 <BrandWordmark className="text-xl font-bold" />
               </div>
-              <p className="mt-4 text-sm text-white/55">
-                부동산·금융업에 특화된 취업컨설팅 플랫폼
+              <p className="mt-4 text-sm text-slate-500">
+                부동산 금융업 취업 컨설팅
               </p>
             </div>
 
             <div>
-              <h3 className="font-bold text-white">서비스</h3>
-              <ul className="mt-4 space-y-2 text-sm text-white/60">
+              <h3 className="font-bold text-navy">서비스</h3>
+              <ul className="mt-4 space-y-2 text-sm text-slate-500">
                 <li>Real Connect</li>
                 <li>Real Bridge</li>
                 <li>Real Success</li>
                 <li>
-                  <Link href="/contact" className="hover:text-white">
+                  <Link href="/contact" className="hover:text-accent">
                     무료 상담 신청
                   </Link>
                 </li>
@@ -1066,8 +1066,8 @@ export default function LandingPage() {
             </div>
 
             <div>
-              <h3 className="font-bold text-white">멘토진</h3>
-              <ul className="mt-4 space-y-2 text-sm text-white/60">
+              <h3 className="font-bold text-navy">멘토진</h3>
+              <ul className="mt-4 space-y-2 text-sm text-slate-500">
                 <li>기관투자자</li>
                 <li>자산운용사</li>
                 <li>증권사 / 은행</li>
@@ -1077,29 +1077,29 @@ export default function LandingPage() {
             </div>
 
             <div>
-              <h3 className="font-bold text-white">문의</h3>
-              <ul className="mt-4 space-y-3 text-sm text-white/60">
+              <h3 className="font-bold text-navy">문의</h3>
+              <ul className="mt-4 space-y-3 text-sm text-slate-500">
                 <li className="flex items-start gap-2">
-                  <Mail className="mt-0.5 h-4 w-4 flex-shrink-0 text-white/40" />
+                  <Mail className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
                   boopro.official@gmail.com
                 </li>
                 <li className="flex items-start gap-2">
-                  <Phone className="mt-0.5 h-4 w-4 flex-shrink-0 text-white/40" />
+                  <Phone className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
                   02-541-8248
                 </li>
                 <li className="flex items-start gap-2">
-                  <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-white/40" />
+                  <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
                   서울시 송파구 중대로 135, 11층 (가락동, 아이티벤처타워)
                 </li>
                 <li className="flex items-start gap-2">
-                  <Clock className="mt-0.5 h-4 w-4 flex-shrink-0 text-white/40" />
+                  <Clock className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
                   평일 09:00 - 18:00
                 </li>
               </ul>
             </div>
           </div>
 
-          <div className="mt-12 border-t border-white/15 pt-8 text-xs leading-relaxed text-white/40">
+          <div className="mt-12 border-t border-line pt-8 text-xs leading-relaxed text-slate-400">
             <p>
               상호: 부프로 &nbsp;·&nbsp; 대표: 엄은혜 &nbsp;·&nbsp; 사업자등록번호:
               537-59-00849
@@ -1110,9 +1110,8 @@ export default function LandingPage() {
             </p>
             <p className="mt-1">
               전화: 02-541-8248 &nbsp;·&nbsp; 이메일: boopro.official@gmail.com
-              &nbsp;·&nbsp; 호스팅: (주)아임웹
             </p>
-            <p className="mt-4 text-white/35">
+            <p className="mt-4">
               © 2026 Real Bridge. All rights reserved. ※ 모든 금액은 VAT 포함입니다.
               합격 후기는 실제 고객의 경험을 바탕으로 작성되었습니다.
             </p>

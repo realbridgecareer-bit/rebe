@@ -122,8 +122,8 @@ export const UserRound = (p: IconProps) => (
  */
 export const BrandWordmark = ({ className }: { className?: string }) => (
   <span className={`font-serif ${className ?? ""}`}>
-    <span className="text-brand-orange">RE</span>al{" "}
-    <span className="text-brand-orange">B</span>ridg<span className="text-brand-orange">E</span>
+    <span className="text-accent">RE</span>al{" "}
+    <span className="text-accent">B</span>ridg<span className="text-accent">E</span>
   </span>
 );
 
