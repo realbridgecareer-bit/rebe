@@ -440,9 +440,13 @@ export default function LandingPage() {
               className="mt-6 max-w-xl text-lg leading-relaxed text-slate-600"
               style={{ textWrap: "pretty" }}
             >
-              Real Bridge는 부동산·금융업 출신 현직자가 기획한 플랫폼입니다. 실제
-              채용 구조를 기반으로, 단순한 스펙이 아닌 회사가 원하는 인재상과 핵심
-              역량을 타겟팅하여 합격으로 이끕니다.
+              Real Bridge는{" "}
+              <strong className="font-semibold text-navy">
+                부동산·금융업 출신 현직자
+              </strong>
+              가 기획한 플랫폼입니다. 단순한 스펙이 아닌 회사가 원하는 인재상과
+              핵심 역량을 타겟팅하여{" "}
+              <strong className="font-semibold text-navy">합격으로 이끕니다.</strong>
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <button
@@ -630,8 +634,10 @@ export default function LandingPage() {
                 <Quote className="h-5 w-5 text-accent/60" />
                 <p className="mt-2 text-sm leading-relaxed text-slate-600">
                   지원하는 부서가 강조하는 직무 역량을 갖춘, 직무 이해도가 높은
-                  인재를 채용하려 합니다. 스펙은 최종 합격을 가르는 핵심 요소가
-                  아닙니다.
+                  인재를 채용하려 합니다.{" "}
+                  <strong className="font-semibold text-navy">
+                    스펙은 최종 합격을 가르는 핵심 요소가 아닙니다.
+                  </strong>
                 </p>
               </div>
             </motion.div>
@@ -887,13 +893,23 @@ export default function LandingPage() {
             })}
           </motion.div>
 
-          <motion.p
+          <motion.div
             {...fadeInUp}
-            className="mx-auto mt-10 max-w-2xl text-center text-sm leading-relaxed text-slate-500"
+            className="mx-auto mt-12 max-w-3xl rounded-2xl border border-accent/25 bg-accent-soft/50 px-8 py-7 text-center"
           >
-            서비스 금액은 취업 성공 시 받게 되는 첫 월급의 일부 수준입니다. 평생의
-            커리어를 위한 투자를 시작하세요.
-          </motion.p>
+            <p
+              className="text-base leading-relaxed text-slate-700 sm:text-lg"
+              style={{ textWrap: "balance" }}
+            >
+              서비스 금액은 취업 성공 시 받게 되는{" "}
+              <strong className="font-bold text-navy">첫 월급의 일부 수준</strong>
+              입니다.{" "}
+              <strong className="font-bold text-accent">
+                평생의 커리어를 위한 투자
+              </strong>
+              를 시작하세요.
+            </p>
+          </motion.div>
         </div>
       </section>
 
