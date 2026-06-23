@@ -121,9 +121,9 @@ export const UserRound = (p: IconProps) => (
  * 나머지 글자는 부모의 글자색(navy/white)을 상속한다. className으로 크기/굵기 지정.
  */
 export const BrandWordmark = ({ className }: { className?: string }) => (
-  <span className={className}>
-    <span className="text-accent">RE</span>al{" "}
-    <span className="text-accent">B</span>ridg<span className="text-accent">E</span>
+  <span className={`font-serif ${className ?? ""}`}>
+    <span className="text-brand-orange">RE</span>al{" "}
+    <span className="text-brand-orange">B</span>ridg<span className="text-brand-orange">E</span>
   </span>
 );
 

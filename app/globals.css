@@ -8,6 +8,8 @@
   --color-accent: #2563eb;
   --color-accent-700: #1d4ed8;
   --color-accent-soft: #eaf1fc;
+  /* 로고 강조 컬러 (시안의 오렌지) */
+  --color-brand-orange: #ea8c4d;
   --color-surface: #f5f8fc;
   --color-line: #e5eaf1;
 
