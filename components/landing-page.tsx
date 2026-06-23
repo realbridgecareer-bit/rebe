@@ -95,6 +95,7 @@ export default function LandingPage() {
     service: string;
     review: string;
     videoId?: string;
+    logo?: string; // 예: "/logos/shinsegae.png" (투명 PNG, public/logos/에 배치)
   }[] = [
     {
       id: 1,
@@ -285,7 +286,7 @@ export default function LandingPage() {
   const consultingPoints = [
     {
       id: 1,
-      title: "지원 회사·채용 직무를 정확하게 파악",
+      title: "지원 회사·직무 정확히 파악",
       description:
         "회사별(자산운용·증권·캐피탈·시행·건설·컨설팅), 직무별(IB·PF·투자·운용·개발·PM·LM·건설관리)로 세분화된 분석",
     },
@@ -346,9 +347,12 @@ export default function LandingPage() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 sm:px-8">
           <button
             onClick={() => scrollToSection("home")}
-            className="flex items-center text-navy"
+            className="flex flex-col items-start leading-none"
           >
             <BrandWordmark className="text-xl font-bold tracking-tight" />
+            <span className="mt-1 text-[10px] tracking-tight text-slate-400">
+              부동산 금융업 취업의 지름길
+            </span>
           </button>
 
           <div className="hidden items-center gap-8 md:flex">
@@ -979,9 +983,18 @@ export default function LandingPage() {
                     {story.service}
                   </span>
                 </div>
-                <div className="mt-4 text-xl font-bold text-navy">
-                  {story.company}
-                </div>
+                {story.logo ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={story.logo}
+                    alt={story.company}
+                    className="mt-4 h-7 w-auto object-contain"
+                  />
+                ) : (
+                  <div className="mt-4 text-xl font-bold text-navy">
+                    {story.company}
+                  </div>
+                )}
                 <div className="mt-0.5 text-xs text-slate-400">
                   {story.position} · {story.background}
                 </div>
