@@ -88,7 +88,7 @@ export default function ContactPage() {
 
       <form
         onSubmit={handleSubmit}
-        className="mt-8 space-y-5 rounded-2xl border border-line bg-white p-8 shadow-sm"
+        className="mt-8 space-y-5 rounded-2xl border border-line bg-white p-8"
       >
         <Field label="이름" name="name" required />
         <Field

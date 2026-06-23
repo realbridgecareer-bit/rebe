@@ -25,7 +25,7 @@ export default async function BlogPage() {
         {posts.map((post) => (
           <li
             key={post.slug}
-            className="rounded-xl border border-line bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+            className="rounded-xl border border-line bg-white p-6 transition-colors hover:border-navy/25"
           >
             <span className="text-xs font-medium text-accent">
               {post.category} · {post.publishedAt}

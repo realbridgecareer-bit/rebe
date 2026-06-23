@@ -426,12 +426,8 @@ export default function LandingPage() {
       </nav>
 
       {/* ===== Hero ===== */}
-      <section
-        id="home"
-        className="relative overflow-hidden bg-surface pt-40 pb-24"
-      >
-        <div className="pointer-events-none absolute -top-24 right-0 h-[420px] w-[420px] rounded-full bg-accent-soft blur-3xl" />
-        <div className="relative mx-auto grid max-w-7xl items-center gap-14 px-5 sm:px-8 md:grid-cols-2">
+      <section id="home" className="bg-surface pt-40 pb-28">
+        <div className="mx-auto grid max-w-7xl items-center gap-14 px-5 sm:px-8 md:grid-cols-2">
           <motion.div {...fadeInUp}>
             <div className="mb-6 inline-flex items-center rounded-full border border-accent/30 bg-white px-4 py-1.5 text-xs font-semibold tracking-wide text-accent">
               부동산 · 금융업 취업의 지름길
@@ -468,7 +464,7 @@ export default function LandingPage() {
             transition={{ duration: 0.6, delay: 0.15 }}
             className="relative"
           >
-            <div className="rounded-2xl border border-line bg-white p-8 shadow-lg shadow-navy/5">
+            <div className="rounded-2xl border border-line bg-white p-8">
               <div className="grid grid-cols-2 gap-6">
                 {stats.map((stat) => (
                   <div key={stat.label} className="text-center">
@@ -493,7 +489,7 @@ export default function LandingPage() {
                 ※ 합격률·만족도는 자체 수강생 응답을 기준으로 집계한 수치입니다.
               </p>
             </div>
-            <div className="absolute -right-3 -bottom-5 hidden items-center gap-2 rounded-xl border border-line bg-white px-4 py-3 shadow-md md:flex">
+            <div className="absolute -right-3 -bottom-5 hidden items-center gap-2 rounded-xl border border-line bg-white px-4 py-3 md:flex">
               <Star className="h-5 w-5 text-amber-400" />
               <div>
                 <div className="text-sm font-bold text-navy">만족도 5.0/5.0</div>
@@ -515,7 +511,7 @@ export default function LandingPage() {
 
           <motion.div
             {...fadeInUp}
-            className="mx-auto mt-14 max-w-5xl overflow-hidden rounded-2xl border border-line bg-white shadow-sm"
+            className="mx-auto mt-14 max-w-5xl overflow-hidden rounded-2xl border border-line bg-white"
           >
             <div className="flex flex-col md:flex-row">
               <div className="flex items-center justify-center border-b border-line bg-surface p-10 md:w-2/5 md:border-r md:border-b-0">
@@ -581,7 +577,7 @@ export default function LandingPage() {
           <div className="mx-auto mt-14 grid max-w-5xl gap-8 md:grid-cols-2">
             <motion.div
               {...fadeInUp}
-              className="rounded-2xl border border-line bg-white p-8 shadow-sm"
+              className="rounded-2xl border border-line bg-white p-8"
             >
               <span className="flex h-11 w-11 items-center justify-center rounded-full bg-rose-50 text-rose-500">
                 <X className="h-5 w-5" />
@@ -607,7 +603,7 @@ export default function LandingPage() {
             <motion.div
               {...fadeInUp}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="rounded-2xl border border-accent/25 bg-accent-soft/50 p-8 shadow-sm"
+              className="rounded-2xl border border-accent/25 bg-accent-soft/50 p-8"
             >
               <span className="flex h-11 w-11 items-center justify-center rounded-full bg-accent text-white">
                 <Check className="h-5 w-5" />
@@ -641,7 +637,7 @@ export default function LandingPage() {
 
           <motion.div
             {...fadeInUp}
-            className="mx-auto mt-12 max-w-5xl overflow-hidden rounded-2xl border border-line bg-white shadow-sm"
+            className="mx-auto mt-12 max-w-5xl overflow-hidden rounded-2xl border border-line bg-white"
           >
             <div className="border-b border-line px-8 py-5">
               <h3 className="text-center text-xl font-bold text-navy">
@@ -687,7 +683,7 @@ export default function LandingPage() {
               <motion.div
                 key={point.id}
                 variants={fadeInUp}
-                className="rounded-xl border border-line bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+                className="rounded-xl border border-line bg-white p-6 transition-colors hover:border-navy/25"
               >
                 <div className="text-3xl font-bold text-accent/80">0{i + 1}</div>
                 <h3 className="mt-3 font-bold text-navy">{point.title}</h3>
@@ -720,7 +716,7 @@ export default function LandingPage() {
               <motion.div
                 key={mentor.id}
                 variants={fadeInUp}
-                className="rounded-xl border border-line bg-white p-6 text-center shadow-sm transition-shadow hover:shadow-md"
+                className="rounded-xl border border-line bg-white p-6 text-center transition-colors hover:border-navy/25"
               >
                 <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-accent-soft">
                   <UserRound className="h-10 w-10 text-accent/55" />
@@ -798,8 +794,8 @@ export default function LandingPage() {
                   variants={fadeInUp}
                   className={`relative flex flex-col rounded-2xl p-8 ${
                     featured
-                      ? "bg-navy text-white shadow-xl shadow-navy/20"
-                      : "border border-line bg-white shadow-sm"
+                      ? "bg-navy text-white"
+                      : "border border-line bg-white"
                   }`}
                 >
                   {featured && (
@@ -887,7 +883,7 @@ export default function LandingPage() {
               <motion.div
                 key={id}
                 variants={fadeInUp}
-                className="flex h-full flex-col items-center rounded-2xl border border-line bg-white p-8 text-center shadow-sm transition-shadow hover:shadow-md"
+                className="flex h-full flex-col items-center rounded-2xl border border-line bg-white p-8 text-center transition-colors hover:border-navy/25"
               >
                 <span className="flex h-14 w-14 items-center justify-center rounded-full bg-accent-soft text-accent">
                   <Icon className="h-6 w-6" />
@@ -930,7 +926,7 @@ export default function LandingPage() {
             {successStories.map((story) => (
               <div
                 key={story.id}
-                className="flex flex-col rounded-xl border border-line bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+                className="flex flex-col rounded-xl border border-line bg-white p-6 transition-colors hover:border-navy/25"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex gap-0.5 text-amber-400">
@@ -987,7 +983,7 @@ export default function LandingPage() {
             </p>
             <Link
               href="/contact"
-              className="mt-6 inline-flex items-center justify-center gap-2 rounded-full border border-navy/20 px-7 py-3 font-semibold text-navy transition-colors hover:bg-white"
+              className="mt-6 inline-flex items-center justify-center gap-1.5 font-semibold text-navy transition-colors hover:text-accent"
             >
               나의 합격 스토리 만들기
               <ArrowRight className="h-4 w-4" />
