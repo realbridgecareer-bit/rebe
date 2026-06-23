@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# 불필요 파일 (배포 제외)
+Qwen Studio.html

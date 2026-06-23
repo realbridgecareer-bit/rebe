@@ -1,26 +1,36 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
 @import "tailwindcss";
+
+@theme {
+  /* Brand palette — Clean Professional (white + navy + blue) */
+  --color-navy: #102a4c;
+  --color-navy-600: #1c3d63;
+  --color-accent: #2563eb;
+  --color-accent-700: #1d4ed8;
+  --color-accent-soft: #eaf1fc;
+  --color-surface: #f5f8fc;
+  --color-line: #e5eaf1;
+
+  /* Fonts — 모던 산세리프 */
+  --font-sans:
+    "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+}
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --foreground: #1b2733;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  /* 한국어: 글자 단위가 아닌 단어 단위로 줄바꿈해 어색한 넘침 방지 */
+  word-break: keep-all;
+  /* 긴 영문/URL/이메일 등은 강제로 줄바꿈해 컨테이너를 넘지 않게 */
+  overflow-wrap: break-word;
+}
+
+html {
+  scroll-behavior: smooth;
 }
