@@ -897,13 +897,12 @@ export default function LandingPage() {
             {...fadeInUp}
             className="mx-auto mt-12 max-w-3xl rounded-2xl border border-accent/25 bg-accent-soft/50 px-8 py-7 text-center"
           >
-            <p
-              className="text-base leading-relaxed text-slate-700 sm:text-lg"
-              style={{ textWrap: "balance" }}
-            >
+            <p className="text-base leading-relaxed text-slate-700 sm:text-lg">
               서비스 금액은 취업 성공 시 받게 되는{" "}
               <strong className="font-bold text-navy">첫 월급의 일부 수준</strong>
-              입니다.{" "}
+              입니다.
+            </p>
+            <p className="mt-1 text-base leading-relaxed sm:text-lg">
               <strong className="font-bold text-accent">
                 평생의 커리어를 위한 투자
               </strong>
@@ -1112,27 +1111,57 @@ export default function LandingPage() {
             </div>
 
             <div>
-              <h3 className="font-bold text-navy">서비스</h3>
+              <h3 className="font-bold text-navy">바로가기</h3>
               <ul className="mt-4 space-y-2 text-sm text-slate-500">
-                <li>Real Connect</li>
-                <li>Real Bridge</li>
-                <li>Real Success</li>
+                <li>
+                  <Link href="/#about" className="hover:text-accent">
+                    브랜드 소개
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/#mentors" className="hover:text-accent">
+                    멘토진
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/#success" className="hover:text-accent">
+                    합격사례
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/blog" className="hover:text-accent">
+                    취업정보
+                  </Link>
+                </li>
                 <li>
                   <Link href="/contact" className="hover:text-accent">
-                    무료 상담 신청
+                    상담신청
                   </Link>
                 </li>
               </ul>
             </div>
 
             <div>
-              <h3 className="font-bold text-navy">멘토진</h3>
+              <h3 className="font-bold text-navy">컨설팅 서비스</h3>
               <ul className="mt-4 space-y-2 text-sm text-slate-500">
-                <li>기관투자자</li>
-                <li>자산운용사</li>
-                <li>증권사 / 은행</li>
-                <li>시행사 / 건설사</li>
-                <li>컨설팅사</li>
+                <li>
+                  <Link href="/#services" className="hover:text-accent">
+                    Real Connect · 40만원
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/#services" className="hover:text-accent">
+                    Real Bridge · 95만원
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/#services" className="hover:text-accent">
+                    Real Success · 145만원
+                  </Link>
+                </li>
+                <li className="pt-1 text-xs text-slate-400">
+                  모든 금액 VAT 포함 · 1:1 현직자 컨설팅
+                </li>
               </ul>
             </div>
 
