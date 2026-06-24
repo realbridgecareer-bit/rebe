@@ -3,7 +3,7 @@ import { BrandLockup } from "@/components/icons";
 
 export function SiteFooter() {
   return (
-    <footer className="mt-auto bg-navy py-10 text-white/70">
+    <footer className="mt-auto bg-navy-600 py-10 text-white/70">
       <div className="mx-auto max-w-7xl px-5 text-sm sm:px-8">
         <div className="text-white">
           <BrandLockup />

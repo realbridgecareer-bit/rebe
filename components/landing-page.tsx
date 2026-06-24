@@ -1106,7 +1106,7 @@ export default function LandingPage() {
       </section>
 
       {/* ===== Footer ===== */}
-      <footer className="bg-navy py-14 text-white/70">
+      <footer className="border-t border-white/10 bg-navy-600 py-14 text-white/70">
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
           <div className="grid gap-8 md:grid-cols-4">
             <div className="text-white">
