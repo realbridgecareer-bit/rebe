@@ -1106,33 +1106,33 @@ export default function LandingPage() {
       </section>
 
       {/* ===== Footer ===== */}
-      <footer className="border-t border-white/10 bg-navy-600 py-14 text-white/70">
+      <footer className="border-t border-line bg-surface py-14 text-slate-600">
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
           <div className="grid gap-8 md:grid-cols-4">
-            <div className="text-white">
+            <div className="text-slate-900">
               <BrandLockup />
             </div>
 
             <div>
-              <h3 className="font-bold text-white">바로가기</h3>
-              <ul className="mt-4 space-y-2 text-sm text-white/60">
+              <h3 className="font-bold text-navy">바로가기</h3>
+              <ul className="mt-4 space-y-2 text-sm text-slate-500">
                 <li>
-                  <Link href="/#about" className="hover:text-white">
+                  <Link href="/#about" className="hover:text-accent">
                     브랜드 소개
                   </Link>
                 </li>
                 <li>
-                  <Link href="/#mentors" className="hover:text-white">
+                  <Link href="/#mentors" className="hover:text-accent">
                     멘토진
                   </Link>
                 </li>
                 <li>
-                  <Link href="/#success" className="hover:text-white">
+                  <Link href="/#success" className="hover:text-accent">
                     합격사례
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact" className="hover:text-white">
+                  <Link href="/contact" className="hover:text-accent">
                     상담신청
                   </Link>
                 </li>
@@ -1140,20 +1140,20 @@ export default function LandingPage() {
             </div>
 
             <div>
-              <h3 className="font-bold text-white">컨설팅 서비스</h3>
-              <ul className="mt-4 space-y-2 text-sm text-white/60">
+              <h3 className="font-bold text-navy">컨설팅 서비스</h3>
+              <ul className="mt-4 space-y-2 text-sm text-slate-500">
                 <li>
-                  <Link href="/#services" className="hover:text-white">
+                  <Link href="/#services" className="hover:text-accent">
                     Real Connect
                   </Link>
                 </li>
                 <li>
-                  <Link href="/#services" className="hover:text-white">
+                  <Link href="/#services" className="hover:text-accent">
                     Real Bridge
                   </Link>
                 </li>
                 <li>
-                  <Link href="/#services" className="hover:text-white">
+                  <Link href="/#services" className="hover:text-accent">
                     Real Success
                   </Link>
                 </li>
@@ -1161,29 +1161,29 @@ export default function LandingPage() {
             </div>
 
             <div>
-              <h3 className="font-bold text-white">문의</h3>
-              <ul className="mt-4 space-y-3 text-sm text-white/60">
+              <h3 className="font-bold text-navy">문의</h3>
+              <ul className="mt-4 space-y-3 text-sm text-slate-500">
                 <li className="flex items-start gap-2">
-                  <Mail className="mt-0.5 h-4 w-4 flex-shrink-0 text-white/40" />
+                  <Mail className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
                   boopro.official@gmail.com
                 </li>
                 <li className="flex items-start gap-2">
-                  <Phone className="mt-0.5 h-4 w-4 flex-shrink-0 text-white/40" />
+                  <Phone className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
                   02-541-8248
                 </li>
                 <li className="flex items-start gap-2">
-                  <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-white/40" />
+                  <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
                   서울시 송파구 중대로 135, 11층 (가락동, 아이티벤처타워)
                 </li>
                 <li className="flex items-start gap-2">
-                  <Clock className="mt-0.5 h-4 w-4 flex-shrink-0 text-white/40" />
+                  <Clock className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
                   평일 09:00 - 18:00
                 </li>
               </ul>
             </div>
           </div>
 
-          <div className="mt-12 border-t border-white/15 pt-8 text-xs leading-relaxed text-white/40">
+          <div className="mt-12 border-t border-line pt-8 text-xs leading-relaxed text-slate-400">
             <p>
               상호: 부프로 &nbsp;·&nbsp; 대표: 엄은혜 &nbsp;·&nbsp; 사업자등록번호:
               537-59-00849

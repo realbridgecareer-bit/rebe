@@ -3,28 +3,28 @@ import { BrandLockup } from "@/components/icons";
 
 export function SiteFooter() {
   return (
-    <footer className="mt-auto bg-navy-600 py-10 text-white/70">
+    <footer className="mt-auto border-t border-line bg-surface py-10 text-slate-600">
       <div className="mx-auto max-w-7xl px-5 text-sm sm:px-8">
-        <div className="text-white">
+        <div className="text-slate-900">
           <BrandLockup />
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center gap-4 text-white/60">
-          <Link href="/" className="hover:text-white">
+        <div className="mt-4 flex flex-wrap items-center gap-4 text-slate-500">
+          <Link href="/" className="hover:text-accent">
             홈
           </Link>
-          <Link href="/contact" className="hover:text-white">
+          <Link href="/contact" className="hover:text-accent">
             상담신청
           </Link>
-          <Link href="/privacy" className="hover:text-white">
+          <Link href="/privacy" className="hover:text-accent">
             개인정보처리방침
           </Link>
-          <Link href="/terms" className="hover:text-white">
+          <Link href="/terms" className="hover:text-accent">
             이용약관
           </Link>
         </div>
 
-        <div className="mt-4 text-xs leading-relaxed text-white/40">
+        <div className="mt-4 text-xs leading-relaxed text-slate-400">
           <p>상호: 부프로 · 대표: 엄은혜 · 사업자등록번호: 537-59-00849</p>
           <p className="mt-1">
             서울시 송파구 중대로 135, 11층 송파ICT청년창업지원센터(가락동, 아이티벤처타워)
