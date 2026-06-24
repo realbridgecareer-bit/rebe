@@ -346,7 +346,10 @@ export default function LandingPage() {
         }`}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 sm:px-8">
-          <button onClick={() => scrollToSection("home")} className="flex">
+          <button
+            onClick={() => scrollToSection("home")}
+            className="flex text-slate-900"
+          >
             <BrandLockup />
           </button>
 
@@ -1103,38 +1106,33 @@ export default function LandingPage() {
       </section>
 
       {/* ===== Footer ===== */}
-      <footer className="border-t border-line bg-white py-14 text-slate-600">
+      <footer className="bg-navy py-14 text-white/70">
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
           <div className="grid gap-8 md:grid-cols-4">
-            <div>
+            <div className="text-white">
               <BrandLockup />
             </div>
 
             <div>
-              <h3 className="font-bold text-navy">바로가기</h3>
-              <ul className="mt-4 space-y-2 text-sm text-slate-500">
+              <h3 className="font-bold text-white">바로가기</h3>
+              <ul className="mt-4 space-y-2 text-sm text-white/60">
                 <li>
-                  <Link href="/#about" className="hover:text-accent">
+                  <Link href="/#about" className="hover:text-white">
                     브랜드 소개
                   </Link>
                 </li>
                 <li>
-                  <Link href="/#mentors" className="hover:text-accent">
+                  <Link href="/#mentors" className="hover:text-white">
                     멘토진
                   </Link>
                 </li>
                 <li>
-                  <Link href="/#success" className="hover:text-accent">
+                  <Link href="/#success" className="hover:text-white">
                     합격사례
                   </Link>
                 </li>
                 <li>
-                  <Link href="/blog" className="hover:text-accent">
-                    취업정보
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/contact" className="hover:text-accent">
+                  <Link href="/contact" className="hover:text-white">
                     상담신청
                   </Link>
                 </li>
@@ -1142,53 +1140,50 @@ export default function LandingPage() {
             </div>
 
             <div>
-              <h3 className="font-bold text-navy">컨설팅 서비스</h3>
-              <ul className="mt-4 space-y-2 text-sm text-slate-500">
+              <h3 className="font-bold text-white">컨설팅 서비스</h3>
+              <ul className="mt-4 space-y-2 text-sm text-white/60">
                 <li>
-                  <Link href="/#services" className="hover:text-accent">
-                    Real Connect · 40만원
+                  <Link href="/#services" className="hover:text-white">
+                    Real Connect
                   </Link>
                 </li>
                 <li>
-                  <Link href="/#services" className="hover:text-accent">
-                    Real Bridge · 95만원
+                  <Link href="/#services" className="hover:text-white">
+                    Real Bridge
                   </Link>
                 </li>
                 <li>
-                  <Link href="/#services" className="hover:text-accent">
-                    Real Success · 145만원
+                  <Link href="/#services" className="hover:text-white">
+                    Real Success
                   </Link>
-                </li>
-                <li className="pt-1 text-xs text-slate-400">
-                  모든 금액 VAT 포함 · 1:1 현직자 컨설팅
                 </li>
               </ul>
             </div>
 
             <div>
-              <h3 className="font-bold text-navy">문의</h3>
-              <ul className="mt-4 space-y-3 text-sm text-slate-500">
+              <h3 className="font-bold text-white">문의</h3>
+              <ul className="mt-4 space-y-3 text-sm text-white/60">
                 <li className="flex items-start gap-2">
-                  <Mail className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
+                  <Mail className="mt-0.5 h-4 w-4 flex-shrink-0 text-white/40" />
                   boopro.official@gmail.com
                 </li>
                 <li className="flex items-start gap-2">
-                  <Phone className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
+                  <Phone className="mt-0.5 h-4 w-4 flex-shrink-0 text-white/40" />
                   02-541-8248
                 </li>
                 <li className="flex items-start gap-2">
-                  <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
+                  <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-white/40" />
                   서울시 송파구 중대로 135, 11층 (가락동, 아이티벤처타워)
                 </li>
                 <li className="flex items-start gap-2">
-                  <Clock className="mt-0.5 h-4 w-4 flex-shrink-0 text-slate-400" />
+                  <Clock className="mt-0.5 h-4 w-4 flex-shrink-0 text-white/40" />
                   평일 09:00 - 18:00
                 </li>
               </ul>
             </div>
           </div>
 
-          <div className="mt-12 border-t border-line pt-8 text-xs leading-relaxed text-slate-400">
+          <div className="mt-12 border-t border-white/15 pt-8 text-xs leading-relaxed text-white/40">
             <p>
               상호: 부프로 &nbsp;·&nbsp; 대표: 엄은혜 &nbsp;·&nbsp; 사업자등록번호:
               537-59-00849
@@ -1201,8 +1196,8 @@ export default function LandingPage() {
               전화: 02-541-8248 &nbsp;·&nbsp; 이메일: boopro.official@gmail.com
             </p>
             <p className="mt-4">
-              © 2026 Real Bridge. All rights reserved. ※ 모든 금액은 VAT 포함입니다.
-              합격 후기는 실제 고객의 경험을 바탕으로 작성되었습니다.
+              © 2026 Real Bridge. All rights reserved. 합격 후기는 실제 고객의
+              경험을 바탕으로 작성되었습니다.
             </p>
           </div>
         </div>

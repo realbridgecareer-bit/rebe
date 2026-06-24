@@ -121,9 +121,7 @@ export const UserRound = (p: IconProps) => (
  * 나머지 글자는 부모의 글자색(navy/white)을 상속한다. className으로 크기/굵기 지정.
  */
 export const BrandWordmark = ({ className }: { className?: string }) => (
-  <span className={`font-serif text-slate-900 ${className ?? ""}`}>
-    REal BridgE
-  </span>
+  <span className={`font-serif ${className ?? ""}`}>REal BridgE</span>
 );
 
 /** 로고 + 태그라인 묶음 (태그라인은 로고 폭 기준 가운데 정렬). 헤더·푸터 공용. */

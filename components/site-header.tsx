@@ -5,14 +5,13 @@ const navItems = [
   { href: "/#about", label: "브랜드 소개" },
   { href: "/#mentors", label: "멘토진" },
   { href: "/#services", label: "서비스" },
-  { href: "/blog", label: "취업정보" },
 ];
 
 export function SiteHeader() {
   return (
     <header className="border-b border-line bg-white">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
-        <Link href="/" className="flex">
+        <Link href="/" className="flex text-slate-900">
           <BrandLockup />
         </Link>
 
