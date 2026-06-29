@@ -101,6 +101,7 @@ export default function LandingPage() {
     {
       id: 1,
       company: "신세계프라퍼티",
+      logo: "/logos/shinsegae.png",
       position: "기획팀",
       background: "20대 · 비관련 전공(미대 출신) 경력 이직",
       service: "Real Success",
@@ -110,6 +111,7 @@ export default function LandingPage() {
     {
       id: 2,
       company: "NAI Korea",
+      logo: "/logos/nai-korea.png",
       position: "Capital Market",
       background: "20대 · 비관련 전공(미대 출신) 신입 취업",
       service: "Real Success",
@@ -119,6 +121,7 @@ export default function LandingPage() {
     {
       id: 3,
       company: "한국투자신탁운용",
+      logo: "/logos/kitc.png",
       position: "경영지원팀",
       background: "20대 · 비관련 전공(공대 출신) 인턴 취업",
       service: "Real Connect",
@@ -128,6 +131,7 @@ export default function LandingPage() {
     {
       id: 4,
       company: "코람코자산신탁",
+      logo: "/logos/koramco.png",
       position: "상장리츠팀",
       background: "30대 · 중고 신입 이직",
       service: "Real Bridge",
@@ -137,6 +141,7 @@ export default function LandingPage() {
     {
       id: 5,
       company: "롯데AMC",
+      logo: "/logos/lotte-amc.svg",
       position: "리츠투자팀",
       background: "30대 · 경력 이직",
       service: "Real Connect",
@@ -146,6 +151,7 @@ export default function LandingPage() {
     {
       id: 6,
       company: "ARA Korea",
+      logo: "/logos/ara.png",
       position: "리츠운용",
       background: "30대 · 경력 이직",
       service: "Real Connect",
@@ -1001,7 +1007,7 @@ export default function LandingPage() {
                   <img
                     src={story.logo}
                     alt={story.company}
-                    className="mt-4 h-7 w-auto object-contain"
+                    className="mt-4 h-8 w-auto max-w-[160px] object-contain"
                   />
                 ) : (
                   <div className="mt-4 text-xl font-bold text-navy">
