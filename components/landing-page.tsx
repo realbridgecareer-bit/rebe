@@ -1002,18 +1002,19 @@ export default function LandingPage() {
                     {story.service}
                   </span>
                 </div>
-                {story.logo ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={story.logo}
-                    alt={story.company}
-                    className="mt-4 h-8 w-auto max-w-[160px] object-contain"
-                  />
-                ) : (
-                  <div className="mt-4 text-xl font-bold text-navy">
+                <div className="mt-4 flex items-center justify-between gap-3">
+                  <div className="text-xl font-bold text-navy">
                     {story.company}
                   </div>
-                )}
+                  {story.logo && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={story.logo}
+                      alt={story.company}
+                      className="h-7 w-auto max-w-[88px] shrink-0 object-contain"
+                    />
+                  )}
+                </div>
                 <div className="mt-0.5 text-xs text-slate-400">
                   {story.position} · {story.background}
                 </div>
