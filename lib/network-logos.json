@@ -181,6 +181,18 @@
         "src": "/logos/network/shinhan-cap.svg"
       },
       {
+        "name": "현대캐피탈",
+        "src": "/logos/network/hyundai-cap.png"
+      },
+      {
+        "name": "IBK캐피탈",
+        "src": "/logos/network/ibk-cap.png"
+      },
+      {
+        "name": "현대커머셜",
+        "src": "/logos/network/hyundai-commercial.png"
+      },
+      {
         "name": "DB손해보험",
         "src": "/logos/network/db-ins.png"
       },
