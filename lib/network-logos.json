@@ -236,7 +236,7 @@
     ]
   },
   {
-    "category": "외국계 부동산 서비스사",
+    "category": "부동산 서비스 · 컨설팅",
     "items": [
       {
         "name": "CBRE",
@@ -255,16 +255,28 @@
         "src": "/logos/network/savills.png"
       },
       {
-        "name": "NAI Korea",
-        "src": "/logos/network/nai.png"
-      },
-      {
         "name": "젠스타메이트",
         "src": "/logos/network/genstar.png"
       },
       {
+        "name": "Colliers",
+        "src": "/logos/network/colliers.png"
+      },
+      {
+        "name": "NAI Korea",
+        "src": "/logos/network/nai.png"
+      },
+      {
         "name": "알스퀘어",
         "src": "/logos/network/rsquare.png"
+      },
+      {
+        "name": "KT에스테이트",
+        "src": "/logos/network/kt-estate.png"
+      },
+      {
+        "name": "한화호텔앤리조트",
+        "src": "/logos/network/hanwha-hotel.png"
       }
     ]
   },

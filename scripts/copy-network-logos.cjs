@@ -91,15 +91,18 @@ const groups = [
     ],
   },
   {
-    category: "외국계 부동산 서비스사",
+    category: "부동산 서비스 · 컨설팅",
     items: [
       ["CBRE.png", "CBRE", "cbre"],
       ["cushman.jpg", "Cushman & Wakefield", "cushman"],
       ["jll.png", "JLL", "jll"],
       ["SAVILLS.png", "Savills", "savills"],
-      ["NAI Korea.png", "NAI Korea", "nai"],
       ["젠스타메이트.png", "젠스타메이트", "genstar"],
+      ["colliers.jpg", "Colliers", "colliers"],
+      ["NAI Korea.png", "NAI Korea", "nai"],
       ["알스퀘어.png", "알스퀘어", "rsquare"],
+      ["케이티 에스테이트.jpeg", "KT에스테이트", "kt-estate"],
+      ["한화호텔리조트.png", "한화호텔앤리조트", "hanwha-hotel"],
     ],
   },
   {
