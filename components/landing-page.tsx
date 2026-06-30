@@ -816,17 +816,15 @@ export default function LandingPage() {
               ))}
             </div>
 
-            <div className="mx-auto mt-8 max-w-sm rounded-xl border border-line bg-white p-5">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/logos/network.png"
-                alt="멘토 네트워크 소속 기업 로고"
-                className="mx-auto w-full"
-              />
-            </div>
-            <p className="mx-auto mt-3 max-w-2xl text-xs leading-relaxed text-slate-400">
-              ※ 멘토 개인의 전·현직 소속 기준이며, 해당 기업과의 제휴·후원 관계를
-              의미하지 않습니다.
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logos/network-logos.png"
+              alt="멘토 네트워크 소속 기업 로고"
+              className="mx-auto mt-8 w-full max-w-2xl"
+            />
+            <p className="mx-auto mt-5 max-w-2xl text-xs leading-relaxed text-slate-400">
+              ※ 상기 기업은 리얼브릿지가 네트워킹을 통해 확보한 멘토들의 전·현직
+              소속 기준이며, 해당 기업과의 제휴·후원 관계를 의미하지 않습니다.
             </p>
           </motion.div>
         </div>
