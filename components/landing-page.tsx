@@ -820,7 +820,7 @@ export default function LandingPage() {
             <img
               src="/logos/network-logos.png"
               alt="멘토 네트워크 소속 기업 로고"
-              className="mx-auto mt-8 w-full max-w-2xl"
+              className="mx-auto mt-8 w-full max-w-sm"
             />
             <p className="mx-auto mt-5 max-w-2xl text-xs leading-relaxed text-slate-400">
               ※ 상기 기업은 리얼브릿지가 네트워킹을 통해 확보한 멘토들의 전·현직
