@@ -288,12 +288,20 @@
     "category": "회계법인",
     "items": [
       {
+        "name": "삼일PwC",
+        "src": "/logos/network/samil-pwc.png"
+      },
+      {
         "name": "삼정KPMG",
         "src": "/logos/network/kpmg.png"
       },
       {
         "name": "Deloitte",
         "src": "/logos/network/deloitte.png"
+      },
+      {
+        "name": "EY한영",
+        "src": "/logos/network/ey-hanyoung.png"
       }
     ]
   },

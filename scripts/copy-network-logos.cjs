@@ -109,8 +109,10 @@ const groups = [
   {
     category: "회계법인",
     items: [
+      ["삼일회계법인.png", "삼일PwC", "samil-pwc"],
       ["삼정kpmg.png", "삼정KPMG", "kpmg"],
       ["Deloitte.jpeg", "Deloitte", "deloitte"],
+      ["EY한영.png", "EY한영", "ey-hanyoung"],
     ],
   },
   {
