@@ -77,6 +77,26 @@
       {
         "name": "롯데AMC",
         "src": "/logos/network/lotte-amc.svg"
+      },
+      {
+        "name": "코람코자산신탁",
+        "src": "/logos/network/koramco.png"
+      },
+      {
+        "name": "대신자산신탁",
+        "src": "/logos/network/daishin-trust.png"
+      },
+      {
+        "name": "ARA Korea",
+        "src": "/logos/network/ara.png"
+      },
+      {
+        "name": "Keppel",
+        "src": "/logos/network/keppel.png"
+      },
+      {
+        "name": "켄달스퀘어",
+        "src": "/logos/network/kendall.png"
       }
     ]
   },
@@ -137,12 +157,12 @@
         "src": "/logos/network/kic.png"
       },
       {
-        "name": "삼천리",
-        "src": "/logos/network/samchully.svg"
-      },
-      {
         "name": "abrdn",
         "src": "/logos/network/aberdeen.png"
+      },
+      {
+        "name": "Brookfield",
+        "src": "/logos/network/brookfield.png"
       },
       {
         "name": "KDB산업은행",
@@ -167,6 +187,10 @@
       {
         "name": "KB손해보험",
         "src": "/logos/network/kb-ins.png"
+      },
+      {
+        "name": "삼천리",
+        "src": "/logos/network/samchully.svg"
       }
     ]
   },
@@ -174,57 +198,33 @@
     "category": "부동산 개발 · 신탁 · 디벨로퍼",
     "items": [
       {
-        "name": "신세계프라퍼티",
-        "src": "/logos/network/shinsegae-prop.png"
-      },
-      {
-        "name": "코람코자산신탁",
-        "src": "/logos/network/koramco.png"
-      },
-      {
-        "name": "대신자산신탁",
-        "src": "/logos/network/daishin-trust.png"
-      },
-      {
-        "name": "한국토지신탁",
-        "src": "/logos/network/koreit-trust.png"
+        "name": "신영",
+        "src": "/logos/network/shinyoung.png"
       },
       {
         "name": "MDM",
         "src": "/logos/network/mdm.svg"
       },
       {
-        "name": "신영",
-        "src": "/logos/network/shinyoung.png"
-      },
-      {
-        "name": "ARA Korea",
-        "src": "/logos/network/ara.png"
-      },
-      {
-        "name": "Brookfield",
-        "src": "/logos/network/brookfield.png"
-      },
-      {
-        "name": "Keppel",
-        "src": "/logos/network/keppel.png"
-      },
-      {
-        "name": "Weave Living",
-        "src": "/logos/network/weave.png"
-      },
-      {
-        "name": "켄달스퀘어",
-        "src": "/logos/network/kendall.png"
+        "name": "한국토지신탁",
+        "src": "/logos/network/koreit-trust.png"
       },
       {
         "name": "BS",
         "src": "/logos/network/bs.png"
+      },
+      {
+        "name": "신세계프라퍼티",
+        "src": "/logos/network/shinsegae-prop.png"
+      },
+      {
+        "name": "Weave Living",
+        "src": "/logos/network/weave.png"
       }
     ]
   },
   {
-    "category": "외국계 · 부동산서비스 · 컨설팅",
+    "category": "외국계 부동산 서비스사",
     "items": [
       {
         "name": "CBRE",
@@ -243,14 +243,6 @@
         "src": "/logos/network/savills.png"
       },
       {
-        "name": "Deloitte",
-        "src": "/logos/network/deloitte.png"
-      },
-      {
-        "name": "삼정KPMG",
-        "src": "/logos/network/kpmg.png"
-      },
-      {
         "name": "NAI Korea",
         "src": "/logos/network/nai.png"
       },
@@ -265,23 +257,36 @@
     ]
   },
   {
+    "category": "회계법인",
+    "items": [
+      {
+        "name": "삼정KPMG",
+        "src": "/logos/network/kpmg.png"
+      },
+      {
+        "name": "Deloitte",
+        "src": "/logos/network/deloitte.png"
+      }
+    ]
+  },
+  {
     "category": "감정평가법인",
     "items": [
       {
-        "name": "가온감정평가법인",
-        "src": "/logos/network/gaon-appr.png"
-      },
-      {
         "name": "경일감정평가법인",
         "src": "/logos/network/kyungil-appr.png"
+      },
+      {
+        "name": "삼창감정평가법인",
+        "src": "/logos/network/samchang-appr.png"
       },
       {
         "name": "나라감정평가법인",
         "src": "/logos/network/nara-appr.png"
       },
       {
-        "name": "삼창감정평가법인",
-        "src": "/logos/network/samchang-appr.png"
+        "name": "가온감정평가법인",
+        "src": "/logos/network/gaon-appr.png"
       }
     ]
   }
