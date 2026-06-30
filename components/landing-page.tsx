@@ -798,24 +798,21 @@ export default function LandingPage() {
               부동산/금융업의 내로라하는 회사에 재직 중인 100명 이상의 멘토진이
               상시 대기하고 있습니다.
             </p>
-            <div className="mt-8 space-y-6 text-left">
+            <div className="mt-8 space-y-7 text-left">
               {networkLogos.map((group) => (
                 <div key={group.category}>
                   <div className="text-xs font-semibold tracking-wide text-accent">
                     {group.category}
                   </div>
-                  <div className="mt-2 flex flex-wrap gap-2">
+                  <div className="mt-3 flex flex-wrap items-center gap-x-7 gap-y-5">
                     {group.items.map((it) => (
-                      <span
-                        key={it.src}
-                        className="flex h-14 w-28 items-center justify-center rounded-lg border border-line bg-white p-2"
-                      >
+                      <span key={it.src} className="flex h-10 items-center">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={it.src}
                           alt={it.name}
                           title={it.name}
-                          className="max-h-full max-w-full object-contain"
+                          className="max-h-10 w-auto max-w-[150px] object-contain"
                         />
                       </span>
                     ))}

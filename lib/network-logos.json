@@ -16,7 +16,7 @@
       },
       {
         "name": "이지스자산운용",
-        "src": "/logos/network/igis.jpg"
+        "src": "/logos/network/igis.png"
       },
       {
         "name": "마스턴투자운용",
@@ -24,7 +24,7 @@
       },
       {
         "name": "코레이트자산운용",
-        "src": "/logos/network/coreit.jpg"
+        "src": "/logos/network/coreit.png"
       },
       {
         "name": "크리에이트자산운용",
@@ -32,7 +32,7 @@
       },
       {
         "name": "키움투자자산운용",
-        "src": "/logos/network/kiwoom-am.jpg"
+        "src": "/logos/network/kiwoom-am.png"
       },
       {
         "name": "한국투자신탁운용",
@@ -44,7 +44,7 @@
       },
       {
         "name": "현대인베스트먼트자산운용",
-        "src": "/logos/network/hyundai-inv.jpg"
+        "src": "/logos/network/hyundai-inv.png"
       },
       {
         "name": "NH아문디자산운용",
@@ -64,15 +64,11 @@
       },
       {
         "name": "이화자산운용",
-        "src": "/logos/network/ewha-am.jpg"
+        "src": "/logos/network/ewha-am.png"
       },
       {
         "name": "KT투자운용",
         "src": "/logos/network/kt-inv.png"
-      },
-      {
-        "name": "abrdn",
-        "src": "/logos/network/aberdeen.png"
       },
       {
         "name": "SK리츠운용",
@@ -105,7 +101,7 @@
       },
       {
         "name": "KB증권",
-        "src": "/logos/network/kb-sec.jpg"
+        "src": "/logos/network/kb-sec.png"
       },
       {
         "name": "신한투자증권",
@@ -117,40 +113,48 @@
       },
       {
         "name": "한화투자증권",
-        "src": "/logos/network/hanwha-sec.jpg"
+        "src": "/logos/network/hanwha-sec.png"
       },
       {
         "name": "우리투자증권",
-        "src": "/logos/network/woori-sec.jpg"
+        "src": "/logos/network/woori-sec.png"
       },
       {
         "name": "유진투자증권",
-        "src": "/logos/network/eugene-sec.jpg"
+        "src": "/logos/network/eugene-sec.png"
       }
     ]
   },
   {
-    "category": "은행 · 기관 · 캐피탈",
+    "category": "기관투자자 · 은행 · 캐피탈",
     "items": [
       {
         "name": "국민연금공단",
-        "src": "/logos/network/nps.jpg"
+        "src": "/logos/network/nps.png"
       },
       {
         "name": "한국투자공사(KIC)",
         "src": "/logos/network/kic.png"
       },
       {
+        "name": "삼천리",
+        "src": "/logos/network/samchully.svg"
+      },
+      {
+        "name": "abrdn",
+        "src": "/logos/network/aberdeen.png"
+      },
+      {
         "name": "KDB산업은행",
-        "src": "/logos/network/kdb.jpg"
+        "src": "/logos/network/kdb.png"
       },
       {
         "name": "KB국민은행",
-        "src": "/logos/network/kb-bank.jpg"
+        "src": "/logos/network/kb-bank.png"
       },
       {
         "name": "우리은행",
-        "src": "/logos/network/woori-bank.jpg"
+        "src": "/logos/network/woori-bank.png"
       },
       {
         "name": "신한캐피탈",
@@ -162,7 +166,7 @@
       },
       {
         "name": "KB손해보험",
-        "src": "/logos/network/kb-ins.jpg"
+        "src": "/logos/network/kb-ins.png"
       }
     ]
   },
@@ -191,7 +195,7 @@
       },
       {
         "name": "신영",
-        "src": "/logos/network/shinyoung.jpg"
+        "src": "/logos/network/shinyoung.png"
       },
       {
         "name": "ARA Korea",
@@ -214,12 +218,8 @@
         "src": "/logos/network/kendall.png"
       },
       {
-        "name": "삼천리",
-        "src": "/logos/network/samchully.svg"
-      },
-      {
         "name": "BS",
-        "src": "/logos/network/bs.jpg"
+        "src": "/logos/network/bs.png"
       }
     ]
   },
@@ -232,7 +232,7 @@
       },
       {
         "name": "Cushman & Wakefield",
-        "src": "/logos/network/cushman.jpg"
+        "src": "/logos/network/cushman.png"
       },
       {
         "name": "JLL",
@@ -244,7 +244,7 @@
       },
       {
         "name": "Deloitte",
-        "src": "/logos/network/deloitte.jpeg"
+        "src": "/logos/network/deloitte.png"
       },
       {
         "name": "삼정KPMG",
@@ -269,7 +269,7 @@
     "items": [
       {
         "name": "가온감정평가법인",
-        "src": "/logos/network/gaon-appr.jpg"
+        "src": "/logos/network/gaon-appr.png"
       },
       {
         "name": "경일감정평가법인",
@@ -281,7 +281,7 @@
       },
       {
         "name": "삼창감정평가법인",
-        "src": "/logos/network/samchang-appr.jpg"
+        "src": "/logos/network/samchang-appr.png"
       }
     ]
   }
