@@ -809,15 +809,18 @@ export default function LandingPage() {
                       {group.category}
                     </span>
                   </div>
-                  <div className="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-4">
+                  <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-4">
                     {group.items.map((it) => (
-                      <span key={it.src} className="flex h-7 items-center">
+                      <span
+                        key={it.src}
+                        className="flex h-7 w-[120px] items-center justify-center"
+                      >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={it.src}
                           alt={it.name}
                           title={it.name}
-                          className="max-h-7 w-auto max-w-[120px] object-contain"
+                          className="max-h-7 w-auto max-w-full object-contain"
                         />
                       </span>
                     ))}
