@@ -1,0 +1,288 @@
+[
+  {
+    "category": "자산운용 · 리츠",
+    "items": [
+      {
+        "name": "미래에셋자산운용",
+        "src": "/logos/network/mirae-am.png"
+      },
+      {
+        "name": "삼성SRA자산운용",
+        "src": "/logos/network/samsung-sra.png"
+      },
+      {
+        "name": "KB자산운용",
+        "src": "/logos/network/kb-am.png"
+      },
+      {
+        "name": "이지스자산운용",
+        "src": "/logos/network/igis.jpg"
+      },
+      {
+        "name": "마스턴투자운용",
+        "src": "/logos/network/mastern.png"
+      },
+      {
+        "name": "코레이트자산운용",
+        "src": "/logos/network/coreit.jpg"
+      },
+      {
+        "name": "크리에이트자산운용",
+        "src": "/logos/network/create-am.png"
+      },
+      {
+        "name": "키움투자자산운용",
+        "src": "/logos/network/kiwoom-am.jpg"
+      },
+      {
+        "name": "한국투자신탁운용",
+        "src": "/logos/network/kitc.png"
+      },
+      {
+        "name": "한투리얼에셋운용",
+        "src": "/logos/network/kis-realasset.png"
+      },
+      {
+        "name": "현대인베스트먼트자산운용",
+        "src": "/logos/network/hyundai-inv.jpg"
+      },
+      {
+        "name": "NH아문디자산운용",
+        "src": "/logos/network/nh-amundi.png"
+      },
+      {
+        "name": "교보AIM자산운용",
+        "src": "/logos/network/kyobo-aim.png"
+      },
+      {
+        "name": "스틱얼터너티브자산운용",
+        "src": "/logos/network/stic.png"
+      },
+      {
+        "name": "퍼시픽자산운용",
+        "src": "/logos/network/pacific-am.png"
+      },
+      {
+        "name": "이화자산운용",
+        "src": "/logos/network/ewha-am.jpg"
+      },
+      {
+        "name": "KT투자운용",
+        "src": "/logos/network/kt-inv.png"
+      },
+      {
+        "name": "abrdn",
+        "src": "/logos/network/aberdeen.png"
+      },
+      {
+        "name": "SK리츠운용",
+        "src": "/logos/network/sk-reits.png"
+      },
+      {
+        "name": "롯데AMC",
+        "src": "/logos/network/lotte-amc.svg"
+      }
+    ]
+  },
+  {
+    "category": "증권",
+    "items": [
+      {
+        "name": "삼성증권",
+        "src": "/logos/network/samsung-sec.png"
+      },
+      {
+        "name": "미래에셋증권",
+        "src": "/logos/network/mirae-sec.png"
+      },
+      {
+        "name": "한국투자증권",
+        "src": "/logos/network/kis-sec.png"
+      },
+      {
+        "name": "NH투자증권",
+        "src": "/logos/network/nh-sec.png"
+      },
+      {
+        "name": "KB증권",
+        "src": "/logos/network/kb-sec.jpg"
+      },
+      {
+        "name": "신한투자증권",
+        "src": "/logos/network/shinhan-sec.png"
+      },
+      {
+        "name": "메리츠증권",
+        "src": "/logos/network/meritz.png"
+      },
+      {
+        "name": "한화투자증권",
+        "src": "/logos/network/hanwha-sec.jpg"
+      },
+      {
+        "name": "우리투자증권",
+        "src": "/logos/network/woori-sec.jpg"
+      },
+      {
+        "name": "유진투자증권",
+        "src": "/logos/network/eugene-sec.jpg"
+      }
+    ]
+  },
+  {
+    "category": "은행 · 기관 · 캐피탈",
+    "items": [
+      {
+        "name": "국민연금공단",
+        "src": "/logos/network/nps.jpg"
+      },
+      {
+        "name": "한국투자공사(KIC)",
+        "src": "/logos/network/kic.png"
+      },
+      {
+        "name": "KDB산업은행",
+        "src": "/logos/network/kdb.jpg"
+      },
+      {
+        "name": "KB국민은행",
+        "src": "/logos/network/kb-bank.jpg"
+      },
+      {
+        "name": "우리은행",
+        "src": "/logos/network/woori-bank.jpg"
+      },
+      {
+        "name": "신한캐피탈",
+        "src": "/logos/network/shinhan-cap.svg"
+      },
+      {
+        "name": "DB손해보험",
+        "src": "/logos/network/db-ins.png"
+      },
+      {
+        "name": "KB손해보험",
+        "src": "/logos/network/kb-ins.jpg"
+      }
+    ]
+  },
+  {
+    "category": "부동산 개발 · 신탁 · 디벨로퍼",
+    "items": [
+      {
+        "name": "신세계프라퍼티",
+        "src": "/logos/network/shinsegae-prop.png"
+      },
+      {
+        "name": "코람코자산신탁",
+        "src": "/logos/network/koramco.png"
+      },
+      {
+        "name": "대신자산신탁",
+        "src": "/logos/network/daishin-trust.png"
+      },
+      {
+        "name": "한국토지신탁",
+        "src": "/logos/network/koreit-trust.png"
+      },
+      {
+        "name": "MDM",
+        "src": "/logos/network/mdm.svg"
+      },
+      {
+        "name": "신영",
+        "src": "/logos/network/shinyoung.jpg"
+      },
+      {
+        "name": "ARA Korea",
+        "src": "/logos/network/ara.png"
+      },
+      {
+        "name": "Brookfield",
+        "src": "/logos/network/brookfield.png"
+      },
+      {
+        "name": "Keppel",
+        "src": "/logos/network/keppel.png"
+      },
+      {
+        "name": "Weave Living",
+        "src": "/logos/network/weave.png"
+      },
+      {
+        "name": "켄달스퀘어",
+        "src": "/logos/network/kendall.png"
+      },
+      {
+        "name": "삼천리",
+        "src": "/logos/network/samchully.svg"
+      },
+      {
+        "name": "BS",
+        "src": "/logos/network/bs.jpg"
+      }
+    ]
+  },
+  {
+    "category": "외국계 · 부동산서비스 · 컨설팅",
+    "items": [
+      {
+        "name": "CBRE",
+        "src": "/logos/network/cbre.png"
+      },
+      {
+        "name": "Cushman & Wakefield",
+        "src": "/logos/network/cushman.jpg"
+      },
+      {
+        "name": "JLL",
+        "src": "/logos/network/jll.png"
+      },
+      {
+        "name": "Savills",
+        "src": "/logos/network/savills.png"
+      },
+      {
+        "name": "Deloitte",
+        "src": "/logos/network/deloitte.jpeg"
+      },
+      {
+        "name": "삼정KPMG",
+        "src": "/logos/network/kpmg.png"
+      },
+      {
+        "name": "NAI Korea",
+        "src": "/logos/network/nai.png"
+      },
+      {
+        "name": "젠스타메이트",
+        "src": "/logos/network/genstar.png"
+      },
+      {
+        "name": "알스퀘어",
+        "src": "/logos/network/rsquare.png"
+      }
+    ]
+  },
+  {
+    "category": "감정평가법인",
+    "items": [
+      {
+        "name": "가온감정평가법인",
+        "src": "/logos/network/gaon-appr.jpg"
+      },
+      {
+        "name": "경일감정평가법인",
+        "src": "/logos/network/kyungil-appr.png"
+      },
+      {
+        "name": "나라감정평가법인",
+        "src": "/logos/network/nara-appr.png"
+      },
+      {
+        "name": "삼창감정평가법인",
+        "src": "/logos/network/samchang-appr.jpg"
+      }
+    ]
+  }
+]

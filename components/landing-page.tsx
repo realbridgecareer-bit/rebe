@@ -23,6 +23,7 @@ import {
   BrandWordmark,
   BrandLockup,
 } from "@/components/icons";
+import networkLogos from "@/lib/network-logos.json";
 
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -786,7 +787,7 @@ export default function LandingPage() {
 
           <motion.div
             {...fadeInUp}
-            className="mx-auto mt-14 max-w-4xl rounded-2xl border border-line bg-surface p-8 text-center"
+            className="mx-auto mt-14 max-w-5xl rounded-2xl border border-line bg-surface p-8 text-center"
           >
             <div className="text-4xl font-bold text-navy">100+</div>
             <h3 className="mt-2 text-xl font-bold text-navy">
@@ -797,32 +798,32 @@ export default function LandingPage() {
               부동산/금융업의 내로라하는 회사에 재직 중인 100명 이상의 멘토진이
               상시 대기하고 있습니다.
             </p>
-            <div className="mt-5 flex flex-wrap justify-center gap-2">
-              {[
-                "국내 대형 기금운용본부",
-                "국내외 자산운용사",
-                "글로벌 부동산 투자사",
-                "대형 증권사",
-                "종합건설사",
-                "시행·디벨로퍼",
-                "외국계 컨설팅사",
-              ].map((c) => (
-                <span
-                  key={c}
-                  className="rounded-full border border-line bg-white px-3 py-1 text-xs text-slate-500"
-                >
-                  {c}
-                </span>
+            <div className="mt-8 space-y-6 text-left">
+              {networkLogos.map((group) => (
+                <div key={group.category}>
+                  <div className="text-xs font-semibold tracking-wide text-accent">
+                    {group.category}
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {group.items.map((it) => (
+                      <span
+                        key={it.src}
+                        className="flex h-14 w-28 items-center justify-center rounded-lg border border-line bg-white p-2"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={it.src}
+                          alt={it.name}
+                          title={it.name}
+                          className="max-h-full max-w-full object-contain"
+                        />
+                      </span>
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
-
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/logos/network-logos.png"
-              alt="멘토 네트워크 소속 기업 로고"
-              className="mx-auto mt-8 w-full max-w-sm"
-            />
-            <p className="mx-auto mt-5 max-w-2xl text-xs leading-relaxed text-slate-400">
+            <p className="mt-6 text-left text-xs leading-relaxed text-slate-400">
               ※ 상기 기업은 리얼브릿지가 네트워킹을 통해 확보한 멘토들의 전·현직
               소속 기준이며, 해당 기업과의 제휴·후원 관계를 의미하지 않습니다.
             </p>
