@@ -2,46 +2,58 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand palette — Clean Professional (white + navy + blue) */
-  --color-navy: #102a4c;
-  --color-navy-600: #1c3d63;
-  --color-accent: #2563eb;
-  --color-accent-700: #1d4ed8;
-  --color-accent-soft: #eaf1fc;
-  /* 로고 강조 컬러 (시안의 오렌지) */
-  --color-brand-orange: #ea8c4d;
-  --color-surface: #f5f8fc;
-  --color-line: #e5eaf1;
+  /* Brand palette — Warm Human + Trust (아이보리 · 세이지그린 · 테라코타) */
+  --color-ivory: #faf6ee; /* 페이지 기본 배경 */
+  --color-sage: #2f3a2e; /* 프라이머리 (다크 섹션·버튼·푸터) */
+  --color-sage-600: #3c4a39; /* 세이지 hover */
+  --color-sage-700: #33402f;
+  --color-terracotta: #c06a45; /* 액센트 */
+  --color-terracotta-soft: #e7a07c; /* 다크 위 액센트 */
+  --color-cream: #e7c9a6; /* 다크 위 라이트 요소 */
+  --color-gold: #e8a63c; /* 별점·티커 도트 */
+  --color-sand: #f3e8dc; /* 칩·아이콘 배경 */
+  --color-sand-rose: #f6e4e0; /* 부정 강조 배경 */
 
-  /* Fonts — 모던 산세리프 */
+  --color-ink: #262019; /* 본문 텍스트 (진한) */
+  --color-ink-2: #2a251e;
+  --color-muted: #5c5344; /* 본문 (중간) */
+  --color-muted-2: #6b6456;
+  --color-soft: #8b8271; /* 서브 (연한) */
+  --color-soft-2: #938a78;
+  --color-soft-3: #a79d8b;
+
+  --color-line: #e7decf; /* 보더 (아이보리 톤) */
+  --color-line-2: #efe7d9;
+  --color-line-3: #f1eadd;
+
+  /* Fonts — Pretendard 단일 */
   --font-sans:
-    "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont,
+    system-ui, sans-serif;
 }
 
 :root {
   --background: #ffffff;
-  --foreground: #1b2733;
+  --foreground: #262019;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
-  /* 한국어: 글자 단위가 아닌 단어 단위로 줄바꿈해 어색한 넘침 방지 */
+  -webkit-font-smoothing: antialiased;
+  /* 한국어: 단어 단위 줄바꿈 + 긴 영문/URL 강제 줄바꿈 */
   word-break: keep-all;
-  /* 긴 영문/URL/이메일 등은 강제로 줄바꿈해 컨테이너를 넘지 않게 */
   overflow-wrap: break-word;
 }
 
-/* 제목은 줄을 균형 있게 나눠 어색한 위치 줄바꿈 방지 */
+/* 제목은 균형 있게, 본문은 고아 단어 방지 */
 h1,
 h2,
 h3,
 h4 {
   text-wrap: balance;
 }
-
-/* 본문·항목은 마지막 줄에 한 단어만 떨어지는 현상(고아 단어) 방지 */
 p,
 li {
   text-wrap: pretty;
@@ -49,4 +61,60 @@ li {
 
 html {
   scroll-behavior: smooth;
+}
+
+/* ===== 등장 애니메이션 ===== */
+@keyframes rbup {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/* ===== 상단 합격소식 세로 롤링 티커 ===== */
+@keyframes rbvroll {
+  0%,
+  2% {
+    transform: translateY(115%);
+    opacity: 0;
+  }
+  4%,
+  8% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  10%,
+  100% {
+    transform: translateY(-115%);
+    opacity: 0;
+  }
+}
+.rb-vroll-item {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* ===== 후기 벽 (masonry columns) 반응형 ===== */
+.rb-review-wall {
+  columns: 3;
+  column-gap: 18px;
+}
+@media (max-width: 900px) {
+  .rb-review-wall {
+    columns: 2;
+  }
+}
+@media (max-width: 620px) {
+  .rb-review-wall {
+    columns: 1;
+  }
 }

@@ -47,24 +47,31 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## 구현 메모
 
-- **홈("/")**: `components/landing-page.tsx`(클라이언트 컴포넌트, framer-motion 애니메이션)를
+- **홈("/")**: `components/landing-page.tsx`(클라이언트 컴포넌트, 순수 CSS 애니메이션)를
   렌더링하는 단일 페이지. 자체 내비게이션·푸터를 포함하므로 `(marketing)/layout.tsx`는
-  홈에서 공용 헤더/푸터를 생략한다.
+  홈에서 공용 헤더/푸터를 생략한다. (2026 리디자인 반영)
+- **합격후기 상세("/success")**: `app/(marketing)/success/page.tsx` — 자체 nav/footer + 서비스별
+  필터(전체/Real Connect/Real Bridge/Real Success). 홈과 함께 `(marketing)/layout.tsx`에서 공용
+  크롬 생략. 합격사례 회사 로고는 `public/logos/story/`.
 - **서브 페이지**(`/contact`, `/blog` 등): `SiteHeader`/`SiteFooter`(REBE 브랜딩)로 감싼다.
-- **디자인 톤**: "Clean Professional" — 흰색 배경 기반. 경쟁사 bridgein.co.kr 벤치마크
-  (흰 배경 + 파란 메인 + 넓은 여백 + 카드형 + 명확한 위계). 톤: navy(`#102A4C`) +
-  clean blue accent(`#2563EB`) + surface(`#F5F8FC`) + line(`#E5EAF1`). 중성 텍스트는 Tailwind slate.
-  컬러 토큰은 `app/globals.css`의 `@theme`에 정의(`bg-navy`, `text-accent`, `bg-surface` 등).
-- **폰트**: Pretendard 단일(`font-sans`) — 모던 산세리프. (이전 Noto Serif 헤드라인은 폐기)
-- **로고**: `components/icons.tsx`의 `BrandMark` — 현수교(suspension bridge) 라인 심볼,
-  `currentColor`라 배경따라 navy/white 적용. "구직자와 현직자를 잇는 다리" 의미.
+- **디자인 톤(2026 리디자인)**: "따뜻한 휴먼 + 신뢰감" — 아이보리 배경 + 딥 세이지 그린 +
+  테라코타 액센트. 클로드 웹 디자인 핸드오프(`design_handoff_rebe_redesign`) 기준.
+  토큰: ivory(`#FAF6EE`) 배경 · sage(`#2F3A2E`, 다크 섹션·버튼·푸터) · terracotta(`#C06A45`, 액센트) ·
+  cream(`#E7C9A6`) · gold(`#E8A63C`, 별점·티커) · sand(`#F3E8DC`, 칩) · ink(`#262019`) 텍스트 ·
+  line(`#E7DECF`) 보더. `app/globals.css`의 `@theme`에 정의(`bg-ivory`, `bg-sage`, `text-terracotta`,
+  `bg-sand` 등). (이전 navy/blue "Clean Professional" 톤은 폐기)
+- **폰트**: Pretendard 단일(`font-sans`) — 모던 산세리프. 히어로 h1 52px/800, 섹션 h2 38px/800.
+- **로고**: `components/icons.tsx`의 `BrandMark` — 상승 막대그래프(세로 라운드 막대 3개 세이지 +
+  우상향 아크·점 테라코타, 색 고정). "성장·도약" 의미. 워드마크 `BrandWordmark` = "REal BridgE".
 - **멘토**: 실제 사진 미사용. 익명 인물 실루엣(`UserRound`) + "겸업금지 규정·현직자 보호를 위해
   익명 운영" 안내 문구 필수. 소속·경력만 공개.
 - **아이콘**: 외부 의존성 없이 `components/icons.tsx`의 경량 인라인 SVG 사용(이모지 미사용).
 - **가격 정책**: 공개 표시, **VAT 포함**. Real Connect 40만 / Real Bridge 95만 / Real Success 145만.
-- **합격 후기**: `successStories`. **합격 회사명을 전면(크게)** + 별점 + 직무/배경 + 서비스 태그 +
-  후기 미리보기. "후기 전문 보기" → 전문 모달. ⚠️ 사이트 어디에도 "크몽" 노출 금지(우리 자체 서비스).
-  각 항목에 `videoId`(YouTube ID)를 넣으면 '합격 영상' 버튼이 자동 노출되고 클릭 시 모달 재생.
+- **후기/합격사례(2026 리디자인)**: 홈 REVIEWS 섹션은 상담 후기 벽(masonry, `REVIEWS` 배열,
+  이름 성씨 마스킹 "김O님" + 별점 + 서비스 칩 + 페르소나). 합격 스토리 상세는 `/success` 페이지의
+  `STORIES` 배열(회사 로고 전면 + before→after + 풀 인용구 + 3문단 + 강조 태그 + 서비스 필터).
+  ⚠️ 사이트 어디에도 "크몽" 노출 금지(우리 자체 서비스). (이전 successStories `videoId` 유튜브
+  모달 기능은 리디자인에서 제거됨.)
 - **사업자 정보(푸터)**: 브랜드/서비스명은 **Real Bridge(REBE)**, 사업자(명의)는 **부프로**로 별개다.
   "부프로(Real Bridge)"처럼 **병기·동일시 금지**. 저작권 표기는 `© Real Bridge`, 법정 사업자 정보
   블록에만 `상호: 부프로`로 표기. 사업자: 대표 엄은혜 / 537-59-00849 / 송파구 중대로 135, 11층 /

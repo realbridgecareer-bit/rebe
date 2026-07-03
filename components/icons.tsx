@@ -116,49 +116,43 @@ export const UserRound = (p: IconProps) => (
   </svg>
 );
 
-/**
- * 브랜드 워드마크. "REal BridgE"에서 REBE(R·E·B·E)만 강조색(accent)으로 표시.
- * 나머지 글자는 부모의 글자색(navy/white)을 상속한다. className으로 크기/굵기 지정.
- */
+/** 브랜드 워드마크. "REal BridgE" (모던 산세리프, 800). className으로 크기/색 지정. */
 export const BrandWordmark = ({ className }: { className?: string }) => (
-  <span className={`font-serif ${className ?? ""}`}>REal BridgE</span>
+  <span className={`font-sans font-extrabold tracking-tight ${className ?? ""}`}>
+    REal BridgE
+  </span>
 );
 
-/** 로고 + 태그라인 묶음 (태그라인은 로고 폭 기준 가운데 정렬). 헤더·푸터 공용. */
+/** 로고마크 + 워드마크 가로 묶음. 헤더·푸터 공용. */
 export const BrandLockup = ({ className }: { className?: string }) => (
-  <span className={`inline-flex flex-col items-center leading-none ${className ?? ""}`}>
-    <BrandWordmark className="text-xl font-bold tracking-tight" />
-    <span className="mt-1 text-[10px] tracking-tight text-slate-400">
-      부동산 금융업 취업의 지름길
-    </span>
+  <span className={`inline-flex items-center gap-[10px] ${className ?? ""}`}>
+    <BrandMark className="h-[26px] w-[30px]" />
+    <BrandWordmark className="text-lg text-ink" />
   </span>
 );
 
 /**
  * REBE 브랜드 로고 마크.
- * 컨셉: 현수교(suspension bridge) — 구직자와 현직자를 잇는 '다리'.
- * currentColor를 사용하므로 배경에 따라 navy/white 등으로 자연스럽게 적용된다.
- * className으로 크기를 지정한다. (예: h-9 w-9)
+ * 컨셉: 상승 막대그래프 — 성장·도약. 세로 라운드 막대 3개(세이지, 높이 점증) +
+ * 우상향 아크·점(테라코타). 색이 고정된 컬러 마크. className으로 크기 지정.
  */
 export const BrandMark = ({ className }: { className?: string }) => (
   <svg
     className={className}
-    viewBox="0 0 40 40"
+    viewBox="0 0 32 28"
     fill="none"
-    stroke="currentColor"
-    strokeLinecap="round"
-    strokeLinejoin="round"
     xmlns="http://www.w3.org/2000/svg"
     aria-hidden="true"
   >
-    {/* 상판(도로) */}
-    <path d="M4 14.5h32" strokeWidth="2.2" />
-    {/* 교각 */}
-    <path d="M7 14.5V27M20 14.5V27M33 14.5V27" strokeWidth="2.2" />
-    {/* 아치 2개 */}
-    <path d="M7 27q6.5-11 13 0" strokeWidth="2.2" />
-    <path d="M20 27q6.5-11 13 0" strokeWidth="2.2" />
-    {/* 수면 */}
-    <path d="M5 31h30" strokeWidth="1.4" />
+    <rect x="1.5" y="15" width="4.4" height="11" rx="2.2" fill="#2F3A2E" />
+    <rect x="8" y="10" width="4.4" height="16" rx="2.2" fill="#2F3A2E" />
+    <rect x="14.5" y="5" width="4.4" height="21" rx="2.2" fill="#2F3A2E" />
+    <path
+      d="M16.7 6 Q23.5 1 29 5"
+      stroke="#C06A45"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+    />
+    <circle cx="29" cy="5" r="2.4" fill="#C06A45" />
   </svg>
 );

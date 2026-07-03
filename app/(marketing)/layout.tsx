@@ -11,8 +11,8 @@ export default function MarketingLayout({
 }) {
   const pathname = usePathname();
 
-  // 홈("/")은 랜딩 컴포넌트가 자체 헤더·푸터를 포함하므로 공용 크롬을 생략한다.
-  if (pathname === "/") {
+  // 홈("/")·합격후기("/success")는 자체 헤더·푸터를 포함하므로 공용 크롬을 생략한다.
+  if (pathname === "/" || pathname === "/success") {
     return <>{children}</>;
   }
 
