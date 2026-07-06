@@ -463,8 +463,8 @@ export default function LandingPage() {
           <div className="mx-auto mt-14 grid max-w-[1080px] items-start gap-5 lg:grid-cols-3">
             <PriceCard
               name="Real Connect"
-              sub="대면 컨설팅 90분"
-              sessions="1회"
+              sub="대면 컨설팅"
+              detail="90분 1회"
               original="64만원"
               price="45만원"
               items={[
@@ -477,8 +477,8 @@ export default function LandingPage() {
             />
             <PriceCard
               name="Real Bridge"
-              sub="대면 컨설팅 90분"
-              sessions="2회"
+              sub="대면 컨설팅"
+              detail="90분 2회"
               original="126만원"
               price="88만원"
               items={[
@@ -493,8 +493,8 @@ export default function LandingPage() {
             <PriceCard
               featured
               name="Real Success"
-              sub="대면 컨설팅 90분"
-              sessions="3회"
+              sub="대면 컨설팅 3회"
+              detail="시간 제한 없음"
               original="164만원"
               price="115만원"
               items={[
@@ -636,31 +636,37 @@ function SectionHead({ eyebrow, title, lead }: { eyebrow: string; title: string;
 function PriceCard({
   name,
   sub,
-  sessions,
+  detail,
   price,
   original,
   items,
   featured = false,
 }: {
   name: string;
+  /** 라벨(예: "대면 컨설팅"). 약간 진하게 표시된다. */
   sub: string;
-  /** 대면 컨설팅 횟수(예: "3회"). 크게 강조 표시된다. */
-  sessions?: string;
+  /** 강조 스펙(예: "90분 1회", "시간 제한 없음"). 크고 진하게 표시된다. */
+  detail?: string;
   price: string;
-  /** 정가(할인 전). 지정하면 취소선 + -30% 뱃지로 표시된다. */
+  /** 정가(할인 전). 지정하면 취소선 + 뱃지로 표시된다. */
   original?: string;
   items: string[];
   featured?: boolean;
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // 마우스 위치를 CSS 변수(--spot-x/--spot-y)로 반영 → 스포트라이트 음영이 커서를 따라온다.
+  // 마우스 위치를 CSS 변수로 반영. featured 카드는 가로 위치에 따라 강조 색(--spot-color)이 바뀐다.
   function handleMove(e: React.MouseEvent<HTMLDivElement>) {
     const el = cardRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
-    el.style.setProperty("--spot-x", `${e.clientX - rect.left}px`);
-    el.style.setProperty("--spot-y", `${e.clientY - rect.top}px`);
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    el.style.setProperty("--spot-x", `${x}px`);
+    el.style.setProperty("--spot-y", `${y}px`);
+    // 커서 가로 위치(0~1)를 따뜻한 색상대(terracotta→gold, hue 10→54)로 매핑.
+    const hue = 10 + (rect.width ? x / rect.width : 0.5) * 44;
+    el.style.setProperty("--spot-color", `hsla(${hue}, 82%, 62%, 0.55)`);
   }
 
   if (featured) {
@@ -673,23 +679,20 @@ function PriceCard({
         <span
           aria-hidden
           className="pointer-events-none absolute inset-0 z-0 rounded-[20px] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-          style={{ background: "radial-gradient(280px circle at var(--spot-x, 50%) var(--spot-y, 50%), rgba(231,201,166,0.18), transparent 62%)" }}
+          style={{ background: "radial-gradient(300px circle at var(--spot-x, 50%) var(--spot-y, 50%), var(--spot-color, rgba(231,201,166,0.45)), transparent 60%)" }}
         />
         <span className="absolute -top-[13px] left-1/2 z-20 -translate-x-1/2 rounded-full bg-terracotta px-4 py-1.5 text-[12px] font-extrabold whitespace-nowrap text-white">인기 패키지</span>
         <div className="relative z-10 flex flex-1 flex-col">
           <div className="text-[20px] font-extrabold text-white">{name}</div>
-          <div className="mt-1 text-[13.5px] text-white/65">{sub}</div>
-          {sessions && (
-            <div className="mt-2.5 inline-flex w-fit items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1.5">
-              <span className="text-[13px] font-semibold text-white/70">총</span>
-              <span className="text-[22px] leading-none font-extrabold text-cream">{sessions}</span>
-            </div>
-          )}
+          <div className="mt-1.5 text-[14px] leading-snug">
+            <span className="font-semibold text-white/85">{sub}</span>
+            {detail && <span className="ml-1.5 text-[16px] font-extrabold text-cream">{detail}</span>}
+          </div>
           <div className="mt-[18px]">
             {original && (
               <div className="mb-1.5 flex items-center gap-2.5">
-                <span className="inline-flex items-center gap-1 rounded-full bg-terracotta px-3 py-1 text-[14px] font-extrabold text-white shadow-[0_4px_12px_rgba(192,106,69,0.45)]">
-                  <span className="text-cream">OPEN</span> 30% 할인
+                <span className="inline-flex items-center rounded-full bg-terracotta px-3 py-1 text-[14px] font-extrabold text-white shadow-[0_4px_12px_rgba(192,106,69,0.45)]">
+                  30% 할인
                 </span>
                 <span className="text-[15px] font-semibold text-white/45 line-through">{original}</span>
               </div>
@@ -727,18 +730,15 @@ function PriceCard({
       />
       <div className="relative z-10 flex flex-1 flex-col">
         <div className="text-[20px] font-extrabold text-ink">{name}</div>
-        <div className="mt-1 text-[13.5px] text-soft-2">{sub}</div>
-        {sessions && (
-          <div className="mt-2.5 inline-flex w-fit items-center gap-1.5 rounded-full bg-sand px-3.5 py-1.5">
-            <span className="text-[13px] font-semibold text-soft-2">총</span>
-            <span className="text-[22px] leading-none font-extrabold text-sage">{sessions}</span>
-          </div>
-        )}
+        <div className="mt-1.5 text-[14px] leading-snug">
+          <span className="font-semibold text-ink">{sub}</span>
+          {detail && <span className="ml-1.5 text-[16px] font-extrabold text-terracotta">{detail}</span>}
+        </div>
         <div className="mt-[18px]">
           {original && (
             <div className="mb-1.5 flex items-center gap-2.5">
-              <span className="inline-flex items-center gap-1 rounded-full bg-terracotta px-3 py-1 text-[14px] font-extrabold text-white shadow-[0_4px_12px_rgba(192,106,69,0.35)]">
-                <span className="text-cream">OPEN</span> 30% 할인
+              <span className="inline-flex items-center rounded-full bg-terracotta px-3 py-1 text-[14px] font-extrabold text-white shadow-[0_4px_12px_rgba(192,106,69,0.35)]">
+                30% 할인
               </span>
               <span className="text-[15px] font-semibold text-soft-3 line-through">{original}</span>
             </div>
