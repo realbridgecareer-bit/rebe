@@ -140,7 +140,7 @@ type Filter = (typeof FILTERS)[number];
 // 실제 후기 원본 캡처(개인정보 없음). 갤러리 팝업에서 크게 볼 수 있다.
 const REVIEW_SHOTS = [
   { src: "/reviews/koramco.jpg", label: "코람코자산신탁 채용형 인턴 · Real Success" },
-  { src: "/reviews/nai-korea-v2.jpg", label: "NAI Korea · Real Success" },
+  { src: "/reviews/nai-korea-v3.jpg", label: "NAI Korea · Real Success" },
 ];
 
 export default function SuccessStoriesPage() {
