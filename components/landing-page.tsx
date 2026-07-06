@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { BrandMark, BrandWordmark } from "@/components/icons";
-import networkLogos from "@/lib/network-logos.json";
+import pptLogos from "@/lib/ppt-logos.json";
 
 /* ===== 인라인 아이콘 (디자인 스펙에 맞춘 색·굵기) ===== */
 function Arrow({ color = "#fff", size = 17, w = 2.2 }: { color?: string; size?: number; w?: number }) {
@@ -130,23 +130,14 @@ const NAV_LINKS = [
   { href: "#success", label: "합격사례" },
 ];
 
-/* 네트워크 로고: 세로형 로고만 개별 높이 보정 (기본 26px) */
-const LOGO_H: Record<string, number> = {
-  "weave.png": 44,
-  "hanwha-hotel.png": 42,
-  "samil-pwc.png": 32,
-  "ey-hanyoung.png": 42,
-};
-function logoHeight(src: string) {
-  const file = src.split("/").pop() ?? "";
-  return LOGO_H[file] ?? 26;
-}
-
-type NetworkGroup = { category: string; items: { name: string; src: string }[] };
+/* 멘토 네트워크 로고월: 'logo/로고 정리.pptx'의 슬라이드 배치를 비율 기반 절대배치로 재현.
+   좌표는 lib/ppt-logos.json (scripts/ppt-logos.cjs 생성). aspect-ratio + % 좌표라
+   데스크톱·모바일에서 동일한 레이아웃으로 축소만 됨(줄바꿈 없음). */
+type PptSlide = { ar: number; items: { src: string; l: number; t: number; w: number; h: number }[] };
 
 export default function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const groups = networkLogos as NetworkGroup[];
+  const logoSlides = pptLogos as PptSlide[];
   const N = TICKER.length;
   const PER = 3.2;
   const DUR = PER * N;
@@ -443,15 +434,19 @@ export default function LandingPage() {
             <h3 className="mt-[6px] text-[21px] font-extrabold text-ink">업계 전문가 네트워크</h3>
             <p className="mx-auto mt-3 max-w-[620px] text-[14.5px] leading-[1.7] text-muted-2">기관투자자·자산운용사·증권사·시행사·건설사·국내외 컨설팅사 등 부동산/금융업의 내로라하는 회사에 재직 중인 100명 이상의 멘토진이 상시 대기하고 있습니다.</p>
             <div className="mt-7 flex flex-col gap-[14px]">
-              {groups.map((g) => (
-                <div key={g.category} className="rounded-[14px] border border-line bg-white px-5 py-[18px]">
-                  <span className="inline-block rounded-full bg-sand px-[13px] py-[5px] text-[12px] font-bold tracking-[0.02em] text-terracotta">{g.category}</span>
-                  <div className="mt-[10px] flex flex-wrap items-center justify-center gap-x-[34px] gap-y-[6px]">
-                    {g.items.map((it) => (
-                      <span key={it.src} className="flex h-[54px] items-center justify-center">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={it.src} alt={it.name} title={it.name} style={{ height: logoHeight(it.src), width: "auto", maxWidth: 176, objectFit: "contain" }} />
-                      </span>
+              {logoSlides.map((slide, i) => (
+                <div key={i} className="rounded-[14px] border border-line bg-white p-4 sm:p-6">
+                  <div className="relative w-full" style={{ aspectRatio: String(slide.ar) }}>
+                    {slide.items.map((it, j) => (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        key={j}
+                        src={it.src}
+                        alt=""
+                        aria-hidden="true"
+                        className="absolute object-contain"
+                        style={{ left: `${it.l}%`, top: `${it.t}%`, width: `${it.w}%`, height: `${it.h}%` }}
+                      />
                     ))}
                   </div>
                 </div>
