@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { BrandWordmark } from "@/components/icons";
 // 멘토 네트워크 로고월은 'logo/로고 정리.pptx'를 PowerPoint로 렌더한 슬라이드 이미지를 사용
@@ -463,7 +463,8 @@ export default function LandingPage() {
           <div className="mx-auto mt-14 grid max-w-[1080px] items-start gap-5 lg:grid-cols-3">
             <PriceCard
               name="Real Connect"
-              sub="대면 컨설팅 90분 1회"
+              sub="대면 컨설팅 90분"
+              sessions="1회"
               original="64만원"
               price="45만원"
               items={[
@@ -476,7 +477,8 @@ export default function LandingPage() {
             />
             <PriceCard
               name="Real Bridge"
-              sub="대면 컨설팅 90분 2회"
+              sub="대면 컨설팅 90분"
+              sessions="2회"
               original="126만원"
               price="88만원"
               items={[
@@ -491,7 +493,8 @@ export default function LandingPage() {
             <PriceCard
               featured
               name="Real Success"
-              sub="대면 컨설팅 90분 3회"
+              sub="대면 컨설팅 90분"
+              sessions="3회"
               original="164만원"
               price="115만원"
               items={[
@@ -633,6 +636,7 @@ function SectionHead({ eyebrow, title, lead }: { eyebrow: string; title: string;
 function PriceCard({
   name,
   sub,
+  sessions,
   price,
   original,
   items,
@@ -640,75 +644,122 @@ function PriceCard({
 }: {
   name: string;
   sub: string;
+  /** 대면 컨설팅 횟수(예: "3회"). 크게 강조 표시된다. */
+  sessions?: string;
   price: string;
   /** 정가(할인 전). 지정하면 취소선 + -30% 뱃지로 표시된다. */
   original?: string;
   items: string[];
   featured?: boolean;
 }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  // 마우스 위치를 CSS 변수(--spot-x/--spot-y)로 반영 → 스포트라이트 음영이 커서를 따라온다.
+  function handleMove(e: React.MouseEvent<HTMLDivElement>) {
+    const el = cardRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    el.style.setProperty("--spot-x", `${e.clientX - rect.left}px`);
+    el.style.setProperty("--spot-y", `${e.clientY - rect.top}px`);
+  }
+
   if (featured) {
     return (
-      <div className="relative flex flex-col rounded-[20px] bg-sage p-8 shadow-[0_22px_50px_rgba(47,58,46,0.28)]">
-        <span className="absolute -top-[13px] left-1/2 -translate-x-1/2 rounded-full bg-terracotta px-4 py-1.5 text-[12px] font-extrabold whitespace-nowrap text-white">인기 패키지</span>
-        <div className="text-[20px] font-extrabold text-white">{name}</div>
-        <div className="mt-1 text-[13.5px] text-white/65">{sub}</div>
-        <div className="mt-[18px]">
-          {original && (
-            <div className="mb-1.5 flex items-center gap-2.5">
-              <span className="inline-flex items-center gap-1 rounded-full bg-terracotta px-3 py-1 text-[14px] font-extrabold text-white shadow-[0_4px_12px_rgba(192,106,69,0.45)]">
-                <span className="text-cream">OPEN</span> 30% 할인
-              </span>
-              <span className="text-[15px] font-semibold text-white/45 line-through">{original}</span>
+      <div
+        ref={cardRef}
+        onMouseMove={handleMove}
+        className="group relative flex flex-col rounded-[20px] bg-sage p-8 shadow-[0_22px_50px_rgba(47,58,46,0.28)] transition-shadow duration-300 hover:shadow-[0_28px_64px_rgba(47,58,46,0.4)]"
+      >
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-0 rounded-[20px] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          style={{ background: "radial-gradient(280px circle at var(--spot-x, 50%) var(--spot-y, 50%), rgba(231,201,166,0.18), transparent 62%)" }}
+        />
+        <span className="absolute -top-[13px] left-1/2 z-20 -translate-x-1/2 rounded-full bg-terracotta px-4 py-1.5 text-[12px] font-extrabold whitespace-nowrap text-white">인기 패키지</span>
+        <div className="relative z-10 flex flex-1 flex-col">
+          <div className="text-[20px] font-extrabold text-white">{name}</div>
+          <div className="mt-1 text-[13.5px] text-white/65">{sub}</div>
+          {sessions && (
+            <div className="mt-2.5 inline-flex w-fit items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1.5">
+              <span className="text-[13px] font-semibold text-white/70">총</span>
+              <span className="text-[22px] leading-none font-extrabold text-cream">{sessions}</span>
             </div>
           )}
-          <div className="flex items-baseline gap-1.5">
-            <span className="text-[36px] font-extrabold text-white">{price}</span>
-            <span className="text-[11.5px] text-white/50">VAT 포함</span>
+          <div className="mt-[18px]">
+            {original && (
+              <div className="mb-1.5 flex items-center gap-2.5">
+                <span className="inline-flex items-center gap-1 rounded-full bg-terracotta px-3 py-1 text-[14px] font-extrabold text-white shadow-[0_4px_12px_rgba(192,106,69,0.45)]">
+                  <span className="text-cream">OPEN</span> 30% 할인
+                </span>
+                <span className="text-[15px] font-semibold text-white/45 line-through">{original}</span>
+              </div>
+            )}
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-[36px] font-extrabold text-white">{price}</span>
+              <span className="text-[11.5px] text-white/50">VAT 포함</span>
+            </div>
           </div>
+          <ul className="mt-[22px] flex flex-1 list-none flex-col gap-[11px] p-0">
+            {items.map((it) => (
+              <li key={it} className="flex gap-2 text-[14px] leading-[1.55] text-white/[0.88]">
+                <Chk color="#E7C9A6" size={16} w={2.6} />
+                {it}
+              </li>
+            ))}
+          </ul>
+          <Link href="/contact" className="mt-6 inline-flex items-center justify-center gap-[7px] rounded-full bg-white py-[13px] text-[14px] font-bold text-sage no-underline hover:bg-sand">
+            이 패키지로 상담받기 <Arrow color="#2F3A2E" size={15} />
+          </Link>
         </div>
-        <ul className="mt-[22px] flex flex-1 list-none flex-col gap-[11px] p-0">
-          {items.map((it) => (
-            <li key={it} className="flex gap-2 text-[14px] leading-[1.55] text-white/[0.88]">
-              <Chk color="#E7C9A6" size={16} w={2.6} />
-              {it}
-            </li>
-          ))}
-        </ul>
-        <Link href="/contact" className="mt-6 inline-flex items-center justify-center gap-[7px] rounded-full bg-white py-[13px] text-[14px] font-bold text-sage no-underline hover:bg-sand">
-          이 패키지로 상담받기 <Arrow color="#2F3A2E" size={15} />
-        </Link>
       </div>
     );
   }
   return (
-    <div className="flex flex-col rounded-[20px] border border-line bg-white p-8">
-      <div className="text-[20px] font-extrabold text-ink">{name}</div>
-      <div className="mt-1 text-[13.5px] text-soft-2">{sub}</div>
-      <div className="mt-[18px]">
-        {original && (
-          <div className="mb-1.5 flex items-center gap-2.5">
-            <span className="inline-flex items-center gap-1 rounded-full bg-terracotta px-3 py-1 text-[14px] font-extrabold text-white shadow-[0_4px_12px_rgba(192,106,69,0.35)]">
-              <span className="text-cream">OPEN</span> 30% 할인
-            </span>
-            <span className="text-[15px] font-semibold text-soft-3 line-through">{original}</span>
+    <div
+      ref={cardRef}
+      onMouseMove={handleMove}
+      className="group relative flex flex-col rounded-[20px] border border-line bg-white p-8 transition-shadow duration-300 hover:border-terracotta/30 hover:shadow-[0_20px_44px_rgba(38,32,25,0.12)]"
+    >
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-0 rounded-[20px] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        style={{ background: "radial-gradient(280px circle at var(--spot-x, 50%) var(--spot-y, 50%), rgba(192,106,69,0.1), transparent 60%)" }}
+      />
+      <div className="relative z-10 flex flex-1 flex-col">
+        <div className="text-[20px] font-extrabold text-ink">{name}</div>
+        <div className="mt-1 text-[13.5px] text-soft-2">{sub}</div>
+        {sessions && (
+          <div className="mt-2.5 inline-flex w-fit items-center gap-1.5 rounded-full bg-sand px-3.5 py-1.5">
+            <span className="text-[13px] font-semibold text-soft-2">총</span>
+            <span className="text-[22px] leading-none font-extrabold text-sage">{sessions}</span>
           </div>
         )}
-        <div className="flex items-baseline gap-1.5">
-          <span className="text-[36px] font-extrabold text-ink">{price}</span>
-          <span className="text-[11.5px] text-soft-3">VAT 포함</span>
+        <div className="mt-[18px]">
+          {original && (
+            <div className="mb-1.5 flex items-center gap-2.5">
+              <span className="inline-flex items-center gap-1 rounded-full bg-terracotta px-3 py-1 text-[14px] font-extrabold text-white shadow-[0_4px_12px_rgba(192,106,69,0.35)]">
+                <span className="text-cream">OPEN</span> 30% 할인
+              </span>
+              <span className="text-[15px] font-semibold text-soft-3 line-through">{original}</span>
+            </div>
+          )}
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-[36px] font-extrabold text-ink">{price}</span>
+            <span className="text-[11.5px] text-soft-3">VAT 포함</span>
+          </div>
         </div>
+        <ul className="mt-[22px] flex flex-1 list-none flex-col gap-[11px] p-0">
+          {items.map((it) => (
+            <li key={it} className="flex gap-2 text-[14px] leading-[1.55] text-muted-2">
+              <Chk color="#C06A45" size={16} w={2.6} />
+              {it}
+            </li>
+          ))}
+        </ul>
+        <Link href="/contact" className="mt-6 inline-flex items-center justify-center gap-[7px] rounded-full bg-sage py-[13px] text-[14px] font-bold text-white no-underline hover:bg-sage-600">
+          이 패키지로 상담받기 <Arrow size={15} />
+        </Link>
       </div>
-      <ul className="mt-[22px] flex flex-1 list-none flex-col gap-[11px] p-0">
-        {items.map((it) => (
-          <li key={it} className="flex gap-2 text-[14px] leading-[1.55] text-muted-2">
-            <Chk color="#C06A45" size={16} w={2.6} />
-            {it}
-          </li>
-        ))}
-      </ul>
-      <Link href="/contact" className="mt-6 inline-flex items-center justify-center gap-[7px] rounded-full bg-sage py-[13px] text-[14px] font-bold text-white no-underline hover:bg-sage-600">
-        이 패키지로 상담받기 <Arrow size={15} />
-      </Link>
     </div>
   );
 }
