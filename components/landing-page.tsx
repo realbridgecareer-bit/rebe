@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { BrandWordmark } from "@/components/icons";
 // 멘토 네트워크 로고월은 'logo/로고 정리.pptx'를 PowerPoint로 렌더한 슬라이드 이미지를 사용
@@ -653,34 +653,11 @@ function PriceCard({
   items: string[];
   featured?: boolean;
 }) {
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  // 마우스 위치를 CSS 변수로 반영. featured 카드는 가로 위치에 따라 강조 색(--spot-color)이 바뀐다.
-  function handleMove(e: React.MouseEvent<HTMLDivElement>) {
-    const el = cardRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    el.style.setProperty("--spot-x", `${x}px`);
-    el.style.setProperty("--spot-y", `${y}px`);
-    // 커서 가로 위치(0~1)를 따뜻한 색상대(terracotta→gold, hue 10→54)로 매핑.
-    const hue = 10 + (rect.width ? x / rect.width : 0.5) * 44;
-    el.style.setProperty("--spot-color", `hsla(${hue}, 82%, 62%, 0.55)`);
-  }
-
   if (featured) {
     return (
       <div
-        ref={cardRef}
-        onMouseMove={handleMove}
-        className="group relative flex flex-col rounded-[20px] bg-sage p-8 shadow-[0_22px_50px_rgba(47,58,46,0.28)] transition-shadow duration-300 hover:shadow-[0_28px_64px_rgba(47,58,46,0.4)]"
+        className="group relative flex flex-col rounded-[20px] bg-sage p-8 shadow-[0_22px_50px_rgba(47,58,46,0.28)] transition-[transform,box-shadow] duration-300 ease-out will-change-transform hover:-translate-y-2 hover:shadow-[0_36px_72px_rgba(47,58,46,0.45)]"
       >
-        <span
-          aria-hidden
-          className="pointer-events-none absolute inset-0 z-0 rounded-[20px] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-          style={{ background: "radial-gradient(300px circle at var(--spot-x, 50%) var(--spot-y, 50%), var(--spot-color, rgba(231,201,166,0.45)), transparent 60%)" }}
-        />
         <span className="absolute -top-[13px] left-1/2 z-20 -translate-x-1/2 rounded-full bg-terracotta px-4 py-1.5 text-[12px] font-extrabold whitespace-nowrap text-white">인기 패키지</span>
         <div className="relative z-10 flex flex-1 flex-col">
           <div className="text-[20px] font-extrabold text-white">{name}</div>
@@ -719,15 +696,8 @@ function PriceCard({
   }
   return (
     <div
-      ref={cardRef}
-      onMouseMove={handleMove}
-      className="group relative flex flex-col rounded-[20px] border border-line bg-white p-8 transition-shadow duration-300 hover:border-terracotta/30 hover:shadow-[0_20px_44px_rgba(38,32,25,0.12)]"
+      className="group relative flex flex-col rounded-[20px] border border-line bg-white p-8 transition-[transform,box-shadow,border-color] duration-300 ease-out will-change-transform hover:-translate-y-2 hover:border-terracotta/40 hover:shadow-[0_28px_56px_rgba(38,32,25,0.16)]"
     >
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-0 z-0 rounded-[20px] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-        style={{ background: "radial-gradient(280px circle at var(--spot-x, 50%) var(--spot-y, 50%), rgba(192,106,69,0.1), transparent 60%)" }}
-      />
       <div className="relative z-10 flex flex-1 flex-col">
         <div className="text-[20px] font-extrabold text-ink">{name}</div>
         <div className="mt-1.5 text-[14px] leading-snug">
