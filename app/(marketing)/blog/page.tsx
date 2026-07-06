@@ -13,10 +13,10 @@ export default async function BlogPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-20">
-      <div className="mb-2 text-xs font-semibold tracking-[0.2em] text-accent uppercase">
+      <div className="mb-2 text-xs font-semibold tracking-[0.2em] text-terracotta uppercase">
         INSIGHTS
       </div>
-      <h1 className="text-3xl font-bold text-navy">취업정보</h1>
+      <h1 className="text-3xl font-bold text-ink">취업정보</h1>
       <p className="mt-2 text-slate-500">
         부동산·금융 취업에 도움이 되는 현직자의 인사이트.
       </p>
@@ -25,13 +25,13 @@ export default async function BlogPage() {
         {posts.map((post) => (
           <li
             key={post.slug}
-            className="rounded-xl border border-line bg-white p-6 transition-colors hover:border-navy/25"
+            className="rounded-xl border border-line bg-white p-6 transition-colors hover:border-sage/25"
           >
-            <span className="text-xs font-medium text-accent">
+            <span className="text-xs font-medium text-terracotta">
               {post.category} · {post.publishedAt}
             </span>
-            <h2 className="mt-1 text-xl font-bold text-navy">
-              <Link href={`/blog/${post.slug}`} className="hover:text-accent">
+            <h2 className="mt-1 text-xl font-bold text-ink">
+              <Link href={`/blog/${post.slug}`} className="hover:text-terracotta">
                 {post.title}
               </Link>
             </h2>

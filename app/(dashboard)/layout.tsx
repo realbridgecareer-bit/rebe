@@ -8,10 +8,10 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen flex-col bg-surface text-slate-700">
+    <div className="flex min-h-screen flex-col bg-ivory text-slate-700">
       <header className="border-b border-line bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-          <Link href="/" className="flex items-center text-navy">
+          <Link href="/" className="flex items-center text-ink">
             <BrandWordmark className="font-bold" />
           </Link>
           <span className="text-sm text-slate-400">마이페이지</span>

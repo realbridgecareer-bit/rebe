@@ -41,21 +41,21 @@ export default function LoginPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-navy">로그인</h1>
+      <h1 className="text-2xl font-bold text-ink">로그인</h1>
       <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
         <input
           name="email"
           type="email"
           placeholder="이메일"
           required
-          className="w-full rounded-lg border border-line bg-white px-3 py-2 text-slate-800 placeholder:text-slate-400 outline-none focus:border-accent"
+          className="w-full rounded-lg border border-line bg-white px-3 py-2 text-slate-800 placeholder:text-slate-400 outline-none focus:border-sage"
         />
         <input
           name="password"
           type="password"
           placeholder="비밀번호"
           required
-          className="w-full rounded-lg border border-line bg-white px-3 py-2 text-slate-800 placeholder:text-slate-400 outline-none focus:border-accent"
+          className="w-full rounded-lg border border-line bg-white px-3 py-2 text-slate-800 placeholder:text-slate-400 outline-none focus:border-sage"
         />
 
         {status === "error" && (
@@ -65,7 +65,7 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={status === "loading"}
-          className="w-full rounded-full bg-navy py-3 font-semibold text-white transition hover:bg-navy-600 disabled:opacity-50"
+          className="w-full rounded-full bg-sage py-3 font-semibold text-white transition hover:bg-sage-600 disabled:opacity-50"
         >
           {status === "loading" ? "로그인 중..." : "로그인"}
         </button>
@@ -73,7 +73,7 @@ export default function LoginPage() {
 
       <p className="mt-4 text-center text-sm text-slate-500">
         아직 회원이 아니신가요?{" "}
-        <Link href="/signup" className="font-medium text-accent hover:underline">
+        <Link href="/signup" className="font-medium text-terracotta hover:underline">
           회원가입
         </Link>
       </p>

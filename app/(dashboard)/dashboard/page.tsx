@@ -46,7 +46,7 @@ export default function DashboardPage() {
     <div>
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-navy">
+          <h1 className="text-2xl font-bold text-ink">
             {name ? `${name}님, 환영합니다` : "마이페이지"}
           </h1>
           <p className="mt-1 text-sm text-slate-500">{email}</p>
@@ -60,7 +60,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="mt-6 rounded-2xl border border-line bg-white p-6 shadow-sm">
-        <h2 className="font-bold text-navy">내 프로필</h2>
+        <h2 className="font-bold text-ink">내 프로필</h2>
         <dl className="mt-4 grid gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
           <ProfileRow label="연락처" value={phone} />
           <ProfileRow label="이메일" value={email} />
@@ -95,7 +95,7 @@ function Card({ title, value }: { title: string; value: string }) {
   return (
     <div className="rounded-2xl border border-line bg-white p-6 shadow-sm">
       <p className="text-sm text-slate-500">{title}</p>
-      <p className="mt-2 text-2xl font-bold text-navy">{value}</p>
+      <p className="mt-2 text-2xl font-bold text-ink">{value}</p>
     </div>
   );
 }

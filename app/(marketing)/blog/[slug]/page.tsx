@@ -26,13 +26,13 @@ export default async function BlogPostPage(props: PageProps<"/blog/[slug]">) {
 
   return (
     <article className="mx-auto max-w-3xl px-6 py-20">
-      <Link href="/blog" className="text-sm text-slate-400 hover:text-accent">
+      <Link href="/blog" className="text-sm text-slate-400 hover:text-terracotta">
         ← 목록으로
       </Link>
-      <span className="mt-6 block text-xs font-medium text-accent">
+      <span className="mt-6 block text-xs font-medium text-terracotta">
         {post.category} · {post.publishedAt}
       </span>
-      <h1 className="mt-1 text-3xl font-bold text-navy">{post.title}</h1>
+      <h1 className="mt-1 text-3xl font-bold text-ink">{post.title}</h1>
       <div className="mt-8 leading-relaxed text-slate-600">{post.content}</div>
     </article>
   );

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 export default function TermsPage() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-20">
-      <h1 className="text-3xl font-bold text-navy">이용약관</h1>
+      <h1 className="text-3xl font-bold text-ink">이용약관</h1>
 
       <div className="mt-4 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-800">
         ※ 본 약관은 <b>초안</b>입니다. 특히 <b>환불 규정</b>과 <b>면책 조항</b>은
@@ -132,7 +132,7 @@ function Section({
 }) {
   return (
     <section>
-      <h2 className="text-lg font-bold text-navy">{title}</h2>
+      <h2 className="text-lg font-bold text-ink">{title}</h2>
       <div className="mt-2">{children}</div>
     </section>
   );

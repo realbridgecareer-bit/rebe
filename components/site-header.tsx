@@ -20,20 +20,20 @@ export function SiteHeader() {
             <Link
               key={item.href}
               href={item.href}
-              className="hidden font-medium text-slate-600 transition hover:text-accent sm:block"
+              className="hidden font-medium text-slate-600 transition hover:text-terracotta sm:block"
             >
               {item.label}
             </Link>
           ))}
           <Link
             href="/login"
-            className="font-medium text-slate-600 transition hover:text-navy"
+            className="font-medium text-slate-600 transition hover:text-ink"
           >
             로그인
           </Link>
           <Link
             href="/contact"
-            className="rounded-full bg-navy px-4 py-2 font-semibold text-white transition hover:bg-navy-600"
+            className="rounded-full bg-sage px-4 py-2 font-semibold text-white transition hover:bg-sage-600"
           >
             상담신청
           </Link>
