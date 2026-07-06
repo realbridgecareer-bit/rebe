@@ -9,6 +9,9 @@ type Status = "idle" | "submitting" | "success" | "error";
 export default function ContactPage() {
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [program, setProgram] = useState("");
+
+  const PROGRAMS = ["Real Connect", "Real Bridge", "Real Success"];
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -52,6 +55,7 @@ export default function ContactPage() {
       if (error) throw new Error(error.message);
       setStatus("success");
       form.reset();
+      setProgram("");
     } catch (err) {
       setStatus("error");
       setErrorMsg(
@@ -63,10 +67,10 @@ export default function ContactPage() {
   if (status === "success") {
     return (
       <div className="mx-auto max-w-xl px-6 py-32 text-center">
-        <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-accent-soft text-2xl text-accent">
+        <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-sand text-2xl text-terracotta">
           ✓
         </div>
-        <h1 className="text-2xl font-bold text-navy">
+        <h1 className="text-2xl font-bold text-ink">
           상담 신청이 접수되었습니다
         </h1>
         <p className="mt-4 text-slate-500">
@@ -78,10 +82,10 @@ export default function ContactPage() {
 
   return (
     <div className="mx-auto max-w-xl px-6 py-20">
-      <div className="mb-2 text-xs font-semibold tracking-[0.2em] text-accent uppercase">
+      <div className="mb-2 text-xs font-semibold tracking-[0.2em] text-terracotta uppercase">
         CONTACT
       </div>
-      <h1 className="text-3xl font-bold text-navy">상담 신청</h1>
+      <h1 className="text-3xl font-bold text-ink">상담 신청</h1>
       <p className="mt-2 text-slate-500">
         아래 정보를 남겨주시면 무료 상담을 도와드립니다.
       </p>
@@ -104,22 +108,40 @@ export default function ContactPage() {
           type="email"
           placeholder="example@email.com"
         />
-        <Field
-          label="관심 패키지"
-          name="program"
-          placeholder="예: Real Connect / Real Bridge / Real Success"
-        />
+        <div>
+          <label className="block text-sm font-medium text-slate-700">관심 패키지</label>
+          <div className="mt-2 grid grid-cols-3 gap-2">
+            {PROGRAMS.map((p) => {
+              const active = program === p;
+              return (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => setProgram(active ? "" : p)}
+                  className={`cursor-pointer rounded-full border px-2 py-2.5 text-[13px] font-semibold transition-colors ${
+                    active
+                      ? "border-sage bg-sage text-white"
+                      : "border-line bg-white text-slate-600 hover:border-sage/50"
+                  }`}
+                >
+                  {p}
+                </button>
+              );
+            })}
+          </div>
+          <input type="hidden" name="program" value={program} />
+        </div>
 
         <div>
           <label htmlFor="message" className="block text-sm font-medium text-slate-700">
-            상담 내용 <span className="text-accent">*</span>
+            상담 내용 <span className="text-terracotta">*</span>
           </label>
           <textarea
             id="message"
             name="message"
             rows={5}
             required
-            className="mt-1.5 w-full rounded-lg border border-line bg-white px-3 py-2 text-slate-800 placeholder:text-slate-400 outline-none focus:border-accent"
+            className="mt-1.5 w-full rounded-lg border border-line bg-white px-3 py-2 text-slate-800 placeholder:text-slate-400 outline-none focus:border-sage"
           />
         </div>
 
@@ -127,7 +149,7 @@ export default function ContactPage() {
           <input
             type="checkbox"
             name="agreePrivacy"
-            className="mt-1 accent-navy"
+            className="mt-1 accent-sage"
           />
           <span>
             개인정보 수집·이용에 동의합니다. (수집 항목: 이름·연락처·이메일,
@@ -142,7 +164,7 @@ export default function ContactPage() {
         <button
           type="submit"
           disabled={status === "submitting"}
-          className="w-full rounded-full bg-navy py-3 font-semibold text-white transition hover:bg-navy-600 disabled:opacity-50"
+          className="w-full rounded-full bg-sage py-3.5 text-[15px] font-bold text-white transition hover:bg-sage-600 disabled:opacity-50"
         >
           {status === "submitting" ? "전송 중..." : "상담 신청하기"}
         </button>
@@ -167,7 +189,7 @@ function Field({
   return (
     <div>
       <label htmlFor={name} className="block text-sm font-medium text-slate-700">
-        {label} {required && <span className="text-accent">*</span>}
+        {label} {required && <span className="text-terracotta">*</span>}
       </label>
       <input
         id={name}
@@ -175,7 +197,7 @@ function Field({
         type={type}
         required={required}
         placeholder={placeholder}
-        className="mt-1.5 w-full rounded-lg border border-line bg-white px-3 py-2 text-slate-800 placeholder:text-slate-400 outline-none focus:border-accent"
+        className="mt-1.5 w-full rounded-lg border border-line bg-white px-3 py-2 text-slate-800 placeholder:text-slate-400 outline-none focus:border-sage"
       />
     </div>
   );
