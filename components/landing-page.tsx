@@ -562,7 +562,7 @@ export default function LandingPage() {
           <div className="mx-auto mt-[34px] grid max-w-[1120px] items-start gap-6 md:grid-cols-3">
             {["Real Connect", "Real Bridge", "Real Success"].map((svc) => (
               <div key={svc} className="flex flex-col gap-[18px]">
-                <div className="rounded-[14px] border border-line bg-sand px-4 py-3 text-center text-[15px] font-extrabold text-sage">
+                <div className="rounded-[14px] border border-cream bg-cream px-4 py-3 text-center text-[15px] font-extrabold text-sage">
                   {svc}
                 </div>
                 {REVIEWS.filter((r) => r.service === svc).map((r) => (
