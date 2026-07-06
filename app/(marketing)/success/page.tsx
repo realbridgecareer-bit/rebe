@@ -41,9 +41,23 @@ type Story = {
   quote: string;
   paragraphs: string[];
   tags: string[];
+  /** 실제 후기 캡처 이미지 경로(public 기준). 있으면 문단 아래에 표시된다. */
+  reviewImage?: string;
 };
 
 const STORIES: Story[] = [
+  {
+    company: "코람코자산신탁", logo: "koramco.png", name: "박O 님", persona: "대학생 · 채용형 인턴 합격", service: "Real Success",
+    before: "부동산 비전공 대학생 (인턴 1회)", after: "코람코자산신탁 채용형 인턴",
+    quote: "혼자 쓴 곳은 다 떨어졌지만, 멘토님과 함께 준비한 곳은 모두 합격했습니다",
+    paragraphs: [
+      "처음 컨설팅을 받을 때는 부동산에 대해 아는 것이 거의 없어 걱정이 많았습니다. 무엇을 어떻게 공부해야 하고 어떤 부분을 보강해야 하는지 객관적으로 짚어주신 덕분에 준비의 방향을 제대로 잡을 수 있었습니다.",
+      "서류 전형에서 여러 기업에 지원했는데, 제가 혼자 준비한 곳은 모두 떨어졌던 반면 멘토님이 함께 봐주신 곳에서는 좋은 결과를 얻을 수 있었습니다.",
+      "인턴부터 공채까지 함께 달려주신 덕분에 가장 가고 싶었던 코람코자산신탁 채용형 인턴에 합격했습니다. 진심으로 감사드립니다.",
+    ],
+    tags: ["부동산 입문 컨설팅", "서류 전형 첨삭", "인턴·공채 동행"],
+    reviewImage: "/reviews/koramco-intern.jpg",
+  },
   {
     company: "신세계프라퍼티", logo: "shinsegae.png", name: "김O은 님", persona: "미대 전공 · 경력 이직", service: "Real Success",
     before: "타 업계 디자인 경력 3년", after: "신세계프라퍼티 기획팀",
@@ -256,6 +270,18 @@ export default function SuccessStoriesPage() {
                     <p key={i} className="text-[15px] leading-[1.85] text-muted">{p}</p>
                   ))}
                 </div>
+
+                {/* 실제 후기 캡처 */}
+                {s.reviewImage && (
+                  <div className="mt-5 rounded-[14px] border border-line-2 bg-ivory p-3">
+                    <div className="mb-2.5 flex items-center gap-1.5 px-1 text-[12px] font-bold text-soft-2">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H9l-4 4v-4H4z" stroke="#C06A45" strokeWidth="1.9" strokeLinejoin="round" /></svg>
+                      실제 후기 (카카오톡)
+                    </div>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={s.reviewImage} alt={`${s.company} 합격 후기 캡처`} className="w-full max-w-[440px] rounded-[10px]" />
+                  </div>
+                )}
 
                 {/* tags */}
                 <div className="mt-[22px] flex flex-wrap items-center gap-[9px] border-t border-line-3 pt-5">
