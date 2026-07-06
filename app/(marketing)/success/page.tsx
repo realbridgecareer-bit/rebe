@@ -41,8 +41,6 @@ type Story = {
   quote: string;
   paragraphs: string[];
   tags: string[];
-  /** 실제 후기 캡처 이미지 경로(public 기준). 있으면 문단 아래에 표시된다. */
-  reviewImage?: string;
 };
 
 const STORIES: Story[] = [
@@ -56,7 +54,6 @@ const STORIES: Story[] = [
       "인턴부터 공채까지 함께 달려주신 덕분에 가장 가고 싶었던 코람코자산신탁 채용형 인턴에 합격했습니다. 진심으로 감사드립니다.",
     ],
     tags: ["부동산 입문 컨설팅", "서류 전형 첨삭", "인턴·공채 동행"],
-    reviewImage: "/reviews/koramco-intern.jpg",
   },
   {
     company: "신세계프라퍼티", logo: "shinsegae.png", name: "김O은 님", persona: "미대 전공 · 경력 이직", service: "Real Success",
@@ -264,23 +261,11 @@ export default function SuccessStoriesPage() {
                 {/* pull quote */}
                 <p className="mt-6 text-[21px] leading-[1.5] font-extrabold tracking-[-0.01em] text-sage">“{s.quote}”</p>
 
-                {/* paragraphs (+ 후기 캡처는 데스크톱에서 우측에 나란히 배치) */}
-                <div className="mt-[15px] flex flex-col gap-6 md:flex-row md:items-start md:gap-8">
-                  <div className="flex flex-1 flex-col gap-[13px]">
-                    {s.paragraphs.map((p, i) => (
-                      <p key={i} className="text-[15px] leading-[1.85] text-muted">{p}</p>
-                    ))}
-                  </div>
-                  {s.reviewImage && (
-                    <figure className="shrink-0 md:w-[280px]">
-                      <figcaption className="mb-2 flex items-center gap-1.5 text-[12px] font-bold text-soft-2">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H9l-4 4v-4H4z" stroke="#C06A45" strokeWidth="1.9" strokeLinejoin="round" /></svg>
-                        실제 후기 캡처
-                      </figcaption>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={s.reviewImage} alt={`${s.company} 합격 후기 캡처`} className="w-full rounded-[12px] border border-line shadow-[0_6px_20px_rgba(47,58,46,0.08)]" />
-                    </figure>
-                  )}
+                {/* paragraphs */}
+                <div className="mt-[15px] flex flex-col gap-[13px]">
+                  {s.paragraphs.map((p, i) => (
+                    <p key={i} className="text-[15px] leading-[1.85] text-muted">{p}</p>
+                  ))}
                 </div>
 
                 {/* tags */}
