@@ -30,7 +30,7 @@ export function SiteFooter() {
             서울시 송파구 중대로 135, 11층 송파ICT청년창업지원센터(가락동, 아이티벤처타워)
           </p>
           <p className="mt-1">
-            전화: 02-541-8248 · 이메일: boopro.official@gmail.com
+            전화: 02-541-8248 · 이메일: realbridge.career@gmail.com
           </p>
           <p className="mt-3">© 2026 Real Bridge. All rights reserved.</p>
         </div>

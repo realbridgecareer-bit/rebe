@@ -728,7 +728,7 @@ export function SiteFooterFull() {
         <div className="mt-11 border-t border-line pt-7 text-[11.5px] leading-[1.7] text-soft-3">
           <p>상호: 부프로 · 대표: 엄은혜 · 사업자등록번호: 537-59-00849</p>
           <p className="mt-[3px]">주소: 서울시 송파구 중대로 135, 11층 송파ICT청년창업지원센터(가락동, 아이티벤처타워)</p>
-          <p className="mt-[3px]">전화: 02-541-8248 · 이메일: boopro.official@gmail.com</p>
+          <p className="mt-[3px]">전화: 02-541-8248 · 이메일: realbridge.career@gmail.com</p>
           <p className="mt-4">© 2026 REal BridgE. All rights reserved. 합격 후기는 실제 고객의 경험을 바탕으로 작성되었습니다.</p>
         </div>
       </div>

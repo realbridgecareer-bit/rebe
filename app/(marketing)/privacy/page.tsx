@@ -88,7 +88,7 @@ export default function PrivacyPage() {
         <Section title="8. 개인정보 보호책임자">
           <ul className="list-disc space-y-1 pl-5">
             <li>책임자: 부프로 대표 엄은혜</li>
-            <li>이메일: boopro.official@gmail.com</li>
+            <li>이메일: realbridge.career@gmail.com</li>
             <li>전화: 02-541-8248</li>
           </ul>
         </Section>
