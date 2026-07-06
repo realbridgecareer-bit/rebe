@@ -274,16 +274,16 @@ export default function SuccessStoriesPage() {
                   </div>
                 </div>
 
-                {/* before -> after */}
-                <div className="mt-[22px] flex flex-wrap items-center gap-[14px] rounded-[14px] border border-line-2 bg-ivory px-5 py-[15px]">
-                  <div>
+                {/* before -> after (모바일에서도 한 줄 유지) */}
+                <div className="mt-[22px] flex items-center gap-3 rounded-[14px] border border-line-2 bg-ivory px-4 py-[14px] md:gap-[14px] md:px-5 md:py-[15px]">
+                  <div className="min-w-0 flex-1">
                     <div className="text-[11px] font-bold tracking-[0.04em] text-soft-3">지원 전</div>
-                    <div className="mt-[3px] text-[14.5px] font-semibold text-muted-2">{s.before}</div>
+                    <div className="mt-[3px] text-[13.5px] font-semibold text-muted-2 md:text-[14.5px]">{s.before}</div>
                   </div>
                   <svg className="flex-none" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#C06A45" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <div className="text-[11px] font-bold tracking-[0.04em] text-terracotta">합격</div>
-                    <div className="mt-[3px] text-[14.5px] font-extrabold text-ink">{s.after}</div>
+                    <div className="mt-[3px] text-[13.5px] font-extrabold text-ink md:text-[14.5px]">{s.after}</div>
                   </div>
                 </div>
 
