@@ -131,7 +131,14 @@ const NAV_LINKS = [
   { href: "#success", label: "합격사례" },
 ];
 
-const NETWORK_WALL = [1, 2, 3, 4, 5, 6];
+const NETWORK_WALL = [
+  { i: 1, label: "기관투자자 · 은행 · 캐피탈" },
+  { i: 2, label: "자산운용 · 리츠 · 신탁" },
+  { i: 3, label: "증권" },
+  { i: 4, label: "부동산 개발 · 시행 · 건설" },
+  { i: 5, label: "부동산 서비스 · 컨설팅 · 회계법인" },
+  { i: 6, label: "감정평가법인" },
+];
 
 export default function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -431,13 +438,16 @@ export default function LandingPage() {
             <h3 className="mt-[6px] text-[21px] font-extrabold text-ink">업계 전문가 네트워크</h3>
             <p className="mx-auto mt-3 max-w-[620px] text-[14.5px] leading-[1.7] text-muted-2">기관투자자·자산운용사·증권사·시행사·건설사·국내외 컨설팅사 등 부동산/금융업의 내로라하는 회사에 재직 중인 100명 이상의 멘토진이 상시 대기하고 있습니다.</p>
             <div className="mt-7 flex flex-col gap-[14px]">
-              {NETWORK_WALL.map((i) => (
-                <div key={i} className="rounded-[14px] border border-line bg-white px-5 py-6">
+              {NETWORK_WALL.map((w) => (
+                <div key={w.i} className="rounded-[14px] border border-line bg-white px-5 py-7 md:px-8 md:py-11">
+                  <div className="text-center">
+                    <span className="inline-block rounded-full bg-sand px-[13px] py-[5px] text-[12px] font-bold tracking-[0.02em] text-terracotta">{w.label}</span>
+                  </div>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={`/logos/network-wall/slide${i}.png`}
-                    alt="리얼브릿지 멘토 네트워크 기업 로고"
-                    className="mx-auto block h-auto w-full max-w-[880px]"
+                    src={`/logos/network-wall/slide${w.i}.png`}
+                    alt={`${w.label} 기업 로고`}
+                    className="mx-auto mt-6 block h-auto w-full max-w-[820px] md:mt-8"
                   />
                 </div>
               ))}
