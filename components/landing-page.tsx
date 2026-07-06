@@ -559,20 +559,22 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="rb-review-wall mx-auto mt-[34px] max-w-[1120px]">
-            {REVIEWS.map((r, i) => (
-              <div key={i} className="mb-[18px] break-inside-avoid rounded-[16px] border border-line bg-white p-6">
-                <div className="flex items-center gap-[11px]">
-                  <div className="min-w-0 flex-1">
+          <div className="mx-auto mt-[34px] grid max-w-[1120px] items-start gap-6 md:grid-cols-3">
+            {["Real Connect", "Real Bridge", "Real Success"].map((svc) => (
+              <div key={svc} className="flex flex-col gap-[18px]">
+                <div className="rounded-[14px] bg-sage px-4 py-3 text-center text-[15px] font-extrabold text-white">
+                  {svc}
+                </div>
+                {REVIEWS.filter((r) => r.service === svc).map((r) => (
+                  <div key={r.name} className="rounded-[16px] border border-line bg-white p-6">
                     <div className="text-[14px] font-extrabold text-ink">{r.name}</div>
                     <div className="mt-[3px]">
                       <Stars size={13} />
                     </div>
+                    <p className="mt-[15px] text-[14px] leading-[1.75] text-muted">{r.text}</p>
+                    <div className="mt-[14px] text-[12px] text-soft-3">{r.persona}</div>
                   </div>
-                  <span className="flex-none self-start rounded-full bg-sand px-[10px] py-[3px] text-[11px] font-bold text-terracotta">{r.service}</span>
-                </div>
-                <p className="mt-[15px] text-[14px] leading-[1.75] text-muted">{r.text}</p>
-                <div className="mt-[14px] text-[12px] text-soft-3">{r.persona}</div>
+                ))}
               </div>
             ))}
           </div>
