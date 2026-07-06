@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { BrandWordmark } from "@/components/icons";
 
@@ -137,6 +137,12 @@ const STORIES: Story[] = [
 const FILTERS = ["전체", "Real Connect", "Real Bridge", "Real Success"] as const;
 type Filter = (typeof FILTERS)[number];
 
+// 실제 후기 원본 캡처(개인정보 없음). 갤러리 팝업에서 크게 볼 수 있다.
+const REVIEW_SHOTS = [
+  { src: "/reviews/koramco.jpg", label: "코람코자산신탁 채용형 인턴 · Real Success" },
+  { src: "/reviews/nai-korea.jpg", label: "NAI Korea · Real Success" },
+];
+
 export default function SuccessStoriesPage() {
   const [filter, setFilter] = useState<Filter>("전체");
 
@@ -145,6 +151,29 @@ export default function SuccessStoriesPage() {
     counts[s.service] = (counts[s.service] || 0) + 1;
   });
   const visible = STORIES.filter((s) => filter === "전체" || s.service === filter);
+
+  // 후기 갤러리 라이트박스: null이면 닫힘, 숫자면 해당 인덱스 열림
+  const [shotIdx, setShotIdx] = useState<number | null>(null);
+  const total = REVIEW_SHOTS.length;
+  const closeShot = () => setShotIdx(null);
+  const prevShot = () => setShotIdx((i) => (i === null ? i : (i - 1 + total) % total));
+  const nextShot = () => setShotIdx((i) => (i === null ? i : (i + 1) % total));
+
+  useEffect(() => {
+    if (shotIdx === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setShotIdx(null);
+      else if (e.key === "ArrowLeft") setShotIdx((i) => (i === null ? i : (i - 1 + total) % total));
+      else if (e.key === "ArrowRight") setShotIdx((i) => (i === null ? i : (i + 1) % total));
+    };
+    window.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [shotIdx, total]);
 
   return (
     <div className="w-full overflow-x-hidden bg-white">
@@ -282,7 +311,33 @@ export default function SuccessStoriesPage() {
             ))}
           </div>
 
-          <p className="mt-10 text-center text-[11.5px] leading-[1.6] text-soft-3">※ 합격 후기는 실제 수강생의 합격 결과를 바탕으로 하며, 언급된 기업명은 사실 적시를 위한 것으로 해당 기업과의 제휴·후원·보증 관계를 의미하지 않습니다.</p>
+          {/* ===== 실제 후기 원본 갤러리 ===== */}
+          <div className="mt-16 border-t border-line-2 pt-14">
+            <div className="text-center">
+              <span className="inline-flex items-center gap-[7px] rounded-full border border-terracotta/30 bg-white px-[14px] py-[6px] text-[12px] font-bold tracking-[0.02em] text-terracotta">REAL REVIEWS</span>
+              <h3 className="mt-4 text-[24px] font-extrabold tracking-[-0.02em] text-ink">실제 후기 원본</h3>
+              <p className="mx-auto mt-2 max-w-[480px] text-[14px] leading-[1.7] text-soft-2">고객님께서 직접 남겨주신 후기 메시지입니다. 눌러서 크게 볼 수 있어요.</p>
+            </div>
+            <div className="mt-9 flex flex-wrap justify-center gap-6">
+              {REVIEW_SHOTS.map((shot, i) => (
+                <button key={shot.src} type="button" onClick={() => setShotIdx(i)} className="group flex cursor-pointer flex-col items-center gap-3">
+                  <span className="relative block overflow-hidden rounded-[16px] border border-line bg-white shadow-[0_6px_20px_rgba(47,58,46,0.08)] transition-all duration-300 group-hover:-translate-y-1.5 group-hover:shadow-[0_20px_44px_rgba(47,58,46,0.18)]">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={shot.src} alt={shot.label} className="h-[210px] w-auto" />
+                    <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-sage/0 transition-colors duration-300 group-hover:bg-sage/30">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-[15px] py-2 text-[13px] font-bold text-sage opacity-0 shadow-md transition-opacity duration-300 group-hover:opacity-100">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M11 4a7 7 0 1 0 4.2 12.6L20 21m-4.8-4.4A7 7 0 0 0 11 4z" stroke="#2F3A2E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                        크게 보기
+                      </span>
+                    </span>
+                  </span>
+                  <span className="text-[12.5px] font-semibold text-soft-2">{shot.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <p className="mt-14 text-center text-[11.5px] leading-[1.6] text-soft-3">※ 합격 후기는 실제 수강생의 합격 결과를 바탕으로 하며, 언급된 기업명은 사실 적시를 위한 것으로 해당 기업과의 제휴·후원·보증 관계를 의미하지 않습니다.</p>
         </div>
       </section>
 
@@ -313,6 +368,39 @@ export default function SuccessStoriesPage() {
           <span className="text-[12.5px] text-soft-3">© 2026 REal BridgE (REBE). realbridge.career@gmail.com · 02-541-8248</span>
         </div>
       </footer>
+
+      {/* ===== 후기 갤러리 라이트박스 ===== */}
+      {shotIdx !== null && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm"
+          onClick={closeShot}
+          role="dialog"
+          aria-modal="true"
+          aria-label="실제 후기 원본 보기"
+        >
+          <button type="button" onClick={closeShot} aria-label="닫기" className="absolute right-4 top-4 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-white/25 md:right-6 md:top-6">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" /></svg>
+          </button>
+          {total > 1 && (
+            <>
+              <button type="button" onClick={(e) => { e.stopPropagation(); prevShot(); }} aria-label="이전 후기" className="absolute left-3 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-white/25 md:left-8">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              </button>
+              <button type="button" onClick={(e) => { e.stopPropagation(); nextShot(); }} aria-label="다음 후기" className="absolute right-3 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-white/25 md:right-8">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              </button>
+            </>
+          )}
+          <figure className="max-w-[540px]" onClick={(e) => e.stopPropagation()}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={REVIEW_SHOTS[shotIdx].src} alt={REVIEW_SHOTS[shotIdx].label} className="max-h-[80vh] w-auto rounded-[14px] shadow-2xl" />
+            <figcaption className="mt-4 text-center text-[13.5px] font-semibold text-white/85">
+              {REVIEW_SHOTS[shotIdx].label}
+              {total > 1 && <span className="ml-2 text-white/50">{shotIdx + 1} / {total}</span>}
+            </figcaption>
+          </figure>
+        </div>
+      )}
     </div>
   );
 }
