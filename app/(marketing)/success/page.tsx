@@ -89,12 +89,12 @@ const STORIES: Story[] = [
     tags: ["직무 역량 파악", "현직자 연결", "자소서·면접 피드백"],
   },
   {
-    company: "한국투자신탁운용", logo: "kitc.png", name: "박ㅇㅇ 님", persona: "공대 전공 · 재학생", service: "Real Connect",
-    before: "대학교 3학년 재학생 (유관학과 아님)", after: "한국투자신탁운용 인턴",
+    company: "한국투자신탁운용", logo: "kitc.png", name: "김ㅇㅇ 님", persona: "재학생 · 신입 준비", service: "Real Connect",
+    before: "대학교 3학년 재학생", after: "한국투자신탁운용 인턴",
     quote: "지금 무엇을 더 쌓아야 하는지 명확해졌습니다",
     paragraphs: [
       "재학생이라 방향성 위주로 상담을 받았는데, 시간에 쫓기지 않고 자유로운 분위기에서 진행돼 편하게 많은 걸 여쭤볼 수 있었습니다.",
-      "유관학과가 아니어서 정보가 부족했는데, 모의 자소서와 포트폴리오를 함께 보며 지금 어떤 경험과 스펙을 더하면 좋을지 구체적으로 짚어주셨습니다.",
+      "관련 정보가 부족했는데, 모의 자소서와 포트폴리오를 함께 보며 지금 어떤 경험과 스펙을 더하면 좋을지 구체적으로 짚어주셨습니다.",
       "덕분에 남은 학기 동안 무엇에 집중해야 할지 계획이 섰고, 목표하던 회사의 인턴으로 먼저 발을 들일 수 있었습니다.",
     ],
     tags: ["방향성 진단", "모의 자소서", "스펙 로드맵"],
@@ -111,7 +111,7 @@ const STORIES: Story[] = [
     tags: ["직무 프로세스 이해", "역량 타겟팅", "현직자 네트워킹"],
   },
   {
-    company: "롯데AMC", logo: "lotte-amc.svg", name: "최ㅇㅇ 님", persona: "경력 이직", service: "Real Connect",
+    company: "롯데AMC", logo: "lotte-amc.svg", name: "오ㅇㅇ 님", persona: "경력 이직", service: "Real Connect",
     before: "원거리 자산운용사 재직 (잦은 야근)", after: "롯데AMC 리츠투자팀",
     quote: "커리어와 삶의 질을 동시에 잡은 이직이었습니다",
     paragraphs: [
@@ -122,7 +122,7 @@ const STORIES: Story[] = [
     tags: ["맞춤 기업 추천", "현직자 연결", "경력 이직 전략"],
   },
   {
-    company: "ARA Korea", logo: "ara.png", name: "강ㅇㅇ 님", persona: "PM사 5년차 · 경력 이직", service: "Real Connect",
+    company: "ARA Korea", logo: "ara.png", name: "김ㅇㅇ 님", persona: "PM사 5년차 · 경력 이직", service: "Real Connect",
     before: "PM사 5년차", after: "ARA Korea 리츠운용",
     quote: "몇 번을 도전해도 안 되던 이직이 한 번에 풀렸습니다",
     paragraphs: [
