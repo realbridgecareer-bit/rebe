@@ -510,7 +510,7 @@ export default function LandingPage() {
           <div className="mx-auto mt-11 max-w-[680px] rounded-[18px] border border-terracotta/25 bg-sand p-7 text-center">
             <p className="text-[17px] leading-[1.6] text-[#4A4234]">서비스 금액은 취업 성공 시 받게 되는 <strong className="font-extrabold text-sage">첫 월급의 일부 수준</strong>입니다.</p>
             <p className="mt-1.5 text-[17px] leading-[1.6]"><strong className="font-extrabold text-terracotta">평생의 커리어를 위한 투자</strong>를 시작하세요.</p>
-            <p className="mt-3 text-[12.5px] text-soft-2">오픈 기념 할인가는 예고 없이 종료될 수 있습니다. (모든 금액 VAT 포함)</p>
+            <p className="mt-3 text-[12.5px] text-soft-2">할인가는 예고 없이 종료될 수 있습니다. (모든 금액 VAT 포함)</p>
           </div>
         </div>
       </section>
