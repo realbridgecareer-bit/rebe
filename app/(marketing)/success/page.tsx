@@ -179,7 +179,7 @@ export default function SuccessStoriesPage() {
           <p className="mx-auto mt-[18px] max-w-[560px] text-[17.5px] leading-[1.7] text-muted-2">스펙이 아닌 방향이었습니다. 비전공·경력 전환·중고신입까지 — 현직 멘토와 함께 부동산·금융업 합격에 이른 실제 후기를 모았습니다.</p>
           <div className="mt-[38px] flex flex-wrap justify-center gap-[14px]">
             {[
-              ["12+", "합격 기관", false],
+              ["13+", "합격 기관", false],
               ["5.0", "평균 평점", true],
               ["100%", "추천 만족도", false],
             ].map(([v, l, star]) => (
@@ -264,24 +264,24 @@ export default function SuccessStoriesPage() {
                 {/* pull quote */}
                 <p className="mt-6 text-[21px] leading-[1.5] font-extrabold tracking-[-0.01em] text-sage">“{s.quote}”</p>
 
-                {/* paragraphs */}
-                <div className="mt-[15px] flex flex-col gap-[13px]">
-                  {s.paragraphs.map((p, i) => (
-                    <p key={i} className="text-[15px] leading-[1.85] text-muted">{p}</p>
-                  ))}
-                </div>
-
-                {/* 실제 후기 캡처 */}
-                {s.reviewImage && (
-                  <div className="mt-5 rounded-[14px] border border-line-2 bg-ivory p-3">
-                    <div className="mb-2.5 flex items-center gap-1.5 px-1 text-[12px] font-bold text-soft-2">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H9l-4 4v-4H4z" stroke="#C06A45" strokeWidth="1.9" strokeLinejoin="round" /></svg>
-                      실제 후기 (카카오톡)
-                    </div>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={s.reviewImage} alt={`${s.company} 합격 후기 캡처`} className="w-full max-w-[440px] rounded-[10px]" />
+                {/* paragraphs (+ 후기 캡처는 데스크톱에서 우측에 나란히 배치) */}
+                <div className="mt-[15px] flex flex-col gap-6 md:flex-row md:items-start md:gap-8">
+                  <div className="flex flex-1 flex-col gap-[13px]">
+                    {s.paragraphs.map((p, i) => (
+                      <p key={i} className="text-[15px] leading-[1.85] text-muted">{p}</p>
+                    ))}
                   </div>
-                )}
+                  {s.reviewImage && (
+                    <figure className="shrink-0 md:w-[280px]">
+                      <figcaption className="mb-2 flex items-center gap-1.5 text-[12px] font-bold text-soft-2">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H9l-4 4v-4H4z" stroke="#C06A45" strokeWidth="1.9" strokeLinejoin="round" /></svg>
+                        실제 후기 캡처
+                      </figcaption>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={s.reviewImage} alt={`${s.company} 합격 후기 캡처`} className="w-full rounded-[12px] border border-line shadow-[0_6px_20px_rgba(47,58,46,0.08)]" />
+                    </figure>
+                  )}
+                </div>
 
                 {/* tags */}
                 <div className="mt-[22px] flex flex-wrap items-center gap-[9px] border-t border-line-3 pt-5">

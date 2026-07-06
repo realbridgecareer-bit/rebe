@@ -586,7 +586,7 @@ export default function LandingPage() {
           </div>
 
           <div className="mx-auto mt-[52px] max-w-[720px] text-center">
-            <div className="text-[40px] font-extrabold tracking-[-0.02em] text-sage">12+</div>
+            <div className="text-[40px] font-extrabold tracking-[-0.02em] text-sage">13+</div>
             <h3 className="mt-[6px] text-[21px] font-extrabold text-ink">다양한 부동산·금융 기관 합격 사례</h3>
             <p className="mx-auto mt-3 max-w-[600px] text-[14px] leading-[1.7] text-soft">신세계프라퍼티, NAI Korea, 한국투자신탁운용, 코람코자산신탁, 롯데AMC, ARA Korea, MDM, 이화자산운용, IFC Seoul, MG새마을금고자산관리 외 다수</p>
             <Link href="/contact" className="mt-[22px] inline-flex items-center gap-[7px] text-[15px] font-bold text-sage no-underline hover:text-terracotta">
