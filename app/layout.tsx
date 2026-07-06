@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import ChannelTalk from "@/components/channel-talk";
+import PromoBanner from "@/components/promo-banner";
 
 export const metadata: Metadata = {
   title: {
@@ -19,6 +20,7 @@ export default function RootLayout({
   return (
     <html lang="ko" className="h-full antialiased">
       <body className="min-h-full flex flex-col">
+        <PromoBanner />
         {children}
         <ChannelTalk />
       </body>

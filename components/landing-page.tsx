@@ -463,8 +463,9 @@ export default function LandingPage() {
           <div className="mx-auto mt-14 grid max-w-[1080px] items-start gap-5 lg:grid-cols-3">
             <PriceCard
               name="Real Connect"
-              sub="대면 컨설팅 60분 1회"
-              price="40만원"
+              sub="대면 컨설팅 90분 1회"
+              original="64만원"
+              price="45만원"
               items={[
                 "입사지원서 컨설팅 or 면접 준비 컨설팅(택1)",
                 "지원 직무·업계 현직자 관점의 컨설팅",
@@ -474,10 +475,10 @@ export default function LandingPage() {
               ]}
             />
             <PriceCard
-              featured
               name="Real Bridge"
-              sub="대면 컨설팅 90분 3회"
-              price="95만원"
+              sub="대면 컨설팅 90분 2회"
+              original="126만원"
+              price="88만원"
               items={[
                 "입사지원서·면접·커리어 단계적 컨설팅",
                 "지원 직무·업계 현직자 관점의 컨설팅",
@@ -488,9 +489,11 @@ export default function LandingPage() {
               ]}
             />
             <PriceCard
+              featured
               name="Real Success"
-              sub="대면 컨설팅 90분 5회"
-              price="145만원"
+              sub="대면 컨설팅 90분 3회"
+              original="164만원"
+              price="115만원"
               items={[
                 "Real Bridge의 모든 혜택 포함",
                 "타 지원자와 Grouping으로 객관적 위치 파악",
@@ -504,6 +507,7 @@ export default function LandingPage() {
           <div className="mx-auto mt-11 max-w-[680px] rounded-[18px] border border-terracotta/25 bg-sand p-7 text-center">
             <p className="text-[17px] leading-[1.6] text-[#4A4234]">서비스 금액은 취업 성공 시 받게 되는 <strong className="font-extrabold text-sage">첫 월급의 일부 수준</strong>입니다.</p>
             <p className="mt-1.5 text-[17px] leading-[1.6]"><strong className="font-extrabold text-terracotta">평생의 커리어를 위한 투자</strong>를 시작하세요.</p>
+            <p className="mt-3 text-[12.5px] text-soft-2">오픈 기념 할인가는 예고 없이 종료될 수 있습니다. (모든 금액 VAT 포함)</p>
           </div>
         </div>
       </section>
@@ -630,12 +634,15 @@ function PriceCard({
   name,
   sub,
   price,
+  original,
   items,
   featured = false,
 }: {
   name: string;
   sub: string;
   price: string;
+  /** 정가(할인 전). 지정하면 취소선 + -30% 뱃지로 표시된다. */
+  original?: string;
   items: string[];
   featured?: boolean;
 }) {
@@ -645,9 +652,19 @@ function PriceCard({
         <span className="absolute -top-[13px] left-1/2 -translate-x-1/2 rounded-full bg-terracotta px-4 py-1.5 text-[12px] font-extrabold whitespace-nowrap text-white">인기 패키지</span>
         <div className="text-[20px] font-extrabold text-white">{name}</div>
         <div className="mt-1 text-[13.5px] text-white/65">{sub}</div>
-        <div className="mt-[18px] flex items-baseline gap-1.5">
-          <span className="text-[36px] font-extrabold text-white">{price}</span>
-          <span className="text-[11.5px] text-white/50">VAT 포함</span>
+        <div className="mt-[18px]">
+          {original && (
+            <div className="mb-1.5 flex items-center gap-2.5">
+              <span className="inline-flex items-center gap-1 rounded-full bg-terracotta px-3 py-1 text-[14px] font-extrabold text-white shadow-[0_4px_12px_rgba(192,106,69,0.45)]">
+                <span className="text-cream">OPEN</span> 30% 할인
+              </span>
+              <span className="text-[15px] font-semibold text-white/45 line-through">{original}</span>
+            </div>
+          )}
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-[36px] font-extrabold text-white">{price}</span>
+            <span className="text-[11.5px] text-white/50">VAT 포함</span>
+          </div>
         </div>
         <ul className="mt-[22px] flex flex-1 list-none flex-col gap-[11px] p-0">
           {items.map((it) => (
@@ -667,9 +684,19 @@ function PriceCard({
     <div className="flex flex-col rounded-[20px] border border-line bg-white p-8">
       <div className="text-[20px] font-extrabold text-ink">{name}</div>
       <div className="mt-1 text-[13.5px] text-soft-2">{sub}</div>
-      <div className="mt-[18px] flex items-baseline gap-1.5">
-        <span className="text-[36px] font-extrabold text-ink">{price}</span>
-        <span className="text-[11.5px] text-soft-3">VAT 포함</span>
+      <div className="mt-[18px]">
+        {original && (
+          <div className="mb-1.5 flex items-center gap-2.5">
+            <span className="inline-flex items-center gap-1 rounded-full bg-terracotta px-3 py-1 text-[14px] font-extrabold text-white shadow-[0_4px_12px_rgba(192,106,69,0.35)]">
+              <span className="text-cream">OPEN</span> 30% 할인
+            </span>
+            <span className="text-[15px] font-semibold text-soft-3 line-through">{original}</span>
+          </div>
+        )}
+        <div className="flex items-baseline gap-1.5">
+          <span className="text-[36px] font-extrabold text-ink">{price}</span>
+          <span className="text-[11.5px] text-soft-3">VAT 포함</span>
+        </div>
       </div>
       <ul className="mt-[22px] flex flex-1 list-none flex-col gap-[11px] p-0">
         {items.map((it) => (
