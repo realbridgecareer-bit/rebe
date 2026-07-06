@@ -465,8 +465,8 @@ export default function LandingPage() {
               name="Real Connect"
               sub="대면 컨설팅"
               detail="90분 1회"
-              original="64만원"
-              price="45만원"
+              original="68만원"
+              price="48만원"
               items={[
                 "입사지원서 컨설팅 or 면접 준비 컨설팅(택1)",
                 "지원 직무·업계 현직자 관점의 컨설팅",
