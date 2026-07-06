@@ -154,18 +154,18 @@ export default function LandingPage() {
         href="/success"
         className="flex items-stretch overflow-hidden bg-sage text-white no-underline hover:bg-sage-700"
       >
-        <span className="z-[2] hidden flex-none items-baseline gap-[7px] border-r border-cream/25 py-[11px] pr-[18px] pl-5 sm:inline-flex">
-          <span className="text-[13px] font-extrabold tracking-[-0.01em] text-cream">Real Bridge</span>
-          <span className="text-[12px] font-semibold text-white/60">컨설팅 실제 성과</span>
+        <span className="z-[2] hidden flex-none items-baseline gap-[10px] border-r border-cream/25 py-[15px] pr-[24px] pl-6 sm:inline-flex">
+          <span className="text-[15px] font-extrabold tracking-[-0.01em] text-cream">Real Bridge</span>
+          <span className="text-[15px] font-bold tracking-[-0.01em] text-white/85">컨설팅 실제 성과</span>
         </span>
-        <span className="relative h-[42px] flex-1 overflow-hidden">
+        <span className="relative h-[50px] flex-1 overflow-hidden">
           {TICKER.map((t, i) => (
             <span
               key={i}
               className="rb-vroll-item"
               style={{ animation: `rbvroll ${DUR}s linear infinite`, animationDelay: `${-DUR + i * PER}s` }}
             >
-              <span className="inline-flex items-center gap-[9px] text-[13.5px] font-bold whitespace-nowrap text-white">
+              <span className="inline-flex items-center gap-[9px] text-[15px] font-bold whitespace-nowrap text-white">
                 <span className="h-[6px] w-[6px] flex-none rounded-full bg-gold" />
                 {t}
               </span>
