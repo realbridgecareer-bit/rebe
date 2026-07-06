@@ -45,7 +45,7 @@ type Story = {
 
 const STORIES: Story[] = [
   {
-    company: "코람코자산신탁", logo: "koramco.png", name: "박O 님", persona: "대학생 · 채용형 인턴 합격", service: "Real Success",
+    company: "코람코자산신탁", logo: "koramco.png", name: "박ㅇㅇ 님", persona: "대학생 · 채용형 인턴 합격", service: "Real Success",
     before: "부동산 비전공 대학생 (인턴 1회)", after: "코람코자산신탁 채용형 인턴",
     quote: "혼자 쓴 곳은 다 떨어졌지만, 멘토님과 함께 준비한 곳은 모두 합격했습니다",
     paragraphs: [
@@ -56,7 +56,7 @@ const STORIES: Story[] = [
     tags: ["부동산 입문 컨설팅", "서류 전형 첨삭", "인턴·공채 동행"],
   },
   {
-    company: "신세계프라퍼티", logo: "shinsegae.png", name: "김O은 님", persona: "미대 전공 · 경력 이직", service: "Real Success",
+    company: "신세계프라퍼티", logo: "shinsegae.png", name: "김ㅇㅇ 님", persona: "미대 전공 · 경력 이직", service: "Real Success",
     before: "타 업계 디자인 경력 3년", after: "신세계프라퍼티 기획팀",
     quote: "비전공에 정보도 없던 제가, 방향을 잡으니 합격까지 왔습니다",
     paragraphs: [
@@ -67,7 +67,7 @@ const STORIES: Story[] = [
     tags: ["자소서 방향성", "포트폴리오 첨삭", "직무 연결 전략"],
   },
   {
-    company: "NAI Korea", logo: "nai-korea.png", name: "이O진 님", persona: "미대 전공 · 신입 취업", service: "Real Success",
+    company: "NAI Korea", logo: "nai-korea.png", name: "이ㅇㅇ 님", persona: "미대 전공 · 신입 취업", service: "Real Success",
     before: "비전공 취업 준비생", after: "NAI Korea Capital Market",
     quote: "혼자였다면 절대 몰랐을 정보들이 합격을 만들었습니다",
     paragraphs: [
@@ -78,7 +78,7 @@ const STORIES: Story[] = [
     tags: ["스펙 진단", "기업 공고 추천", "현직자 정보"],
   },
   {
-    company: "이화자산운용", logo: "ewha-am.jpg", logoH: 58, logoW: 150, name: "서O님", persona: "대학생 · 신입 취업", service: "Real Bridge",
+    company: "이화자산운용", logo: "ewha-am.jpg", logoH: 58, logoW: 150, name: "서ㅇㅇ 님", persona: "대학생 · 신입 취업", service: "Real Bridge",
     before: "취업 준비 대학생", after: "이화자산운용 대체투자팀",
     quote: "회사가 원하는 '진짜' 직무 역량이 무엇인지 파악할 수 있었습니다",
     paragraphs: [
@@ -89,7 +89,7 @@ const STORIES: Story[] = [
     tags: ["직무 역량 파악", "현직자 연결", "자소서·면접 피드백"],
   },
   {
-    company: "한국투자신탁운용", logo: "kitc.png", name: "박O호 님", persona: "공대 전공 · 재학생", service: "Real Connect",
+    company: "한국투자신탁운용", logo: "kitc.png", name: "박ㅇㅇ 님", persona: "공대 전공 · 재학생", service: "Real Connect",
     before: "대학교 3학년 재학생 (유관학과 아님)", after: "한국투자신탁운용 인턴",
     quote: "지금 무엇을 더 쌓아야 하는지 명확해졌습니다",
     paragraphs: [
@@ -100,7 +100,7 @@ const STORIES: Story[] = [
     tags: ["방향성 진단", "모의 자소서", "스펙 로드맵"],
   },
   {
-    company: "코람코자산신탁", logo: "koramco.png", name: "정O우 님", persona: "중고신입 이직", service: "Real Bridge",
+    company: "코람코자산신탁", logo: "koramco.png", name: "정ㅇㅇ 님", persona: "중고신입 이직", service: "Real Bridge",
     before: "리츠 인턴 경험 반복", after: "코람코자산신탁 상장리츠팀 공채",
     quote: "실제 직무 프로세스를 알고 나니 준비의 초점이 달라졌습니다",
     paragraphs: [
@@ -111,7 +111,7 @@ const STORIES: Story[] = [
     tags: ["직무 프로세스 이해", "역량 타겟팅", "현직자 네트워킹"],
   },
   {
-    company: "롯데AMC", logo: "lotte-amc.svg", name: "최O아 님", persona: "경력 이직", service: "Real Connect",
+    company: "롯데AMC", logo: "lotte-amc.svg", name: "최ㅇㅇ 님", persona: "경력 이직", service: "Real Connect",
     before: "원거리 자산운용사 재직 (잦은 야근)", after: "롯데AMC 리츠투자팀",
     quote: "커리어와 삶의 질을 동시에 잡은 이직이었습니다",
     paragraphs: [
@@ -122,7 +122,7 @@ const STORIES: Story[] = [
     tags: ["맞춤 기업 추천", "현직자 연결", "경력 이직 전략"],
   },
   {
-    company: "ARA Korea", logo: "ara.png", name: "강O석 님", persona: "PM사 5년차 · 경력 이직", service: "Real Connect",
+    company: "ARA Korea", logo: "ara.png", name: "강ㅇㅇ 님", persona: "PM사 5년차 · 경력 이직", service: "Real Connect",
     before: "PM사 5년차", after: "ARA Korea 리츠운용",
     quote: "몇 번을 도전해도 안 되던 이직이 한 번에 풀렸습니다",
     paragraphs: [
