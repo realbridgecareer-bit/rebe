@@ -299,7 +299,7 @@ export default function SuccessStoriesPage() {
           <div className="flex items-center">
             <BrandWordmark className="text-[16px] text-ink" />
           </div>
-          <span className="text-[12.5px] text-soft-3">© 2026 REal BridgE (REBE). boopro.official@gmail.com · 02-541-8248</span>
+          <span className="text-[12.5px] text-soft-3">© 2026 REal BridgE (REBE). realbridge.career@gmail.com · 02-541-8248</span>
         </div>
       </footer>
     </div>

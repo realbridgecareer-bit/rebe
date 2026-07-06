@@ -604,7 +604,7 @@ export default function LandingPage() {
           <div className="mt-11 border-t border-white/15 pt-8">
             <div className="text-[18px] font-extrabold text-white">REal BridgE (REBE)</div>
             <p className="mt-1.5 text-[14px] text-white/60">부동산·금융업 취업 컨설팅의 새로운 표준</p>
-            <p className="mt-2 text-[14px] text-white/50">boopro.official@gmail.com · 02-541-8248</p>
+            <p className="mt-2 text-[14px] text-white/50">realbridge.career@gmail.com · 02-541-8248</p>
           </div>
         </div>
       </section>
@@ -718,7 +718,7 @@ export function SiteFooterFull() {
           <div>
             <div className="text-[14px] font-extrabold text-ink">문의</div>
             <div className="mt-4 flex flex-col gap-[11px] text-[13.5px] text-soft">
-              <span className="flex gap-2"><svg className="mt-px flex-none" width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="#A79D8B" strokeWidth="1.8" /><path d="M4 7l8 6 8-6" stroke="#A79D8B" strokeWidth="1.8" /></svg>boopro.official@gmail.com</span>
+              <span className="flex gap-2"><svg className="mt-px flex-none" width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="#A79D8B" strokeWidth="1.8" /><path d="M4 7l8 6 8-6" stroke="#A79D8B" strokeWidth="1.8" /></svg>realbridge.career@gmail.com</span>
               <span className="flex gap-2"><svg className="mt-px flex-none" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L16 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z" stroke="#A79D8B" strokeWidth="1.8" strokeLinejoin="round" /></svg>02-541-8248</span>
               <span className="flex gap-2"><svg className="mt-px flex-none" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.3 7-11a7 7 0 10-14 0c0 4.7 7 11 7 11z" stroke="#A79D8B" strokeWidth="1.8" strokeLinejoin="round" /><circle cx="12" cy="10" r="2.4" stroke="#A79D8B" strokeWidth="1.8" /></svg>서울시 송파구 중대로 135, 11층 (가락동, 아이티벤처타워)</span>
               <span className="flex gap-2"><svg className="mt-px flex-none" width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#A79D8B" strokeWidth="1.8" /><path d="M12 7v5l3 2" stroke="#A79D8B" strokeWidth="1.8" strokeLinecap="round" /></svg>평일 09:00 - 18:00</span>
