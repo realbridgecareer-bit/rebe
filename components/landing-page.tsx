@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { BrandMark, BrandWordmark } from "@/components/icons";
+import { BrandWordmark } from "@/components/icons";
 // 멘토 네트워크 로고월은 'logo/로고 정리.pptx'를 PowerPoint로 렌더한 슬라이드 이미지를 사용
 // (public/logos/network-wall/, scripts/network-wall.cjs 생성).
 
@@ -181,9 +181,8 @@ export default function LandingPage() {
       {/* ===== NAV ===== */}
       <nav className="sticky top-0 z-[60] border-b border-line bg-white/90 backdrop-blur-[12px]">
         <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-5 px-6 py-[15px]">
-          <a href="#home" className="flex items-center gap-[11px] no-underline">
-            <BrandMark className="h-[30px] w-[34px]" />
-            <span className="text-[19px] font-extrabold tracking-[-0.02em] text-ink">REal BridgE</span>
+          <a href="#home" className="flex items-center no-underline">
+            <BrandWordmark className="text-[19px] tracking-[-0.02em] text-ink" />
           </a>
           <div className="hidden items-center gap-[26px] lg:flex">
             {NAV_LINKS.map((l) => (
@@ -694,8 +693,7 @@ export function SiteFooterFull() {
       <div className="mx-auto max-w-[1200px]">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.4fr]">
           <div>
-            <div className="flex items-center gap-[10px]">
-              <BrandMark className="h-[26px] w-[30px]" />
+            <div className="flex items-center">
               <BrandWordmark className="text-[18px] text-ink" />
             </div>
             <p className="mt-[14px] max-w-[280px] text-[13.5px] leading-[1.7] text-soft">부동산·금융업 출신 현직자가 기획한 취업 전략 컨설팅. 당신의 커리어와 현장을 잇습니다.</p>

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { BrandMark, BrandWordmark } from "@/components/icons";
+import { BrandWordmark } from "@/components/icons";
 
 function Arrow({ color = "#fff", size = 17, w = 2.2 }: { color?: string; size?: number; w?: number }) {
   return (
@@ -140,9 +140,8 @@ export default function SuccessStoriesPage() {
       {/* ===== NAV ===== */}
       <nav className="sticky top-0 z-[60] border-b border-line bg-white/90 backdrop-blur-[12px]">
         <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-5 px-6 py-[15px]">
-          <Link href="/" className="flex items-center gap-[11px] no-underline">
-            <BrandMark className="h-[30px] w-[34px]" />
-            <span className="text-[19px] font-extrabold tracking-[-0.02em] text-ink">REal BridgE</span>
+          <Link href="/" className="flex items-center no-underline">
+            <BrandWordmark className="text-[19px] tracking-[-0.02em] text-ink" />
           </Link>
           <div className="flex items-center gap-[22px]">
             <Link href="/" className="inline-flex items-center gap-1.5 text-[14.5px] font-semibold text-muted-2 no-underline hover:text-terracotta">
@@ -297,8 +296,7 @@ export default function SuccessStoriesPage() {
       {/* ===== FOOTER ===== */}
       <footer className="border-t border-line bg-ivory px-6 py-11 text-muted-2">
         <div className="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-[10px]">
-            <BrandMark className="h-[25px] w-[28px]" />
+          <div className="flex items-center">
             <BrandWordmark className="text-[16px] text-ink" />
           </div>
           <span className="text-[12.5px] text-soft-3">© 2026 REal BridgE (REBE). boopro.official@gmail.com · 02-541-8248</span>

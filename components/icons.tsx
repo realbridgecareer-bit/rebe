@@ -116,17 +116,18 @@ export const UserRound = (p: IconProps) => (
   </svg>
 );
 
-/** 브랜드 워드마크. "REal BridgE" (모던 산세리프, 800). className으로 크기/색 지정. */
+/** 브랜드 워드마크 겸 로고. "REal BridgE"에서 대문자 R·E·B·E만 메인 컬러(terracotta)로
+   강조하고 나머지는 상속색. className으로 크기/기본색 지정. */
 export const BrandWordmark = ({ className }: { className?: string }) => (
   <span className={`font-sans font-extrabold tracking-tight ${className ?? ""}`}>
-    REal BridgE
+    <span className="text-terracotta">RE</span>al{" "}
+    <span className="text-terracotta">B</span>ridg<span className="text-terracotta">E</span>
   </span>
 );
 
-/** 로고마크 + 워드마크 가로 묶음. 헤더·푸터 공용. */
+/** 워드마크 로고(심볼 마크 없음). 헤더·푸터 공용. */
 export const BrandLockup = ({ className }: { className?: string }) => (
-  <span className={`inline-flex items-center gap-[10px] ${className ?? ""}`}>
-    <BrandMark className="h-[26px] w-[30px]" />
+  <span className={`inline-flex items-center ${className ?? ""}`}>
     <BrandWordmark className="text-lg text-ink" />
   </span>
 );
