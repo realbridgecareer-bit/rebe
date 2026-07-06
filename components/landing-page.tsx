@@ -656,7 +656,7 @@ function PriceCard({
   if (featured) {
     return (
       <div
-        className="group relative flex flex-col rounded-[20px] bg-sage p-8 shadow-[0_22px_50px_rgba(47,58,46,0.28)] transition-[transform,box-shadow] duration-300 ease-out will-change-transform hover:-translate-y-2 hover:shadow-[0_36px_72px_rgba(47,58,46,0.45)]"
+        className="group relative flex flex-col rounded-[20px] bg-sage p-8 shadow-[0_22px_50px_rgba(47,58,46,0.28)] transition-[transform,box-shadow] duration-300 ease-out will-change-transform hover:-translate-y-4 hover:scale-[1.035] hover:shadow-[0_48px_96px_rgba(47,58,46,0.55)]"
       >
         <span className="absolute -top-[13px] left-1/2 z-20 -translate-x-1/2 rounded-full bg-terracotta px-4 py-1.5 text-[12px] font-extrabold whitespace-nowrap text-white">인기 패키지</span>
         <div className="relative z-10 flex flex-1 flex-col">
@@ -696,7 +696,7 @@ function PriceCard({
   }
   return (
     <div
-      className="group relative flex flex-col rounded-[20px] border border-line bg-white p-8 transition-[transform,box-shadow,border-color] duration-300 ease-out will-change-transform hover:-translate-y-2 hover:border-terracotta/40 hover:shadow-[0_28px_56px_rgba(38,32,25,0.16)]"
+      className="group relative flex flex-col rounded-[20px] border border-line bg-white p-8 transition-[transform,box-shadow,border-color] duration-300 ease-out will-change-transform hover:-translate-y-4 hover:scale-[1.035] hover:border-terracotta/50 hover:shadow-[0_40px_80px_rgba(38,32,25,0.24)]"
     >
       <div className="relative z-10 flex flex-1 flex-col">
         <div className="text-[20px] font-extrabold text-ink">{name}</div>
