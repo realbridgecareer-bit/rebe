@@ -128,7 +128,8 @@ const NAV_LINKS = [
   { href: "#mentors", label: "멘토진" },
   { href: "#services", label: "서비스" },
   { href: "#audience", label: "서비스 대상" },
-  { href: "#success", label: "합격사례" },
+  { href: "#success", label: "컨설팅 후기" },
+  { href: "/success", label: "합격 사례" },
 ];
 
 const NETWORK_WALL = [
