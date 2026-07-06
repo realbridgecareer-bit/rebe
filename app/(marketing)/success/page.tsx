@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { BrandWordmark } from "@/components/icons";
+import { createClient } from "@/lib/supabase/client";
+import { rowToStory, type Story } from "@/lib/stories";
 
 function Arrow({ color = "#fff", size = 17, w = 2.2 }: { color?: string; size?: number; w?: number }) {
   return (
@@ -28,21 +30,7 @@ function Stars({ size = 16 }: { size?: number }) {
   );
 }
 
-type Story = {
-  company: string;
-  logo: string;
-  logoH?: number;
-  logoW?: number;
-  name: string;
-  persona: string;
-  service: "Real Connect" | "Real Bridge" | "Real Success";
-  before: string;
-  after: string;
-  quote: string;
-  paragraphs: string[];
-  tags: string[];
-};
-
+// DB(success_stories)에서 읽으며, 비어있거나 실패 시 아래 폴백을 사용
 const STORIES: Story[] = [
   {
     company: "코람코자산신탁", logo: "koramco.png", name: "박ㅇㅇ 님", persona: "대학생 · 채용형 인턴 합격", service: "Real Success",
@@ -145,12 +133,31 @@ const REVIEW_SHOTS = [
 
 export default function SuccessStoriesPage() {
   const [filter, setFilter] = useState<Filter>("전체");
+  const [stories, setStories] = useState<Story[]>(STORIES);
 
-  const counts: Record<string, number> = { 전체: STORIES.length };
-  STORIES.forEach((s) => {
+  // 공개된 합격 사례를 Supabase에서 읽어온다(데이터 있으면 교체, 없거나 실패 시 폴백 유지)
+  useEffect(() => {
+    (async () => {
+      try {
+        const supabase = createClient();
+        const { data, error } = await supabase
+          .from("success_stories")
+          .select("*")
+          .eq("published", true)
+          .order("sort_order", { ascending: true })
+          .order("created_at", { ascending: false });
+        if (!error && data && data.length > 0) setStories(data.map(rowToStory));
+      } catch {
+        /* 폴백 유지 */
+      }
+    })();
+  }, []);
+
+  const counts: Record<string, number> = { 전체: stories.length };
+  stories.forEach((s) => {
     counts[s.service] = (counts[s.service] || 0) + 1;
   });
-  const visible = STORIES.filter((s) => filter === "전체" || s.service === filter);
+  const visible = stories.filter((s) => filter === "전체" || s.service === filter);
 
   // 후기 갤러리 라이트박스: null이면 닫힘, 숫자면 해당 인덱스 열림
   const [shotIdx, setShotIdx] = useState<number | null>(null);
@@ -269,7 +276,7 @@ export default function SuccessStoriesPage() {
                     <span className="h-11 w-px flex-none bg-line-2" />
                     <div className="flex h-[56px] w-[150px] flex-none items-center justify-center">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={`/logos/story/${s.logo}`} alt={s.company} style={{ maxHeight: s.logoH ?? 42, maxWidth: s.logoW ?? 120, width: "auto", objectFit: "contain" }} />
+                      <img src={s.logo.startsWith("http") || s.logo.startsWith("/") ? s.logo : `/logos/story/${s.logo}`} alt={s.company} style={{ maxHeight: s.logoH ?? 42, maxWidth: s.logoW ?? 120, width: "auto", objectFit: "contain" }} />
                     </div>
                   </div>
                 </div>
