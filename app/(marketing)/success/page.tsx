@@ -78,7 +78,7 @@ const STORIES: Story[] = [
     tags: ["스펙 진단", "기업 공고 추천", "현직자 정보"],
   },
   {
-    company: "이화자산운용", logo: "ewha-am.jpg", logoH: 58, logoW: 150, name: "서ㅇㅇ 님", persona: "대학생 · 신입 취업", service: "Real Bridge",
+    company: "이화자산운용", logo: "ewha-am.jpg", logoH: 76, logoW: 196, name: "서ㅇㅇ 님", persona: "대학생 · 신입 취업", service: "Real Bridge",
     before: "취업 준비 대학생", after: "이화자산운용 대체투자팀",
     quote: "회사가 원하는 '진짜' 직무 역량이 무엇인지 파악할 수 있었습니다",
     paragraphs: [
@@ -238,7 +238,7 @@ export default function SuccessStoriesPage() {
                       <span className="rounded-full bg-sand px-[11px] py-1 text-[12px] font-bold text-terracotta">{s.service}</span>
                     </div>
                     <span className="h-11 w-px flex-none bg-line-2" />
-                    <div className="flex h-[46px] w-[120px] flex-none items-center justify-center">
+                    <div className="flex h-[56px] w-[150px] flex-none items-center justify-center">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={`/logos/story/${s.logo}`} alt={s.company} style={{ maxHeight: s.logoH ?? 42, maxWidth: s.logoW ?? 120, width: "auto", objectFit: "contain" }} />
                     </div>
