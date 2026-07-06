@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import Link from "next/link";
 import { BrandWordmark } from "@/components/icons";
 // 멘토 네트워크 로고월은 'logo/로고 정리.pptx'를 PowerPoint로 렌더한 슬라이드 이미지를 사용
@@ -352,7 +352,7 @@ export default function LandingPage() {
               <span className="flex h-11 w-11 items-center justify-center rounded-full bg-terracotta text-white">
                 <Chk color="#fff" size={19} w={2.6} />
               </span>
-              <h3 className="mt-5 text-[20px] font-extrabold text-ink">REal BridgE의 차별화된 접근</h3>
+              <h3 className="mt-5 text-[20px] font-extrabold text-ink">{brandify("REal BridgE의 차별화된 접근")}</h3>
               <ul className="mt-4 flex list-none flex-col gap-3 p-0">
                 {[
                   "부동산/금융업 현직자 100명+의 생생한 업계 경험·노하우",
@@ -376,7 +376,7 @@ export default function LandingPage() {
           {/* 해결해주는 문제 */}
           <div className="mx-auto mt-11 max-w-[1000px] overflow-hidden rounded-[20px] border border-line bg-white">
             <div className="border-b border-line px-8 py-5">
-              <h3 className="text-center text-[20px] font-extrabold text-ink">REal BridgE가 해결해주는 문제</h3>
+              <h3 className="text-center text-[20px] font-extrabold text-ink">{brandify("REal BridgE가 해결해주는 문제")}</h3>
             </div>
             <div className="grid gap-8 p-8 md:grid-cols-2">
               <div className="flex flex-col gap-[18px]">
@@ -626,11 +626,22 @@ export default function LandingPage() {
 }
 
 /* ===== 공용 서브 컴포넌트 ===== */
+// 문자열 속 "REal BridgE"를 로고 워드마크와 동일하게(REBE만 terracotta) 렌더링
+function brandify(text: string) {
+  const parts = text.split("REal BridgE");
+  return parts.map((p, i) => (
+    <Fragment key={i}>
+      {i > 0 && <BrandWordmark />}
+      {p}
+    </Fragment>
+  ));
+}
+
 function SectionHead({ eyebrow, title, lead }: { eyebrow: string; title: string; lead: string }) {
   return (
     <div className="mx-auto max-w-[660px] text-center">
       <span className="text-[13px] font-extrabold tracking-[0.1em] text-terracotta">{eyebrow}</span>
-      <h2 className="mt-3 text-[30px] leading-[1.28] font-extrabold tracking-[-0.03em] text-ink md:text-[38px]">{title}</h2>
+      <h2 className="mt-3 text-[30px] leading-[1.28] font-extrabold tracking-[-0.03em] text-ink md:text-[38px]">{brandify(title)}</h2>
       <p className="mt-4 text-[17px] leading-[1.65] text-muted-2">{lead}</p>
     </div>
   );
