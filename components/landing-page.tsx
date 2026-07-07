@@ -604,9 +604,6 @@ export default function LandingPage() {
             <Link href="/contact" className="inline-flex items-center gap-2 rounded-full bg-white px-[30px] py-[15px] text-[16px] font-bold text-sage no-underline hover:bg-sand">
               무료 상담 신청하기 <Arrow color="#2F3A2E" />
             </Link>
-            <Link href="/contact" className="inline-flex items-center rounded-full border border-white/30 bg-transparent px-[30px] py-[15px] text-[16px] font-bold text-white no-underline hover:bg-white/10">
-              카카오톡 채널 문의
-            </Link>
           </div>
           <div className="mt-11 border-t border-white/15 pt-8">
             <div className="text-[18px] font-extrabold text-white">REal BridgE (REBE)</div>
