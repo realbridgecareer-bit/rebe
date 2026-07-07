@@ -1,10 +1,20 @@
-// REBE 최소 서비스워커 — PWA 설치 가능 목적.
-// 캐시로 인한 오래된 화면(stale) 문제를 막기 위해 '네트워크 우선'만 사용한다.
+// REBE 최소 서비스워커 — PWA 설치 목적.
+// 외부 요청(Supabase 등)과 POST는 절대 가로채지 않는다(헤더 손상·인증 오류 방지).
+// 같은 출처(내 사이트)의 GET만 네트워크 우선으로 처리한다.
 self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (event) => event.waitUntil(self.clients.claim()));
 self.addEventListener("fetch", (event) => {
+  const req = event.request;
+  let url;
+  try {
+    url = new URL(req.url);
+  } catch {
+    return;
+  }
+  // 외부 도메인(Supabase 등) 또는 GET이 아닌 요청은 개입하지 않음 → 브라우저가 그대로 처리
+  if (req.method !== "GET" || url.origin !== self.location.origin) return;
   event.respondWith(
-    fetch(event.request).catch(
+    fetch(req).catch(
       () =>
         new Response("오프라인 상태입니다. 네트워크 연결을 확인해 주세요.", {
           status: 503,
