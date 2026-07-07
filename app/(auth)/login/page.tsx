@@ -26,16 +26,37 @@ export default function LoginPage() {
 
     try {
       const supabase = createClient();
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
       if (error) throw new Error(error.message);
-      router.push("/dashboard");
+      // 관리자면 /admin, 아니면 /dashboard 로 이동
+      let dest = "/dashboard";
+      const uid = data.user?.id;
+      if (uid) {
+        const { data: adminRow } = await supabase
+          .from("admins")
+          .select("user_id")
+          .eq("user_id", uid)
+          .maybeSingle();
+        if (adminRow) dest = "/admin";
+      }
+      router.push(dest);
       router.refresh();
-    } catch {
+    } catch (err) {
       setStatus("error");
-      setMsg("이메일 또는 비밀번호가 올바르지 않습니다.");
+      const m = err instanceof Error ? err.message : "";
+      // 네트워크 오류와 자격 오류를 구분해 안내
+      if (/load failed|fetch|network/i.test(m)) {
+        setMsg("네트워크 오류로 로그인하지 못했습니다. 연결(와이파이/데이터·차단 프로그램)을 확인해 주세요.");
+      } else if (/invalid login|credentials/i.test(m)) {
+        setMsg("이메일 또는 비밀번호가 올바르지 않습니다.");
+      } else if (/confirm/i.test(m)) {
+        setMsg("이메일 인증이 완료되지 않았습니다. 메일의 인증 링크를 확인하거나 관리자 계정을 인증 상태로 만들어 주세요.");
+      } else {
+        setMsg(m || "로그인에 실패했습니다.");
+      }
     }
   }
 
