@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { VAPID_PUBLIC_KEY, urlBase64ToUint8Array } from "@/lib/push";
 
 type Consultation = {
   id: string; created_at: string; name: string; phone: string;
@@ -131,6 +132,7 @@ export default function AdminPage() {
 
   return (
     <Shell onLogout={handleLogout}>
+      <NotifyToggle />
       <div className="mb-8 flex flex-wrap gap-1 border-b border-line">
         {tabs.map(([t, label]) => (
           <button key={t} onClick={() => setTab(t)}
@@ -542,6 +544,95 @@ function Area({ value, onChange, rows }: { value: string; onChange: (v: string) 
 function Sel({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   return <select value={value} onChange={(e) => onChange(e.target.value)} className="w-full rounded-lg border border-line px-3 py-2 text-sm outline-none focus:border-sage">{SERVICES.map((s) => <option key={s}>{s}</option>)}</select>;
 }
+/* ---------- 상담 알림(웹 푸시) 켜기/끄기 ---------- */
+function NotifyToggle() {
+  const [state, setState] = useState<"unknown" | "on" | "off" | "unsupported" | "denied">("unknown");
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    // 다음 마이크로태스크로 미뤄 effect 내 동기 setState 방지
+    Promise.resolve().then(async () => {
+      if (typeof window === "undefined" || !("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) {
+        setState("unsupported");
+        return;
+      }
+      if (Notification.permission === "denied") { setState("denied"); return; }
+      try {
+        const reg = await navigator.serviceWorker.ready;
+        const sub = await reg.pushManager.getSubscription();
+        setState(sub ? "on" : "off");
+      } catch {
+        setState("off");
+      }
+    });
+  }, []);
+
+  async function enable() {
+    setBusy(true);
+    try {
+      const perm = await Notification.requestPermission();
+      if (perm !== "granted") { setState(perm === "denied" ? "denied" : "off"); return; }
+      const reg = await navigator.serviceWorker.ready;
+      const sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY) as BufferSource,
+      });
+      const json = sub.toJSON();
+      const supabase = createClient();
+      const { data: sess } = await supabase.auth.getSession();
+      const { error } = await supabase.from("push_subscriptions").upsert(
+        { endpoint: json.endpoint, subscription: json, user_id: sess.session?.user.id ?? null },
+        { onConflict: "endpoint", ignoreDuplicates: true },
+      );
+      if (error) throw new Error(error.message);
+      setState("on");
+    } catch (e) {
+      alert("알림 설정 실패: " + (e instanceof Error ? e.message : ""));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function disable() {
+    setBusy(true);
+    try {
+      const reg = await navigator.serviceWorker.ready;
+      const sub = await reg.pushManager.getSubscription();
+      if (sub) {
+        const ep = sub.endpoint;
+        await sub.unsubscribe();
+        await createClient().from("push_subscriptions").delete().eq("endpoint", ep);
+      }
+      setState("off");
+    } catch {
+      /* 무시 */
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (state === "unsupported") return null;
+
+  return (
+    <div className="mb-6 flex flex-wrap items-center gap-3 rounded-xl border border-line bg-ivory px-4 py-3">
+      <span className="text-sm font-bold text-ink">📩 새 상담 알림</span>
+      {state === "denied" ? (
+        <span className="text-sm text-rose-500">브라우저에서 알림이 차단됨 — 설정에서 이 사이트 알림을 허용해 주세요.</span>
+      ) : state === "on" ? (
+        <>
+          <span className="text-sm font-semibold text-sage">켜짐</span>
+          <button onClick={disable} disabled={busy} className="cursor-pointer rounded-lg border border-line px-3 py-1.5 text-sm font-semibold text-slate-600 hover:bg-white disabled:opacity-50">끄기</button>
+        </>
+      ) : (
+        <>
+          <span className="text-sm text-slate-500">이 기기에서 새 상담이 오면 알림을 받습니다.</span>
+          <button onClick={enable} disabled={busy} className="cursor-pointer rounded-full bg-sage px-4 py-1.5 text-sm font-bold text-white hover:bg-sage-600 disabled:opacity-50">{busy ? "설정 중…" : "알림 켜기"}</button>
+        </>
+      )}
+    </div>
+  );
+}
+
 function Shell({ children, onLogout }: { children: React.ReactNode; onLogout: (() => void) | null }) {
   return (
     <div className="min-h-screen bg-white">
