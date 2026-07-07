@@ -11,21 +11,6 @@ const SUPA_URL =
 
 type SubRow = { endpoint: string; subscription: PushSubscription };
 
-// 임시 진단: 값은 노출하지 않고 설정 여부/길이/시크릿 일치만 반환
-export async function GET(req: Request) {
-  const provided = clean(req.headers.get("x-notify-secret") ?? "");
-  const envSecret = clean(process.env.NOTIFY_SECRET);
-  return Response.json({
-    hasNotifySecret: !!process.env.NOTIFY_SECRET,
-    notifySecretLen: envSecret.length,
-    hasVapidPrivate: !!process.env.VAPID_PRIVATE_KEY,
-    vapidPrivateLen: clean(process.env.VAPID_PRIVATE_KEY).length,
-    hasServiceRole: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
-    serviceRoleLen: clean(process.env.SUPABASE_SERVICE_ROLE_KEY).length,
-    secretMatches: !!envSecret && provided === envSecret,
-  });
-}
-
 /**
  * Supabase Database Webhook(consultations INSERT)이 호출한다.
  * 헤더 x-notify-secret 로 인증 후, 저장된 모든 구독에 푸시를 보낸다.
