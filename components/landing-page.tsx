@@ -1,8 +1,10 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Link from "next/link";
 import { BrandWordmark } from "@/components/icons";
+import { createClient } from "@/lib/supabase/client";
+import { FALLBACK_PACKAGES, FALLBACK_SETTINGS, rowToPkg, rowToReview, type Pkg, type Review, type SiteSettings } from "@/lib/site-content";
 // 멘토 네트워크 로고월은 'logo/로고 정리.pptx'를 PowerPoint로 렌더한 슬라이드 이미지를 사용
 // (public/logos/network-wall/, scripts/network-wall.cjs 생성).
 
@@ -143,6 +145,31 @@ const NETWORK_WALL = [
 
 export default function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [packages, setPackages] = useState<Pkg[]>(FALLBACK_PACKAGES);
+  const [reviews, setReviews] = useState<Review[]>(() =>
+    REVIEWS.map((r, i) => ({ ...r, service: r.service as Review["service"], sort_order: i + 1, published: true })),
+  );
+  const [settings, setSettings] = useState<SiteSettings>(FALLBACK_SETTINGS);
+
+  // 서비스 패키지 / 후기 / 할인설정을 Supabase에서 읽는다(없거나 실패 시 폴백 유지)
+  useEffect(() => {
+    (async () => {
+      try {
+        const supabase = createClient();
+        const [pk, rv, st] = await Promise.all([
+          supabase.from("packages").select("*").eq("published", true).order("sort_order", { ascending: true }),
+          supabase.from("reviews").select("*").eq("published", true).order("sort_order", { ascending: true }),
+          supabase.from("site_settings").select("*").eq("id", 1).maybeSingle(),
+        ]);
+        if (pk.data && pk.data.length) setPackages(pk.data.map(rowToPkg));
+        if (rv.data && rv.data.length) setReviews(rv.data.map(rowToReview));
+        if (st.data) setSettings({ promo_enabled: st.data.promo_enabled, promo_label: st.data.promo_label, promo_banner: st.data.promo_banner });
+      } catch {
+        /* 폴백 유지 */
+      }
+    })();
+  }, []);
+
   const N = TICKER.length;
   const PER = 3.2;
   const DUR = PER * N;
@@ -462,56 +489,14 @@ export default function LandingPage() {
         <div className="mx-auto max-w-[1200px]">
           <SectionHead eyebrow="SERVICES" title="REal BridgE 서비스" lead="상황에 맞는 최적의 컨설팅 패키지를 선택하세요. (모든 금액 VAT 포함)" />
           <div className="mx-auto mt-14 grid max-w-[1080px] items-start gap-5 lg:grid-cols-3">
-            <PriceCard
-              name="Real Connect"
-              sub="대면 컨설팅"
-              detail="90분 1회"
-              original="68만원"
-              price="48만원"
-              items={[
-                "입사지원서 컨설팅 or 면접 준비 컨설팅(택1)",
-                "지원 직무·업계 현직자 관점의 컨설팅",
-                "필요 부분 수정, 방향성 제시, 어필 포인트 제시",
-                "채용공고에 드러나지 않는 핵심 역량·준비 방향 안내",
-                "업계 연봉 수준·복지 등 현직자 관점의 정보 안내",
-              ]}
-            />
-            <PriceCard
-              name="Real Bridge"
-              sub="대면 컨설팅"
-              detail="90분 2회"
-              original="126만원"
-              price="88만원"
-              items={[
-                "입사지원서·면접·커리어 단계적 컨설팅",
-                "지원 직무·업계 현직자 관점의 컨설팅",
-                "직무별 마스터 자소서 및 면접 예상 질문 제공",
-                "현직자 경험을 바탕으로 한 직무·업계 동향 제공",
-                "채용 동향 및 추천 직무 안내",
-                "직무 역량 개발을 위한 학습 자료 제공",
-              ]}
-            />
-            <PriceCard
-              featured
-              name="Real Success"
-              sub="대면 컨설팅 3회"
-              detail="시간 제한 없음"
-              original="164만원"
-              price="115만원"
-              items={[
-                "Real Bridge의 모든 혜택 포함",
-                "타 지원자와 Grouping으로 객관적 위치 파악",
-                "합격 사례 및 정보 제공(자소서·면접)",
-                "대규모 네트워킹 모임 참여 기회",
-                "현직자 네트워킹을 통한 직무·업계 정보 제공",
-                "직무에 필요한 Skill-up 자료 제공",
-              ]}
-            />
+            {packages.map((p) => (
+              <PriceCard key={p.id ?? p.name} pkg={p} promo={settings} />
+            ))}
           </div>
           <div className="mx-auto mt-11 max-w-[680px] rounded-[18px] border border-terracotta/25 bg-sand p-7 text-center">
             <p className="text-[17px] leading-[1.6] text-[#4A4234]">서비스 금액은 취업 성공 시 받게 되는 <strong className="font-extrabold text-sage">첫 월급의 일부 수준</strong>입니다.</p>
             <p className="mt-1.5 text-[17px] leading-[1.6]"><strong className="font-extrabold text-terracotta">평생의 커리어를 위한 투자</strong>를 시작하세요.</p>
-            <p className="mt-3 text-[12.5px] text-soft-2">할인가는 예고 없이 종료될 수 있습니다. (모든 금액 VAT 포함)</p>
+            <p className="mt-3 text-[12.5px] text-soft-2">{settings.promo_enabled ? "할인가는 예고 없이 종료될 수 있습니다. (모든 금액 VAT 포함)" : "모든 금액 VAT 포함"}</p>
           </div>
         </div>
       </section>
@@ -566,7 +551,7 @@ export default function LandingPage() {
                 <div className="rounded-[14px] border border-cream/70 bg-cream/60 px-4 py-3 text-center text-[15px] font-extrabold text-sage">
                   {svc}
                 </div>
-                {REVIEWS.filter((r) => r.service === svc).map((r) => (
+                {reviews.filter((r) => r.service === svc).map((r) => (
                   <div key={r.name} className="rounded-[16px] border border-line bg-white p-6">
                     <div className="text-[14px] font-extrabold text-ink">{r.name}</div>
                     <div className="mt-[3px]">
@@ -647,31 +632,14 @@ function SectionHead({ eyebrow, title, lead }: { eyebrow: string; title: string;
   );
 }
 
-function PriceCard({
-  name,
-  sub,
-  detail,
-  price,
-  original,
-  items,
-  featured = false,
-}: {
-  name: string;
-  /** 라벨(예: "대면 컨설팅"). 약간 진하게 표시된다. */
-  sub: string;
-  /** 강조 스펙(예: "90분 1회", "시간 제한 없음"). 크고 진하게 표시된다. */
-  detail?: string;
-  price: string;
-  /** 정가(할인 전). 지정하면 취소선 + 뱃지로 표시된다. */
-  original?: string;
-  items: string[];
-  featured?: boolean;
-}) {
+function PriceCard({ pkg, promo }: { pkg: Pkg; promo: SiteSettings }) {
+  const { name, sub, detail, price, sale_price, features, featured } = pkg;
+  const showDiscount = promo.promo_enabled && !!sale_price;
+  const bigPrice = showDiscount ? sale_price : price;
+
   if (featured) {
     return (
-      <div
-        className="group relative flex flex-col rounded-[20px] bg-sage p-8 shadow-[0_22px_50px_rgba(47,58,46,0.28)] transition-[transform,box-shadow] duration-300 ease-out will-change-transform hover:-translate-y-4 hover:scale-[1.035] hover:shadow-[0_48px_96px_rgba(47,58,46,0.55)]"
-      >
+      <div className="group relative flex flex-col rounded-[20px] bg-sage p-8 shadow-[0_22px_50px_rgba(47,58,46,0.28)] transition-[transform,box-shadow] duration-300 ease-out will-change-transform hover:-translate-y-4 hover:scale-[1.035] hover:shadow-[0_48px_96px_rgba(47,58,46,0.55)]">
         <span className="absolute -top-[13px] left-1/2 z-20 -translate-x-1/2 rounded-full bg-terracotta px-4 py-1.5 text-[12px] font-extrabold whitespace-nowrap text-white">인기 패키지</span>
         <div className="relative z-10 flex flex-1 flex-col">
           <div className="text-[20px] font-extrabold text-white">{name}</div>
@@ -680,21 +648,21 @@ function PriceCard({
             {detail && <span className="ml-1.5 text-[16px] font-extrabold text-cream">{detail}</span>}
           </div>
           <div className="mt-[18px]">
-            {original && (
+            {showDiscount && (
               <div className="mb-1.5 flex items-center gap-2.5">
                 <span className="inline-flex items-center rounded-full bg-terracotta px-3 py-1 text-[14px] font-extrabold text-white shadow-[0_4px_12px_rgba(192,106,69,0.45)]">
-                  30% 할인
+                  {promo.promo_label}
                 </span>
-                <span className="text-[15px] font-semibold text-white/45 line-through">{original}</span>
+                <span className="text-[15px] font-semibold text-white/45 line-through">{price}</span>
               </div>
             )}
             <div className="flex items-baseline gap-1.5">
-              <span className="text-[36px] font-extrabold text-white">{price}</span>
+              <span className="text-[36px] font-extrabold text-white">{bigPrice}</span>
               <span className="text-[11.5px] text-white/50">VAT 포함</span>
             </div>
           </div>
           <ul className="mt-[22px] flex flex-1 list-none flex-col gap-[11px] p-0">
-            {items.map((it) => (
+            {features.map((it) => (
               <li key={it} className="flex gap-2 text-[14px] leading-[1.55] text-white/[0.88]">
                 <Chk color="#E7C9A6" size={16} w={2.6} />
                 {it}
@@ -709,9 +677,7 @@ function PriceCard({
     );
   }
   return (
-    <div
-      className="group relative flex flex-col rounded-[20px] border border-line bg-white p-8 transition-[transform,box-shadow,border-color] duration-300 ease-out will-change-transform hover:-translate-y-4 hover:scale-[1.035] hover:border-terracotta/50 hover:shadow-[0_40px_80px_rgba(38,32,25,0.24)]"
-    >
+    <div className="group relative flex flex-col rounded-[20px] border border-line bg-white p-8 transition-[transform,box-shadow,border-color] duration-300 ease-out will-change-transform hover:-translate-y-4 hover:scale-[1.035] hover:border-terracotta/50 hover:shadow-[0_40px_80px_rgba(38,32,25,0.24)]">
       <div className="relative z-10 flex flex-1 flex-col">
         <div className="text-[20px] font-extrabold text-ink">{name}</div>
         <div className="mt-1.5 text-[14px] leading-snug">
@@ -719,21 +685,21 @@ function PriceCard({
           {detail && <span className="ml-1.5 text-[16px] font-extrabold text-terracotta">{detail}</span>}
         </div>
         <div className="mt-[18px]">
-          {original && (
+          {showDiscount && (
             <div className="mb-1.5 flex items-center gap-2.5">
               <span className="inline-flex items-center rounded-full bg-terracotta px-3 py-1 text-[14px] font-extrabold text-white shadow-[0_4px_12px_rgba(192,106,69,0.35)]">
-                30% 할인
+                {promo.promo_label}
               </span>
-              <span className="text-[15px] font-semibold text-soft-3 line-through">{original}</span>
+              <span className="text-[15px] font-semibold text-soft-3 line-through">{price}</span>
             </div>
           )}
           <div className="flex items-baseline gap-1.5">
-            <span className="text-[36px] font-extrabold text-ink">{price}</span>
+            <span className="text-[36px] font-extrabold text-ink">{bigPrice}</span>
             <span className="text-[11.5px] text-soft-3">VAT 포함</span>
           </div>
         </div>
         <ul className="mt-[22px] flex flex-1 list-none flex-col gap-[11px] p-0">
-          {items.map((it) => (
+          {features.map((it) => (
             <li key={it} className="flex gap-2 text-[14px] leading-[1.55] text-muted-2">
               <Chk color="#C06A45" size={16} w={2.6} />
               {it}
@@ -763,18 +729,19 @@ export function SiteFooterFull() {
           <div>
             <div className="text-[14px] font-extrabold text-ink">바로가기</div>
             <div className="mt-4 flex flex-col gap-[9px]">
-              <a href="/#about" className="text-[13.5px] text-soft no-underline hover:text-terracotta">브랜드 소개</a>
-              <a href="/#mentors" className="text-[13.5px] text-soft no-underline hover:text-terracotta">멘토진</a>
-              <a href="/#success" className="text-[13.5px] text-soft no-underline hover:text-terracotta">합격사례</a>
+              <Link href="/#about" className="text-[13.5px] text-soft no-underline hover:text-terracotta">브랜드 소개</Link>
+              <Link href="/#mentors" className="text-[13.5px] text-soft no-underline hover:text-terracotta">멘토진</Link>
+              <Link href="/#success" className="text-[13.5px] text-soft no-underline hover:text-terracotta">컨설팅 후기</Link>
+              <Link href="/success" className="text-[13.5px] text-soft no-underline hover:text-terracotta">합격 사례</Link>
               <Link href="/contact" className="text-[13.5px] text-soft no-underline hover:text-terracotta">상담신청</Link>
             </div>
           </div>
           <div>
             <div className="text-[14px] font-extrabold text-ink">컨설팅 서비스</div>
             <div className="mt-4 flex flex-col gap-[9px]">
-              <a href="/#services" className="text-[13.5px] text-soft no-underline hover:text-terracotta">Real Connect</a>
-              <a href="/#services" className="text-[13.5px] text-soft no-underline hover:text-terracotta">Real Bridge</a>
-              <a href="/#services" className="text-[13.5px] text-soft no-underline hover:text-terracotta">Real Success</a>
+              <Link href="/#services" className="text-[13.5px] text-soft no-underline hover:text-terracotta">Real Connect</Link>
+              <Link href="/#services" className="text-[13.5px] text-soft no-underline hover:text-terracotta">Real Bridge</Link>
+              <Link href="/#services" className="text-[13.5px] text-soft no-underline hover:text-terracotta">Real Success</Link>
             </div>
           </div>
           <div>
