@@ -10,7 +10,10 @@ const DEFAULT_ANON_KEY =
  * 브라우저(클라이언트 컴포넌트)에서 사용하는 Supabase 클라이언트.
  */
 export function createClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || DEFAULT_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || DEFAULT_ANON_KEY;
+  // 환경변수 값에 붙여넣기로 섞인 공백/줄바꿈이 있으면 Authorization 헤더가 깨지므로 모두 제거.
+  // (URL·JWT에는 공백이 없으므로 안전)
+  const clean = (v?: string) => (v ?? "").replace(/\s/g, "");
+  const url = clean(process.env.NEXT_PUBLIC_SUPABASE_URL) || DEFAULT_URL;
+  const anonKey = clean(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) || DEFAULT_ANON_KEY;
   return createBrowserClient(url, anonKey);
 }
