@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { BrandWordmark } from "@/components/icons";
 import { createClient } from "@/lib/supabase/client";
-import { rowToStory, type Story } from "@/lib/stories";
+import { rowToStory, rowToShot, type Story, type ReviewShot } from "@/lib/stories";
 import { FALLBACK_SETTINGS, type SiteSettings } from "@/lib/site-content";
 
 function Arrow({ color = "#fff", size = 17, w = 2.2 }: { color?: string; size?: number; w?: number }) {
@@ -136,17 +136,20 @@ export default function SuccessStoriesPage() {
   const [filter, setFilter] = useState<Filter>("전체");
   const [stories, setStories] = useState<Story[]>(STORIES);
   const [settings, setSettings] = useState<SiteSettings>(FALLBACK_SETTINGS);
+  const [shots, setShots] = useState<ReviewShot[]>(REVIEW_SHOTS);
 
-  // 공개된 합격 사례 + 지표를 Supabase에서 읽어온다(없거나 실패 시 폴백 유지)
+  // 공개된 합격 사례 + 지표 + 후기 캡쳐를 Supabase에서 읽어온다(없거나 실패 시 폴백 유지)
   useEffect(() => {
     (async () => {
       try {
         const supabase = createClient();
-        const [sto, st] = await Promise.all([
+        const [sto, st, sh] = await Promise.all([
           supabase.from("success_stories").select("*").eq("published", true).order("sort_order", { ascending: true }).order("created_at", { ascending: false }),
           supabase.from("site_settings").select("*").eq("id", 1).maybeSingle(),
+          supabase.from("review_shots").select("*").eq("published", true).order("sort_order", { ascending: true }),
         ]);
         if (sto.data && sto.data.length > 0) setStories(sto.data.map(rowToStory));
+        if (sh.data && sh.data.length > 0) setShots(sh.data.map(rowToShot));
         if (st.data) setSettings({
           promo_enabled: st.data.promo_enabled, promo_label: st.data.promo_label, promo_banner: st.data.promo_banner,
           stat_companies: st.data.stat_companies ?? FALLBACK_SETTINGS.stat_companies,
@@ -168,7 +171,7 @@ export default function SuccessStoriesPage() {
 
   // 후기 갤러리 라이트박스: null이면 닫힘, 숫자면 해당 인덱스 열림
   const [shotIdx, setShotIdx] = useState<number | null>(null);
-  const total = REVIEW_SHOTS.length;
+  const total = shots.length;
   const closeShot = () => setShotIdx(null);
   const prevShot = () => setShotIdx((i) => (i === null ? i : (i - 1 + total) % total));
   const nextShot = () => setShotIdx((i) => (i === null ? i : (i + 1) % total));
@@ -333,7 +336,7 @@ export default function SuccessStoriesPage() {
               <p className="mx-auto mt-2 max-w-[480px] text-[14px] leading-[1.7] text-soft-2">고객님께서 직접 남겨주신 후기 메시지입니다. 눌러서 크게 볼 수 있어요.</p>
             </div>
             <div className="mt-9 flex flex-wrap justify-center gap-6">
-              {REVIEW_SHOTS.map((shot, i) => (
+              {shots.map((shot, i) => (
                 <button key={shot.src} type="button" onClick={() => setShotIdx(i)} className="group flex cursor-pointer flex-col items-center gap-3">
                   <span className="relative block overflow-hidden rounded-[16px] border border-line bg-white shadow-[0_6px_20px_rgba(47,58,46,0.08)] transition-all duration-300 group-hover:-translate-y-1.5 group-hover:shadow-[0_20px_44px_rgba(47,58,46,0.18)]">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -407,9 +410,9 @@ export default function SuccessStoriesPage() {
           )}
           <figure className="max-w-[540px]" onClick={(e) => e.stopPropagation()}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={REVIEW_SHOTS[shotIdx].src} alt={REVIEW_SHOTS[shotIdx].label} className="max-h-[80vh] w-auto rounded-[14px] shadow-2xl" />
+            <img src={shots[shotIdx].src} alt={shots[shotIdx].label} className="max-h-[80vh] w-auto rounded-[14px] shadow-2xl" />
             <figcaption className="mt-4 text-center text-[13.5px] font-semibold text-white/85">
-              {REVIEW_SHOTS[shotIdx].label}
+              {shots[shotIdx].label}
               {total > 1 && <span className="ml-2 text-white/50">{shotIdx + 1} / {total}</span>}
             </figcaption>
           </figure>

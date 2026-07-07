@@ -27,9 +27,10 @@ type ReviewRow = {
 type Settings = { id: number; promo_enabled: boolean; promo_label: string; promo_banner: string; stat_companies: string; stat_rating: string; stat_satisfaction: string; companies_text: string };
 type TickerRow = { id?: string; sort_order: number; published: boolean; text: string };
 type MentorRow = { id?: string; sort_order: number; published: boolean; name: string; company: string; background: string; expertise: string };
+type ShotRow = { id?: string; sort_order: number; published: boolean; image_url: string; label: string };
 
 type State = "loading" | "denied" | "ready";
-type Tab = "consultations" | "stories" | "packages" | "reviews" | "tickers" | "mentors" | "settings";
+type Tab = "consultations" | "stories" | "packages" | "reviews" | "shots" | "tickers" | "mentors" | "settings";
 const SERVICES = ["Real Connect", "Real Bridge", "Real Success"];
 const STATUSES = ["new", "contacted", "done"];
 const STATUS_LABEL: Record<string, string> = { new: "신규", contacted: "연락함", done: "완료" };
@@ -39,6 +40,7 @@ const emptyPkg = (o: number): PkgRow => ({ sort_order: o, published: true, name:
 const emptyReview = (o: number): ReviewRow => ({ sort_order: o, published: true, name: "", service: "Real Connect", persona: "", text: "" });
 const emptyTicker = (o: number): TickerRow => ({ sort_order: o, published: true, text: "" });
 const emptyMentor = (o: number): MentorRow => ({ sort_order: o, published: true, name: "", company: "", background: "", expertise: "" });
+const emptyShot = (o: number): ShotRow => ({ sort_order: o, published: true, image_url: "", label: "" });
 
 export default function AdminPage() {
   const router = useRouter();
@@ -50,12 +52,14 @@ export default function AdminPage() {
   const [reviews, setReviews] = useState<ReviewRow[]>([]);
   const [tickers, setTickers] = useState<TickerRow[]>([]);
   const [mentors, setMentors] = useState<MentorRow[]>([]);
+  const [shots, setShots] = useState<ShotRow[]>([]);
   const [settings, setSettings] = useState<Settings | null>(null);
   const [editingStory, setEditingStory] = useState<StoryRow | null>(null);
   const [editingPkg, setEditingPkg] = useState<PkgRow | null>(null);
   const [editingReview, setEditingReview] = useState<ReviewRow | null>(null);
   const [editingTicker, setEditingTicker] = useState<TickerRow | null>(null);
   const [editingMentor, setEditingMentor] = useState<MentorRow | null>(null);
+  const [editingShot, setEditingShot] = useState<ShotRow | null>(null);
 
   useEffect(() => {
     const supabase = createClient();
@@ -64,7 +68,7 @@ export default function AdminPage() {
       if (!sess.session) { router.replace("/login"); return; }
       const { data: adminRow } = await supabase.from("admins").select("user_id").eq("user_id", sess.session.user.id).maybeSingle();
       if (!adminRow) { setState("denied"); return; }
-      await Promise.all([loadConsultations(), loadStories(), loadPackages(), loadReviews(), loadTickers(), loadMentors(), loadSettings()]);
+      await Promise.all([loadConsultations(), loadStories(), loadPackages(), loadReviews(), loadTickers(), loadMentors(), loadShots(), loadSettings()]);
       setState("ready");
     })();
   }, [router]);
@@ -92,6 +96,10 @@ export default function AdminPage() {
   async function loadMentors() {
     const { data } = await createClient().from("mentors").select("*").order("sort_order");
     if (data) setMentors(data as MentorRow[]);
+  }
+  async function loadShots() {
+    const { data } = await createClient().from("review_shots").select("*").order("sort_order");
+    if (data) setShots(data as ShotRow[]);
   }
   async function setConsultationStatus(id: string, status: string) {
     await createClient().from("consultations").update({ status }).eq("id", id);
@@ -125,6 +133,7 @@ export default function AdminPage() {
     ["stories", `합격 사례 (${stories.length})`],
     ["packages", `서비스 비용 (${packages.length})`],
     ["reviews", `컨설팅 후기 (${reviews.length})`],
+    ["shots", `후기 캡쳐 (${shots.length})`],
     ["tickers", `성과 티커 (${tickers.length})`],
     ["mentors", `멘토진 (${mentors.length})`],
     ["settings", "홈·할인 설정"],
@@ -146,6 +155,7 @@ export default function AdminPage() {
       {tab === "stories" && <StoriesView stories={stories} onAdd={() => setEditingStory(emptyStory(stories.length + 1))} onEdit={setEditingStory} onDelete={(id) => del("success_stories", id, loadStories)} />}
       {tab === "packages" && <PackagesView packages={packages} onAdd={() => setEditingPkg(emptyPkg(packages.length + 1))} onEdit={setEditingPkg} onDelete={(id) => del("packages", id, loadPackages)} />}
       {tab === "reviews" && <ReviewsView reviews={reviews} onAdd={() => setEditingReview(emptyReview(reviews.length + 1))} onEdit={setEditingReview} onDelete={(id) => del("reviews", id, loadReviews)} />}
+      {tab === "shots" && <ShotsView shots={shots} onAdd={() => setEditingShot(emptyShot(shots.length + 1))} onEdit={setEditingShot} onDelete={(id) => del("review_shots", id, loadShots)} />}
       {tab === "tickers" && <TickersView tickers={tickers} onAdd={() => setEditingTicker(emptyTicker(tickers.length + 1))} onEdit={setEditingTicker} onDelete={(id) => del("tickers", id, loadTickers)} />}
       {tab === "mentors" && <MentorsView mentors={mentors} onAdd={() => setEditingMentor(emptyMentor(mentors.length + 1))} onEdit={setEditingMentor} onDelete={(id) => del("mentors", id, loadMentors)} />}
       {tab === "settings" && <SettingsView settings={settings} onSaved={loadSettings} />}
@@ -155,6 +165,7 @@ export default function AdminPage() {
       {editingReview && <ReviewEditor initial={editingReview} onClose={() => setEditingReview(null)} onSaved={async () => { setEditingReview(null); await loadReviews(); }} />}
       {editingTicker && <TickerEditor initial={editingTicker} onClose={() => setEditingTicker(null)} onSaved={async () => { setEditingTicker(null); await loadTickers(); }} />}
       {editingMentor && <MentorEditor initial={editingMentor} onClose={() => setEditingMentor(null)} onSaved={async () => { setEditingMentor(null); await loadMentors(); }} />}
+      {editingShot && <ShotEditor initial={editingShot} onClose={() => setEditingShot(null)} onSaved={async () => { setEditingShot(null); await loadShots(); }} />}
     </Shell>
   );
 }
@@ -244,6 +255,29 @@ function MentorsView({ mentors, onAdd, onEdit, onDelete }: { mentors: MentorRow[
     <ListShell addLabel="+ 새 멘토 추가" onAdd={onAdd} empty={mentors.length === 0} emptyText="admin_extras.sql을 실행했는지 확인하세요.">
       {mentors.map((m) => (
         <Row key={m.id} order={m.sort_order} title={`${m.name} · ${m.company}`} sub={`${m.background} / ${m.expertise}`} hidden={!m.published} onEdit={() => onEdit(m)} onDelete={() => onDelete(m.id)} />
+      ))}
+    </ListShell>
+  );
+}
+
+/* ---------- 후기 캡쳐 목록 ---------- */
+function ShotsView({ shots, onAdd, onEdit, onDelete }: { shots: ShotRow[]; onAdd: () => void; onEdit: (s: ShotRow) => void; onDelete: (id?: string) => void }) {
+  return (
+    <ListShell addLabel="+ 새 캡쳐 추가" onAdd={onAdd} empty={shots.length === 0} emptyText="review_shots.sql을 실행했는지 확인하세요.">
+      {shots.map((s) => (
+        <div key={s.id} className="flex items-center justify-between gap-4 rounded-xl border border-line bg-white p-4">
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="rounded bg-ivory px-2 py-0.5 text-xs font-bold text-slate-500">#{s.sort_order}</span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={s.image_url} alt={s.label} className="h-12 w-12 rounded border border-line object-cover" />
+            <span className="truncate text-sm font-semibold text-ink">{s.label || "(라벨 없음)"}</span>
+            {!s.published && <span className="rounded-full bg-slate-200 px-2 py-0.5 text-[11px] font-bold text-slate-500">비공개</span>}
+          </div>
+          <div className="flex flex-none gap-2">
+            <button onClick={() => onEdit(s)} className="cursor-pointer rounded-lg border border-line px-3 py-1.5 text-sm font-semibold text-slate-600 hover:bg-ivory">수정</button>
+            <button onClick={() => onDelete(s.id)} className="cursor-pointer rounded-lg border border-rose-200 px-3 py-1.5 text-sm font-semibold text-rose-500 hover:bg-rose-50">삭제</button>
+          </div>
+        </div>
       ))}
     </ListShell>
   );
@@ -500,6 +534,50 @@ function MentorEditor({ initial, onClose, onSaved }: { initial: MentorRow; onClo
       <L label="노출 순서"><In type="number" value={String(f.sort_order)} onChange={(v) => set("sort_order", Number(v) || 0)} /></L>
       <Pub checked={f.published} onChange={(v) => set("published", v)} />
       <Save err={err} saving={saving} onClose={onClose} onSave={save} />
+    </Modal>
+  );
+}
+
+/* ---------- 후기 캡쳐 편집 ---------- */
+function ShotEditor({ initial, onClose, onSaved }: { initial: ShotRow; onClose: () => void; onSaved: () => void }) {
+  const [f, setF] = useState<ShotRow>(initial);
+  const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [err, setErr] = useState("");
+  const set = <K extends keyof ShotRow>(k: K, v: ShotRow[K]) => setF((p) => ({ ...p, [k]: v }));
+
+  async function handleImage(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true); setErr("");
+    try {
+      const supabase = createClient();
+      const path = `shots/${crypto.randomUUID()}.${file.name.split(".").pop() || "jpg"}`;
+      const { error } = await supabase.storage.from("story-logos").upload(path, file);
+      if (error) throw new Error(error.message);
+      set("image_url", supabase.storage.from("story-logos").getPublicUrl(path).data.publicUrl);
+    } catch (e) { setErr("이미지 업로드 실패: " + (e instanceof Error ? e.message : "")); } finally { setUploading(false); }
+  }
+  async function save() {
+    if (!f.image_url) { setErr("캡쳐 이미지를 업로드해 주세요."); return; }
+    setSaving(true); setErr("");
+    const payload = { sort_order: f.sort_order, published: f.published, image_url: f.image_url, label: f.label.trim() };
+    const res = f.id ? await createClient().from("review_shots").update(payload).eq("id", f.id) : await createClient().from("review_shots").insert(payload);
+    if (res.error) { setErr("저장 실패: " + res.error.message); setSaving(false); return; }
+    onSaved();
+  }
+  return (
+    <Modal title={f.id ? "후기 캡쳐 수정" : "새 후기 캡쳐"} onClose={onClose}>
+      <L label="캡쳐 이미지">
+        <div className="flex items-center gap-4">
+          {f.image_url ? <img src={f.image_url} alt="캡쳐" className="h-24 w-auto rounded border border-line object-contain" /> : <span className="text-sm text-slate-400">이미지 없음</span>}
+          <label className="cursor-pointer rounded-lg border border-line px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-ivory">{uploading ? "업로드 중…" : "이미지 업로드"}<input type="file" accept="image/*" onChange={handleImage} className="hidden" disabled={uploading} /></label>
+        </div>
+      </L>
+      <L label="라벨(설명)"><In value={f.label} onChange={(v) => set("label", v)} placeholder="예: 코람코자산신탁 채용형 인턴 · Real Success" /></L>
+      <L label="노출 순서"><In type="number" value={String(f.sort_order)} onChange={(v) => set("sort_order", Number(v) || 0)} /></L>
+      <Pub checked={f.published} onChange={(v) => set("published", v)} />
+      <Save err={err} saving={saving || uploading} onClose={onClose} onSave={save} />
     </Modal>
   );
 }

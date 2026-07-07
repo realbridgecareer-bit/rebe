@@ -18,6 +18,13 @@ export type Story = {
   tags: string[];
 };
 
+/** 실제 후기 원본(카톡 캡쳐) 갤러리 항목 */
+export type ReviewShot = { id?: string; src: string; label: string };
+
+export function rowToShot(r: Record<string, unknown>): ReviewShot {
+  return { id: r.id as string, src: (r.image_url as string) ?? "", label: (r.label as string) ?? "" };
+}
+
 /** Supabase success_stories 행(snake_case) → Story */
 export function rowToStory(r: Record<string, unknown>): Story {
   return {
