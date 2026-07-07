@@ -21,7 +21,7 @@ export default function LoginPage() {
     setMsg("");
 
     const fd = new FormData(e.currentTarget);
-    const email = String(fd.get("email") ?? "").trim();
+    const email = String(fd.get("email") ?? "").trim().toLowerCase();
     const password = String(fd.get("password") ?? "");
 
     try {
@@ -67,6 +67,11 @@ export default function LoginPage() {
         <input
           name="email"
           type="email"
+          inputMode="email"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
+          autoComplete="username"
           placeholder="이메일"
           required
           className="w-full rounded-lg border border-line bg-white px-3 py-2 text-slate-800 placeholder:text-slate-400 outline-none focus:border-sage"
@@ -74,6 +79,10 @@ export default function LoginPage() {
         <input
           name="password"
           type="password"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
+          autoComplete="current-password"
           placeholder="비밀번호"
           required
           className="w-full rounded-lg border border-line bg-white px-3 py-2 text-slate-800 placeholder:text-slate-400 outline-none focus:border-sage"
