@@ -25,13 +25,13 @@ export const metadata: Metadata = {
     description: SITE_DESC,
     url: SITE_URL,
     locale: "ko_KR",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Real Bridge (REBE) — 부동산·금융 취업컨설팅" }],
+    images: [{ url: "/og-v2.png", width: 1200, height: 630, alt: "Real Bridge (REBE) — 부동산·금융 취업컨설팅" }],
   },
   twitter: {
     card: "summary_large_image",
     title: SITE_TITLE,
     description: SITE_DESC,
-    images: ["/og.png"],
+    images: ["/og-v2.png"],
   },
 };
 
