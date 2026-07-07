@@ -17,7 +17,7 @@ export default function PromoBanner() {
       try {
         const supabase = createClient();
         const { data } = await supabase.from("site_settings").select("*").eq("id", 1).maybeSingle();
-        if (data) setSettings({ promo_enabled: data.promo_enabled, promo_label: data.promo_label, promo_banner: data.promo_banner });
+        if (data) setSettings({ ...FALLBACK_SETTINGS, promo_enabled: data.promo_enabled, promo_label: data.promo_label, promo_banner: data.promo_banner });
       } catch {
         /* 폴백 유지 */
       }

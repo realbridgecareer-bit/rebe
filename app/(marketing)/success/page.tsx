@@ -5,6 +5,7 @@ import Link from "next/link";
 import { BrandWordmark } from "@/components/icons";
 import { createClient } from "@/lib/supabase/client";
 import { rowToStory, type Story } from "@/lib/stories";
+import { FALLBACK_SETTINGS, type SiteSettings } from "@/lib/site-content";
 
 function Arrow({ color = "#fff", size = 17, w = 2.2 }: { color?: string; size?: number; w?: number }) {
   return (
@@ -134,19 +135,25 @@ const REVIEW_SHOTS = [
 export default function SuccessStoriesPage() {
   const [filter, setFilter] = useState<Filter>("전체");
   const [stories, setStories] = useState<Story[]>(STORIES);
+  const [settings, setSettings] = useState<SiteSettings>(FALLBACK_SETTINGS);
 
-  // 공개된 합격 사례를 Supabase에서 읽어온다(데이터 있으면 교체, 없거나 실패 시 폴백 유지)
+  // 공개된 합격 사례 + 지표를 Supabase에서 읽어온다(없거나 실패 시 폴백 유지)
   useEffect(() => {
     (async () => {
       try {
         const supabase = createClient();
-        const { data, error } = await supabase
-          .from("success_stories")
-          .select("*")
-          .eq("published", true)
-          .order("sort_order", { ascending: true })
-          .order("created_at", { ascending: false });
-        if (!error && data && data.length > 0) setStories(data.map(rowToStory));
+        const [sto, st] = await Promise.all([
+          supabase.from("success_stories").select("*").eq("published", true).order("sort_order", { ascending: true }).order("created_at", { ascending: false }),
+          supabase.from("site_settings").select("*").eq("id", 1).maybeSingle(),
+        ]);
+        if (sto.data && sto.data.length > 0) setStories(sto.data.map(rowToStory));
+        if (st.data) setSettings({
+          promo_enabled: st.data.promo_enabled, promo_label: st.data.promo_label, promo_banner: st.data.promo_banner,
+          stat_companies: st.data.stat_companies ?? FALLBACK_SETTINGS.stat_companies,
+          stat_rating: st.data.stat_rating ?? FALLBACK_SETTINGS.stat_rating,
+          stat_satisfaction: st.data.stat_satisfaction ?? FALLBACK_SETTINGS.stat_satisfaction,
+          companies_text: st.data.companies_text ?? FALLBACK_SETTINGS.companies_text,
+        });
       } catch {
         /* 폴백 유지 */
       }
@@ -212,9 +219,9 @@ export default function SuccessStoriesPage() {
           <p className="mx-auto mt-[18px] max-w-[560px] text-[17.5px] leading-[1.7] text-muted-2">스펙이 아닌 방향이었습니다. 비전공·경력 전환·중고신입까지 — 현직 멘토와 함께 부동산·금융업 합격에 이른 실제 후기를 모았습니다.</p>
           <div className="mt-[38px] flex flex-wrap justify-center gap-[14px]">
             {[
-              ["13+", "합격 기관", false],
-              ["5.0", "평균 평점", true],
-              ["100%", "추천 만족도", false],
+              [settings.stat_companies, "합격 기관", false],
+              [settings.stat_rating, "평균 평점", true],
+              [settings.stat_satisfaction, "추천 만족도", false],
             ].map(([v, l, star]) => (
               <div key={l as string} className="min-w-[150px] rounded-[16px] border border-line bg-white px-8 py-5">
                 <div className="flex items-center justify-center gap-[5px] text-[34px] font-extrabold tracking-[-0.02em] text-sage">

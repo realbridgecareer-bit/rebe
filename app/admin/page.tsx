@@ -23,15 +23,21 @@ type ReviewRow = {
   id?: string; sort_order: number; published: boolean; name: string;
   service: string; persona: string; text: string;
 };
-type Settings = { id: number; promo_enabled: boolean; promo_label: string; promo_banner: string };
+type Settings = { id: number; promo_enabled: boolean; promo_label: string; promo_banner: string; stat_companies: string; stat_rating: string; stat_satisfaction: string; companies_text: string };
+type TickerRow = { id?: string; sort_order: number; published: boolean; text: string };
+type MentorRow = { id?: string; sort_order: number; published: boolean; name: string; company: string; background: string; expertise: string };
 
 type State = "loading" | "denied" | "ready";
-type Tab = "consultations" | "stories" | "packages" | "reviews" | "settings";
+type Tab = "consultations" | "stories" | "packages" | "reviews" | "tickers" | "mentors" | "settings";
 const SERVICES = ["Real Connect", "Real Bridge", "Real Success"];
+const STATUSES = ["new", "contacted", "done"];
+const STATUS_LABEL: Record<string, string> = { new: "신규", contacted: "연락함", done: "완료" };
 
 const emptyStory = (o: number): StoryRow => ({ sort_order: o, published: true, company: "", logo_url: "", logo_h: null, logo_w: null, name: "", persona: "", service: "Real Success", before_text: "", after_text: "", quote: "", paragraphs: [], tags: [] });
 const emptyPkg = (o: number): PkgRow => ({ sort_order: o, published: true, name: "", sub: "대면 컨설팅", detail: "", price: "", sale_price: "", features: [], featured: false });
 const emptyReview = (o: number): ReviewRow => ({ sort_order: o, published: true, name: "", service: "Real Connect", persona: "", text: "" });
+const emptyTicker = (o: number): TickerRow => ({ sort_order: o, published: true, text: "" });
+const emptyMentor = (o: number): MentorRow => ({ sort_order: o, published: true, name: "", company: "", background: "", expertise: "" });
 
 export default function AdminPage() {
   const router = useRouter();
@@ -41,10 +47,14 @@ export default function AdminPage() {
   const [stories, setStories] = useState<StoryRow[]>([]);
   const [packages, setPackages] = useState<PkgRow[]>([]);
   const [reviews, setReviews] = useState<ReviewRow[]>([]);
+  const [tickers, setTickers] = useState<TickerRow[]>([]);
+  const [mentors, setMentors] = useState<MentorRow[]>([]);
   const [settings, setSettings] = useState<Settings | null>(null);
   const [editingStory, setEditingStory] = useState<StoryRow | null>(null);
   const [editingPkg, setEditingPkg] = useState<PkgRow | null>(null);
   const [editingReview, setEditingReview] = useState<ReviewRow | null>(null);
+  const [editingTicker, setEditingTicker] = useState<TickerRow | null>(null);
+  const [editingMentor, setEditingMentor] = useState<MentorRow | null>(null);
 
   useEffect(() => {
     const supabase = createClient();
@@ -53,7 +63,7 @@ export default function AdminPage() {
       if (!sess.session) { router.replace("/login"); return; }
       const { data: adminRow } = await supabase.from("admins").select("user_id").eq("user_id", sess.session.user.id).maybeSingle();
       if (!adminRow) { setState("denied"); return; }
-      await Promise.all([loadConsultations(), loadStories(), loadPackages(), loadReviews(), loadSettings()]);
+      await Promise.all([loadConsultations(), loadStories(), loadPackages(), loadReviews(), loadTickers(), loadMentors(), loadSettings()]);
       setState("ready");
     })();
   }, [router]);
@@ -73,6 +83,18 @@ export default function AdminPage() {
   async function loadReviews() {
     const { data } = await createClient().from("reviews").select("*").order("sort_order");
     if (data) setReviews(data as ReviewRow[]);
+  }
+  async function loadTickers() {
+    const { data } = await createClient().from("tickers").select("*").order("sort_order");
+    if (data) setTickers(data as TickerRow[]);
+  }
+  async function loadMentors() {
+    const { data } = await createClient().from("mentors").select("*").order("sort_order");
+    if (data) setMentors(data as MentorRow[]);
+  }
+  async function setConsultationStatus(id: string, status: string) {
+    await createClient().from("consultations").update({ status }).eq("id", id);
+    await loadConsultations();
   }
   async function loadSettings() {
     const { data } = await createClient().from("site_settings").select("*").eq("id", 1).maybeSingle();
@@ -102,7 +124,9 @@ export default function AdminPage() {
     ["stories", `합격 사례 (${stories.length})`],
     ["packages", `서비스 비용 (${packages.length})`],
     ["reviews", `컨설팅 후기 (${reviews.length})`],
-    ["settings", "할인 설정"],
+    ["tickers", `성과 티커 (${tickers.length})`],
+    ["mentors", `멘토진 (${mentors.length})`],
+    ["settings", "홈·할인 설정"],
   ];
 
   return (
@@ -116,39 +140,50 @@ export default function AdminPage() {
         ))}
       </div>
 
-      {tab === "consultations" && <ConsultationsView rows={rows} />}
+      {tab === "consultations" && <ConsultationsView rows={rows} onStatus={setConsultationStatus} onDelete={(id) => del("consultations", id, loadConsultations)} />}
       {tab === "stories" && <StoriesView stories={stories} onAdd={() => setEditingStory(emptyStory(stories.length + 1))} onEdit={setEditingStory} onDelete={(id) => del("success_stories", id, loadStories)} />}
       {tab === "packages" && <PackagesView packages={packages} onAdd={() => setEditingPkg(emptyPkg(packages.length + 1))} onEdit={setEditingPkg} onDelete={(id) => del("packages", id, loadPackages)} />}
       {tab === "reviews" && <ReviewsView reviews={reviews} onAdd={() => setEditingReview(emptyReview(reviews.length + 1))} onEdit={setEditingReview} onDelete={(id) => del("reviews", id, loadReviews)} />}
+      {tab === "tickers" && <TickersView tickers={tickers} onAdd={() => setEditingTicker(emptyTicker(tickers.length + 1))} onEdit={setEditingTicker} onDelete={(id) => del("tickers", id, loadTickers)} />}
+      {tab === "mentors" && <MentorsView mentors={mentors} onAdd={() => setEditingMentor(emptyMentor(mentors.length + 1))} onEdit={setEditingMentor} onDelete={(id) => del("mentors", id, loadMentors)} />}
       {tab === "settings" && <SettingsView settings={settings} onSaved={loadSettings} />}
 
       {editingStory && <StoryEditor initial={editingStory} onClose={() => setEditingStory(null)} onSaved={async () => { setEditingStory(null); await loadStories(); }} />}
       {editingPkg && <PkgEditor initial={editingPkg} onClose={() => setEditingPkg(null)} onSaved={async () => { setEditingPkg(null); await loadPackages(); }} />}
       {editingReview && <ReviewEditor initial={editingReview} onClose={() => setEditingReview(null)} onSaved={async () => { setEditingReview(null); await loadReviews(); }} />}
+      {editingTicker && <TickerEditor initial={editingTicker} onClose={() => setEditingTicker(null)} onSaved={async () => { setEditingTicker(null); await loadTickers(); }} />}
+      {editingMentor && <MentorEditor initial={editingMentor} onClose={() => setEditingMentor(null)} onSaved={async () => { setEditingMentor(null); await loadMentors(); }} />}
     </Shell>
   );
 }
 
 /* ---------- 상담 ---------- */
-function ConsultationsView({ rows }: { rows: Consultation[] }) {
+function ConsultationsView({ rows, onStatus, onDelete }: { rows: Consultation[]; onStatus: (id: string, s: string) => void; onDelete: (id?: string) => void }) {
   if (rows.length === 0) return <p className="text-slate-500">아직 접수된 상담이 없습니다.</p>;
   return (
     <div className="overflow-x-auto rounded-xl border border-line">
       <table className="w-full text-left text-sm">
         <thead className="bg-ivory text-slate-500"><tr>
-          <th className="px-4 py-3 font-semibold">접수일</th><th className="px-4 py-3 font-semibold">이름</th>
-          <th className="px-4 py-3 font-semibold">연락처</th><th className="px-4 py-3 font-semibold">이메일</th>
-          <th className="px-4 py-3 font-semibold">관심 패키지</th><th className="px-4 py-3 font-semibold">상담 내용</th>
+          <th className="px-4 py-3 font-semibold">접수일</th><th className="px-4 py-3 font-semibold">상태</th>
+          <th className="px-4 py-3 font-semibold">이름</th><th className="px-4 py-3 font-semibold">연락처</th>
+          <th className="px-4 py-3 font-semibold">이메일</th><th className="px-4 py-3 font-semibold">관심 패키지</th>
+          <th className="px-4 py-3 font-semibold">상담 내용</th><th className="px-4 py-3 font-semibold"></th>
         </tr></thead>
         <tbody className="divide-y divide-line">
           {rows.map((r) => (
             <tr key={r.id} className="align-top">
               <td className="px-4 py-3 whitespace-nowrap text-slate-500">{new Date(r.created_at).toLocaleDateString("ko-KR")}</td>
+              <td className="px-4 py-3">
+                <select value={r.status} onChange={(e) => onStatus(r.id, e.target.value)} className={`cursor-pointer rounded-full border px-2 py-1 text-xs font-bold outline-none ${r.status === "done" ? "border-sage bg-sage text-white" : r.status === "contacted" ? "border-terracotta text-terracotta" : "border-line text-slate-500"}`}>
+                  {STATUSES.map((s) => <option key={s} value={s}>{STATUS_LABEL[s]}</option>)}
+                </select>
+              </td>
               <td className="px-4 py-3 font-medium text-ink">{r.name}</td>
               <td className="px-4 py-3 whitespace-nowrap text-slate-700">{r.phone}</td>
               <td className="px-4 py-3 text-slate-600">{r.email ?? "-"}</td>
               <td className="px-4 py-3 text-slate-600">{r.program ?? "-"}</td>
               <td className="px-4 py-3 text-slate-600">{r.message}</td>
+              <td className="px-4 py-3"><button onClick={() => onDelete(r.id)} className="cursor-pointer rounded-lg border border-rose-200 px-2.5 py-1 text-xs font-semibold text-rose-500 hover:bg-rose-50">삭제</button></td>
             </tr>
           ))}
         </tbody>
@@ -190,19 +225,45 @@ function ReviewsView({ reviews, onAdd, onEdit, onDelete }: { reviews: ReviewRow[
   );
 }
 
-/* ---------- 할인 설정 ---------- */
+/* ---------- 성과 티커 목록 ---------- */
+function TickersView({ tickers, onAdd, onEdit, onDelete }: { tickers: TickerRow[]; onAdd: () => void; onEdit: (t: TickerRow) => void; onDelete: (id?: string) => void }) {
+  return (
+    <ListShell addLabel="+ 새 성과 추가" onAdd={onAdd} empty={tickers.length === 0} emptyText="admin_extras.sql을 실행했는지 확인하세요.">
+      {tickers.map((t) => (
+        <Row key={t.id} order={t.sort_order} title={t.text} sub="" hidden={!t.published} onEdit={() => onEdit(t)} onDelete={() => onDelete(t.id)} />
+      ))}
+    </ListShell>
+  );
+}
+
+/* ---------- 멘토진 목록 ---------- */
+function MentorsView({ mentors, onAdd, onEdit, onDelete }: { mentors: MentorRow[]; onAdd: () => void; onEdit: (m: MentorRow) => void; onDelete: (id?: string) => void }) {
+  return (
+    <ListShell addLabel="+ 새 멘토 추가" onAdd={onAdd} empty={mentors.length === 0} emptyText="admin_extras.sql을 실행했는지 확인하세요.">
+      {mentors.map((m) => (
+        <Row key={m.id} order={m.sort_order} title={`${m.name} · ${m.company}`} sub={`${m.background} / ${m.expertise}`} hidden={!m.published} onEdit={() => onEdit(m)} onDelete={() => onDelete(m.id)} />
+      ))}
+    </ListShell>
+  );
+}
+
+/* ---------- 홈·할인 설정 ---------- */
 function SettingsView({ settings, onSaved }: { settings: Settings | null; onSaved: () => Promise<void> }) {
   const [enabled, setEnabled] = useState(settings?.promo_enabled ?? true);
   const [label, setLabel] = useState(settings?.promo_label ?? "30% 할인");
   const [banner, setBanner] = useState(settings?.promo_banner ?? "전 서비스 30% 할인");
+  const [companies, setCompanies] = useState(settings?.stat_companies ?? "13+");
+  const [rating, setRating] = useState(settings?.stat_rating ?? "5.0");
+  const [satisfaction, setSatisfaction] = useState(settings?.stat_satisfaction ?? "100%");
+  const [companiesText, setCompaniesText] = useState(settings?.companies_text ?? "");
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState("");
 
-  if (!settings) return <p className="text-slate-500">site_content.sql을 실행하면 할인 설정이 나타납니다.</p>;
+  if (!settings) return <p className="text-slate-500">site_content.sql / admin_extras.sql을 실행하면 설정이 나타납니다.</p>;
 
   async function save() {
     setSaving(true); setMsg("");
-    const { error } = await createClient().from("site_settings").update({ promo_enabled: enabled, promo_label: label, promo_banner: banner, updated_at: new Date().toISOString() }).eq("id", 1);
+    const { error } = await createClient().from("site_settings").update({ promo_enabled: enabled, promo_label: label, promo_banner: banner, stat_companies: companies, stat_rating: rating, stat_satisfaction: satisfaction, companies_text: companiesText, updated_at: new Date().toISOString() }).eq("id", 1);
     setSaving(false);
     if (error) { setMsg("저장 실패: " + error.message); return; }
     setMsg("저장되었습니다. 홈에서 확인하세요.");
@@ -211,16 +272,26 @@ function SettingsView({ settings, onSaved }: { settings: Settings | null; onSave
 
   return (
     <div className="max-w-lg">
+      <h3 className="mb-3 font-bold text-ink">할인 프로모션</h3>
       <label className="flex items-center gap-3 rounded-xl border border-line bg-white p-4">
         <input type="checkbox" checked={enabled} onChange={(e) => setEnabled(e.target.checked)} className="h-5 w-5 accent-sage" />
-        <span className="font-bold text-ink">할인 프로모션 표시</span>
-        <span className="text-sm text-slate-500">{enabled ? "켜짐 (배너·할인가·뱃지 노출)" : "꺼짐 (정가만 표시, 배너 숨김)"}</span>
+        <span className="font-bold text-ink">할인 표시</span>
+        <span className="text-sm text-slate-500">{enabled ? "켜짐 (배너·할인가·뱃지 노출)" : "꺼짐 (정가만 표시)"}</span>
       </label>
       <L label="가격카드 뱃지 문구"><In value={label} onChange={setLabel} placeholder="예: 30% 할인" /></L>
       <L label="상단 배너 문구"><In value={banner} onChange={setBanner} placeholder="예: 전 서비스 30% 할인" /></L>
+
+      <h3 className="mt-8 mb-3 font-bold text-ink">홈 지표·문구</h3>
+      <div className="grid grid-cols-3 gap-4">
+        <L label="합격 기관 지표"><In value={companies} onChange={setCompanies} placeholder="13+" /></L>
+        <L label="평균 평점"><In value={rating} onChange={setRating} placeholder="5.0" /></L>
+        <L label="추천 만족도"><In value={satisfaction} onChange={setSatisfaction} placeholder="100%" /></L>
+      </div>
+      <L label="합격 기관 목록 문구"><Area value={companiesText} onChange={setCompaniesText} rows={3} /></L>
+
       {msg && <p className="mt-4 text-sm text-sage">{msg}</p>}
       <button onClick={save} disabled={saving} className="mt-6 cursor-pointer rounded-full bg-sage px-6 py-2.5 text-sm font-bold text-white hover:bg-sage-600 disabled:opacity-50">{saving ? "저장 중…" : "저장"}</button>
-      <p className="mt-4 text-xs leading-relaxed text-slate-400">※ 할인가는 각 패키지의 &lsquo;할인가&rsquo; 값으로 표시됩니다. 정가만 남기려면 프로모션을 끄거나 서비스 비용 탭에서 할인가를 비우세요.</p>
+      <p className="mt-4 text-xs leading-relaxed text-slate-400">※ 지표 수치(예: 100%, 13+)는 표시광고법상 근거가 필요할 수 있으니 실제 집계 기준을 확인하세요.</p>
     </div>
   );
 }
@@ -371,6 +442,59 @@ function ReviewEditor({ initial, onClose, onSaved }: { initial: ReviewRow; onClo
       </div>
       <L label="페르소나"><In value={f.persona} onChange={(v) => set("persona", v)} placeholder="예: 신입 · 면접 준비" /></L>
       <L label="후기 내용 *"><Area value={f.text} onChange={(v) => set("text", v)} rows={5} /></L>
+      <L label="노출 순서"><In type="number" value={String(f.sort_order)} onChange={(v) => set("sort_order", Number(v) || 0)} /></L>
+      <Pub checked={f.published} onChange={(v) => set("published", v)} />
+      <Save err={err} saving={saving} onClose={onClose} onSave={save} />
+    </Modal>
+  );
+}
+
+/* ---------- 성과 티커 편집 ---------- */
+function TickerEditor({ initial, onClose, onSaved }: { initial: TickerRow; onClose: () => void; onSaved: () => void }) {
+  const [f, setF] = useState<TickerRow>(initial);
+  const [saving, setSaving] = useState(false);
+  const [err, setErr] = useState("");
+  const set = <K extends keyof TickerRow>(k: K, v: TickerRow[K]) => setF((p) => ({ ...p, [k]: v }));
+  async function save() {
+    if (!f.text.trim()) { setErr("문구는 필수입니다."); return; }
+    setSaving(true); setErr("");
+    const payload = { sort_order: f.sort_order, published: f.published, text: f.text.trim() };
+    const res = f.id ? await createClient().from("tickers").update(payload).eq("id", f.id) : await createClient().from("tickers").insert(payload);
+    if (res.error) { setErr("저장 실패: " + res.error.message); setSaving(false); return; }
+    onSaved();
+  }
+  return (
+    <Modal title={f.id ? "성과 문구 수정" : "새 성과 문구"} onClose={onClose}>
+      <L label="문구 *"><In value={f.text} onChange={(v) => set("text", v)} placeholder="예: 신세계프라퍼티 기획팀 최종 합격" /></L>
+      <L label="노출 순서"><In type="number" value={String(f.sort_order)} onChange={(v) => set("sort_order", Number(v) || 0)} /></L>
+      <Pub checked={f.published} onChange={(v) => set("published", v)} />
+      <Save err={err} saving={saving} onClose={onClose} onSave={save} />
+    </Modal>
+  );
+}
+
+/* ---------- 멘토 편집 ---------- */
+function MentorEditor({ initial, onClose, onSaved }: { initial: MentorRow; onClose: () => void; onSaved: () => void }) {
+  const [f, setF] = useState<MentorRow>(initial);
+  const [saving, setSaving] = useState(false);
+  const [err, setErr] = useState("");
+  const set = <K extends keyof MentorRow>(k: K, v: MentorRow[K]) => setF((p) => ({ ...p, [k]: v }));
+  async function save() {
+    if (!f.name.trim()) { setErr("멘토명은 필수입니다."); return; }
+    setSaving(true); setErr("");
+    const payload = { sort_order: f.sort_order, published: f.published, name: f.name.trim(), company: f.company.trim(), background: f.background.trim(), expertise: f.expertise.trim() };
+    const res = f.id ? await createClient().from("mentors").update(payload).eq("id", f.id) : await createClient().from("mentors").insert(payload);
+    if (res.error) { setErr("저장 실패: " + res.error.message); setSaving(false); return; }
+    onSaved();
+  }
+  return (
+    <Modal title={f.id ? "멘토 수정" : "새 멘토"} onClose={onClose}>
+      <div className="grid grid-cols-2 gap-4">
+        <L label="멘토명 *"><In value={f.name} onChange={(v) => set("name", v)} placeholder="예: 멘토 A" /></L>
+        <L label="소속"><In value={f.company} onChange={(v) => set("company", v)} placeholder="예: 국내 Top-Tier 운용사" /></L>
+      </div>
+      <L label="경력/배경"><In value={f.background} onChange={(v) => set("background", v)} placeholder="예: 전 외국계 컨설팅사 재직" /></L>
+      <L label="전문 분야"><In value={f.expertise} onChange={(v) => set("expertise", v)} placeholder="예: 자산운용사, 펀드 및 리츠" /></L>
       <L label="노출 순서"><In type="number" value={String(f.sort_order)} onChange={(v) => set("sort_order", Number(v) || 0)} /></L>
       <Pub checked={f.published} onChange={(v) => set("published", v)} />
       <Save err={err} saving={saving} onClose={onClose} onSave={save} />

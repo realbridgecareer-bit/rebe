@@ -4,7 +4,7 @@ import { Fragment, useEffect, useState } from "react";
 import Link from "next/link";
 import { BrandWordmark } from "@/components/icons";
 import { createClient } from "@/lib/supabase/client";
-import { FALLBACK_PACKAGES, FALLBACK_SETTINGS, rowToPkg, rowToReview, type Pkg, type Review, type SiteSettings } from "@/lib/site-content";
+import { FALLBACK_PACKAGES, FALLBACK_SETTINGS, rowToPkg, rowToReview, rowToMentor, type Pkg, type Review, type SiteSettings, type Mentor } from "@/lib/site-content";
 // 멘토 네트워크 로고월은 'logo/로고 정리.pptx'를 PowerPoint로 렌더한 슬라이드 이미지를 사용
 // (public/logos/network-wall/, scripts/network-wall.cjs 생성).
 
@@ -150,27 +150,39 @@ export default function LandingPage() {
     REVIEWS.map((r, i) => ({ ...r, service: r.service as Review["service"], sort_order: i + 1, published: true })),
   );
   const [settings, setSettings] = useState<SiteSettings>(FALLBACK_SETTINGS);
+  const [tickers, setTickers] = useState<string[]>(TICKER);
+  const [mentors, setMentors] = useState<Mentor[]>(() => MENTORS.map((m, i) => ({ ...m, sort_order: i + 1, published: true })));
 
-  // 서비스 패키지 / 후기 / 할인설정을 Supabase에서 읽는다(없거나 실패 시 폴백 유지)
+  // 콘텐츠를 Supabase에서 읽는다(없거나 실패 시 폴백 유지)
   useEffect(() => {
     (async () => {
       try {
         const supabase = createClient();
-        const [pk, rv, st] = await Promise.all([
+        const [pk, rv, st, tk, mt] = await Promise.all([
           supabase.from("packages").select("*").eq("published", true).order("sort_order", { ascending: true }),
           supabase.from("reviews").select("*").eq("published", true).order("sort_order", { ascending: true }),
           supabase.from("site_settings").select("*").eq("id", 1).maybeSingle(),
+          supabase.from("tickers").select("text").eq("published", true).order("sort_order", { ascending: true }),
+          supabase.from("mentors").select("*").eq("published", true).order("sort_order", { ascending: true }),
         ]);
         if (pk.data && pk.data.length) setPackages(pk.data.map(rowToPkg));
         if (rv.data && rv.data.length) setReviews(rv.data.map(rowToReview));
-        if (st.data) setSettings({ promo_enabled: st.data.promo_enabled, promo_label: st.data.promo_label, promo_banner: st.data.promo_banner });
+        if (st.data) setSettings({
+          promo_enabled: st.data.promo_enabled, promo_label: st.data.promo_label, promo_banner: st.data.promo_banner,
+          stat_companies: st.data.stat_companies ?? FALLBACK_SETTINGS.stat_companies,
+          stat_rating: st.data.stat_rating ?? FALLBACK_SETTINGS.stat_rating,
+          stat_satisfaction: st.data.stat_satisfaction ?? FALLBACK_SETTINGS.stat_satisfaction,
+          companies_text: st.data.companies_text ?? FALLBACK_SETTINGS.companies_text,
+        });
+        if (tk.data && tk.data.length) setTickers(tk.data.map((r) => r.text as string));
+        if (mt.data && mt.data.length) setMentors(mt.data.map(rowToMentor));
       } catch {
         /* 폴백 유지 */
       }
     })();
   }, []);
 
-  const N = TICKER.length;
+  const N = tickers.length;
   const PER = 3.2;
   const DUR = PER * N;
 
@@ -186,7 +198,7 @@ export default function LandingPage() {
           <span className="text-[15px] font-bold tracking-[-0.01em] text-white/85">컨설팅 실제 성과</span>
         </span>
         <span className="relative h-[50px] flex-1 overflow-hidden">
-          {TICKER.map((t, i) => (
+          {tickers.map((t, i) => (
             <span
               key={i}
               className="rb-vroll-item"
@@ -443,7 +455,7 @@ export default function LandingPage() {
         <div className="mx-auto max-w-[1200px]">
           <SectionHead eyebrow="MENTORS" title="REal BridgE 대표 멘토진" lead="업계 대표 회사 현직자들이 여러분의 커리어 성장을 위해 아낌없이 조언합니다." />
           <div className="mx-auto mt-[52px] grid max-w-[1100px] gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {MENTORS.map((m) => (
+            {mentors.map((m) => (
               <div key={m.name} className="rounded-[16px] border border-line bg-white p-6 text-center transition-colors hover:border-sage/30">
                 <div className="mx-auto flex h-[60px] w-[60px] items-center justify-center rounded-full bg-sand">
                   <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#C89B7B" strokeWidth="1.8" /><path d="M4.5 20c0-3.6 3.4-6 7.5-6s7.5 2.4 7.5 6" stroke="#C89B7B" strokeWidth="1.8" strokeLinecap="round" /></svg>
@@ -532,7 +544,7 @@ export default function LandingPage() {
 
           <div className="mx-auto mt-9 flex max-w-[560px] flex-wrap items-center justify-center gap-[22px] rounded-[18px] border border-line bg-white px-[30px] py-[22px]">
             <div className="flex items-center gap-3">
-              <span className="text-[44px] leading-none font-extrabold tracking-[-0.02em] text-ink">5.0</span>
+              <span className="text-[44px] leading-none font-extrabold tracking-[-0.02em] text-ink">{settings.stat_rating}</span>
               <div>
                 <Stars size={18} />
                 <div className="mt-[5px] text-[13px] text-soft">전체 리뷰 평점</div>
@@ -540,7 +552,7 @@ export default function LandingPage() {
             </div>
             <span className="h-11 w-px bg-line-2" />
             <div className="text-center">
-              <div className="text-[26px] font-extrabold text-sage">100%</div>
+              <div className="text-[26px] font-extrabold text-sage">{settings.stat_satisfaction}</div>
               <div className="mt-0.5 text-[13px] text-soft">추천 만족도</div>
             </div>
           </div>
@@ -572,9 +584,9 @@ export default function LandingPage() {
           </div>
 
           <div className="mx-auto mt-[52px] max-w-[720px] text-center">
-            <div className="text-[40px] font-extrabold tracking-[-0.02em] text-sage">13+</div>
+            <div className="text-[40px] font-extrabold tracking-[-0.02em] text-sage">{settings.stat_companies}</div>
             <h3 className="mt-[6px] text-[21px] font-extrabold text-ink">다양한 부동산·금융 기관 합격 사례</h3>
-            <p className="mx-auto mt-3 max-w-[600px] text-[14px] leading-[1.7] text-soft">신세계프라퍼티, NAI Korea, 한국투자신탁운용, 코람코자산신탁, 롯데AMC, ARA Korea, MDM, 이화자산운용, IFC Seoul, MG새마을금고자산관리 외 다수</p>
+            <p className="mx-auto mt-3 max-w-[600px] text-[14px] leading-[1.7] text-soft">{settings.companies_text}</p>
             <Link href="/contact" className="mt-[22px] inline-flex items-center gap-[7px] text-[15px] font-bold text-sage no-underline hover:text-terracotta">
               나의 합격 스토리 만들기 <Arrow color="currentColor" size={16} />
             </Link>
