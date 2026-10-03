@@ -18,7 +18,7 @@ export default function TermsPage() {
       <div className="mt-8 space-y-8 text-sm leading-relaxed text-slate-600">
         <Section title="제1조 (목적)">
           <p>
-            본 약관은 부프로(이하 “회사”)가 운영하는 취업컨설팅 서비스 ‘Real
+            본 약관은 리얼브릿지(이하 “회사”)가 운영하는 취업컨설팅 서비스 ‘Real
             Bridge(REBE)’(이하 “서비스”)의 이용과 관련하여 회사와 이용자의 권리·
             의무 및 책임사항을 규정함을 목적으로 합니다.
           </p>

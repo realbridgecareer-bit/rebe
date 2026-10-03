@@ -51,5 +51,8 @@ Qwen Studio.html
 /review/
 /resume/
 
+# 사업자등록증 등 원본 서류(대표자 생년월일 등 민감정보 — 공개 저장소 제외)
+/info/
+
 # 디자인 핸드오프 원본 번들(작업 입력물 — 사이트 코드 아님)
 /GitHub repository link/

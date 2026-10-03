@@ -39,7 +39,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - **진행 방식**: 자소서 단계 → 현직자 분석 → 1:1/그룹 컨설팅 → 첨삭 자료 → 면접 단계
   → 모의면접 → 영상·피드백 전달
 - **강점/신뢰 지표**: 현직 멘토 네트워크, (크몽 기준) 평점 5.0·리뷰 17건·만족도 100%
-- **연락처**: contact@realbridge.kr · 카카오톡 채널 @리얼브릿지 · 서울시 강남구 테헤란로 427 · 평일 09:00–18:00
+- **연락처**: realbridge.career@gmail.com · 카카오톡 채널 @리얼브릿지 · 경기도 의왕시 복지로 151,
+  103동 104호(내손동, 인덕원 퍼스비엘) · 평일 09:00–18:00
 - **참고**: 기존 판매 페이지 — https://kmong.com/gig/528672
 - **홈페이지 초안**: Qwen Studio에서 작성한 단일 페이지 스크롤형 초안이 디자인·콘텐츠의
   기준(source of truth). 원본은 `Qwen Studio.html`(앱 셸)이 아니라 React 컴포넌트 코드였고,
@@ -72,10 +73,12 @@ This version has breaking changes — APIs, conventions, and file structure may 
   `STORIES` 배열(회사 로고 전면 + before→after + 풀 인용구 + 3문단 + 강조 태그 + 서비스 필터).
   ⚠️ 사이트 어디에도 "크몽" 노출 금지(우리 자체 서비스). (이전 successStories `videoId` 유튜브
   모달 기능은 리디자인에서 제거됨.)
-- **사업자 정보(푸터)**: 브랜드/서비스명은 **Real Bridge(REBE)**, 사업자(명의)는 **부프로**로 별개다.
-  "부프로(Real Bridge)"처럼 **병기·동일시 금지**. 저작권 표기는 `© Real Bridge`, 법정 사업자 정보
-  블록에만 `상호: 부프로`로 표기. 사업자: 대표 엄은혜 / 537-59-00849 / 송파구 중대로 135, 11층 /
-  02-541-8248 / boopro.official@gmail.com / 호스팅 (주)아임웹.
+- **사업자 정보(푸터)**: 2026-10-01 사업자등록 완료, 브랜드/서비스명과 사업자명이
+  **리얼브릿지(Real Bridge)**로 일원화됨(이전엔 사업자명 "부프로"로 브랜드와 별개였음 — 폐기).
+  저작권 표기는 `© Real Bridge`, 법정 사업자 정보 블록에 `상호: 리얼브릿지(Real Bridge)`로 표기.
+  사업자: 간이과세자 / 대표 엄은혜 / 등록번호 833-58-00890 / 경기도 의왕시 복지로 151,
+  103동 104호(내손동, 인덕원 퍼스비엘) / 02-541-8248 / realbridge.career@gmail.com.
+  원본 사업자등록증은 `info/`(gitignore 대상, 저장소 미포함)에 보관.
 - **추가 라이브러리**: `framer-motion`, `react-intersection-observer`.
 - **개발 서버 주의**: Turbopack이 globals.css `@theme` 변경을 캐시할 수 있음. 색이 안 바뀌면
   `.next` 삭제 후 dev 재시작.

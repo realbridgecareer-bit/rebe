@@ -17,7 +17,7 @@ export default function PrivacyPage() {
 
       <div className="mt-8 space-y-8 text-sm leading-relaxed text-slate-600">
         <p>
-          부프로(이하 “회사”)는 정보주체의 자유와 권리 보호를 위해
+          리얼브릿지(이하 “회사”)는 정보주체의 자유와 권리 보호를 위해
           「개인정보 보호법」 및 관계 법령을 준수하며, 다음과 같이
           개인정보처리방침을 수립·공개합니다. 본 방침은 회사가 운영하는
           취업컨설팅 서비스 ‘Real Bridge(REBE)’에 적용됩니다.
@@ -87,7 +87,7 @@ export default function PrivacyPage() {
 
         <Section title="8. 개인정보 보호책임자">
           <ul className="list-disc space-y-1 pl-5">
-            <li>책임자: 부프로 대표 엄은혜</li>
+            <li>책임자: 리얼브릿지 대표 엄은혜</li>
             <li>이메일: realbridge.career@gmail.com</li>
             <li>전화: 02-541-8248</li>
           </ul>
