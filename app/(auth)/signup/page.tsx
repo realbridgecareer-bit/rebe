@@ -1,14 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
 type Status = "idle" | "loading" | "sent" | "error";
 
-export default function SignupPage() {
+function SignupForm() {
   const router = useRouter();
+  const next = useSearchParams().get("next");
   const [status, setStatus] = useState<Status>("idle");
   const [msg, setMsg] = useState("");
 
@@ -55,7 +56,7 @@ export default function SignupPage() {
 
       // 이메일 확인이 꺼져 있으면 즉시 세션 발급 → 바로 로그인 상태
       if (data.session) {
-        router.push("/dashboard");
+        router.push(next || "/dashboard");
         router.refresh();
         return;
       }
@@ -80,7 +81,7 @@ export default function SignupPage() {
           도착할 수도 있습니다.
         </p>
         <Link
-          href="/login"
+          href={next ? `/login?next=${encodeURIComponent(next)}` : "/login"}
           className="mt-6 inline-block font-medium text-terracotta hover:underline"
         >
           로그인하러 가기 →
@@ -92,6 +93,11 @@ export default function SignupPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold text-ink">회원가입</h1>
+      {next && (
+        <p className="mt-2 rounded-lg bg-sand px-4 py-3 text-sm text-terracotta">
+          계속하려면 먼저 회원가입해 주세요.
+        </p>
+      )}
       <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
         <input
           name="name"
@@ -166,10 +172,21 @@ export default function SignupPage() {
 
       <p className="mt-4 text-center text-sm text-slate-500">
         이미 회원이신가요?{" "}
-        <Link href="/login" className="font-medium text-terracotta hover:underline">
+        <Link
+          href={next ? `/login?next=${encodeURIComponent(next)}` : "/login"}
+          className="font-medium text-terracotta hover:underline"
+        >
           로그인
         </Link>
       </p>
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={null}>
+      <SignupForm />
+    </Suspense>
   );
 }

@@ -1,14 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
 type Status = "idle" | "loading" | "error";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const next = useSearchParams().get("next");
   const [status, setStatus] = useState<Status>("idle");
   const [msg, setMsg] = useState("");
 
@@ -31,6 +32,14 @@ export default function LoginPage() {
         password,
       });
       if (error) throw new Error(error.message);
+
+      // 특정 페이지(후기 작성 등)에서 로그인하러 온 경우 그 페이지로 복귀
+      if (next) {
+        router.push(next);
+        router.refresh();
+        return;
+      }
+
       // 관리자면 /admin, 아니면 /dashboard 로 이동
       let dest = "/dashboard";
       const uid = data.user?.id;
@@ -63,6 +72,11 @@ export default function LoginPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold text-ink">로그인</h1>
+      {next && (
+        <p className="mt-2 rounded-lg bg-sand px-4 py-3 text-sm text-terracotta">
+          계속하려면 먼저 로그인해 주세요.
+        </p>
+      )}
       <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
         <input
           name="email"
@@ -108,10 +122,21 @@ export default function LoginPage() {
 
       <p className="mt-4 text-center text-sm text-slate-500">
         아직 회원이 아니신가요?{" "}
-        <Link href="/signup" className="font-medium text-terracotta hover:underline">
+        <Link
+          href={next ? `/signup?next=${encodeURIComponent(next)}` : "/signup"}
+          className="font-medium text-terracotta hover:underline"
+        >
           회원가입
         </Link>
       </p>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginForm />
+    </Suspense>
   );
 }

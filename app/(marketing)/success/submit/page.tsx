@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import type { StorySubmissionInput } from "@/types";
 import { createClient } from "@/lib/supabase/client";
 
 type Status = "idle" | "submitting" | "success" | "error";
+type AuthState = "checking" | "signedIn" | "redirecting";
 
 const SERVICES = ["Real Connect", "Real Bridge", "Real Success"];
 const CAREER_TYPES = ["신입", "중고신입", "경력", "타 업계 재직"];
@@ -28,6 +30,8 @@ function maskName(fullName: string): string {
 }
 
 export default function StorySubmitPage() {
+  const router = useRouter();
+  const [authState, setAuthState] = useState<AuthState>("checking");
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [photoError, setPhotoError] = useState("");
@@ -40,6 +44,19 @@ export default function StorySubmitPage() {
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
 
   const maskedName = maskName(realName);
+
+  // 합격 후기 작성은 회원만 가능 — 미로그인 시 로그인 페이지로 보내고, 로그인 후 이 페이지로 복귀시킨다.
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) {
+        setAuthState("signedIn");
+      } else {
+        setAuthState("redirecting");
+        router.replace(`/login?next=${encodeURIComponent("/success/submit")}`);
+      }
+    });
+  }, [router]);
 
   function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files ?? []);
@@ -171,6 +188,14 @@ export default function StorySubmitPage() {
       setStatus("error");
       setErrorMsg(err instanceof Error ? err.message : "제출에 실패했습니다.");
     }
+  }
+
+  if (authState !== "signedIn") {
+    return (
+      <div className="mx-auto max-w-xl px-6 py-32 text-center text-slate-400">
+        {authState === "checking" ? "확인 중..." : "로그인 페이지로 이동 중..."}
+      </div>
+    );
   }
 
   if (status === "success") {
