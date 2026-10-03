@@ -4,6 +4,7 @@ import { Fragment, useEffect, useState } from "react";
 import Link from "next/link";
 import { BrandWordmark } from "@/components/icons";
 import { createClient } from "@/lib/supabase/client";
+import { Lightbox } from "@/components/lightbox";
 import { FALLBACK_PACKAGES, FALLBACK_SETTINGS, rowToPkg, rowToReview, rowToMentor, type Pkg, type Review, type SiteSettings, type Mentor } from "@/lib/site-content";
 // 멘토 네트워크 로고월은 'logo/로고 정리.pptx'를 PowerPoint로 렌더한 슬라이드 이미지를 사용
 // (public/logos/network-wall/, scripts/network-wall.cjs 생성).
@@ -145,6 +146,7 @@ const NETWORK_WALL = [
 
 export default function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [lightbox, setLightbox] = useState<{ images: string[]; index: number } | null>(null);
   const [packages, setPackages] = useState<Pkg[]>(FALLBACK_PACKAGES);
   const [reviews, setReviews] = useState<Review[]>(() =>
     REVIEWS.map((r, i) => ({ ...r, service: r.service as Review["service"], sort_order: i + 1, published: true })),
@@ -570,6 +572,34 @@ export default function LandingPage() {
                       <Stars size={13} />
                     </div>
                     <p className="mt-[15px] text-[14px] leading-[1.75] text-muted">{r.text}</p>
+                    {(r.photo_urls?.length ?? 0) > 0 && (
+                      r.photo_urls!.length === 1 ? (
+                        <button
+                          type="button"
+                          onClick={() => setLightbox({ images: r.photo_urls!, index: 0 })}
+                          className="mt-[15px] block w-full cursor-zoom-in overflow-hidden rounded-[10px] border border-line bg-ivory"
+                          title="사진 크게 보기"
+                        >
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={r.photo_urls![0]} alt={`${r.name} 첨부 사진`} className="max-h-56 w-full object-contain transition hover:opacity-90" />
+                        </button>
+                      ) : (
+                        <div className="mt-[15px] grid grid-cols-3 gap-2">
+                          {r.photo_urls!.map((url, i) => (
+                            <button
+                              key={url}
+                              type="button"
+                              onClick={() => setLightbox({ images: r.photo_urls!, index: i })}
+                              className="block cursor-zoom-in overflow-hidden rounded-[8px] border border-line bg-ivory"
+                              title="사진 크게 보기"
+                            >
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img src={url} alt={`${r.name} 첨부 사진 ${i + 1}`} className="h-20 w-full object-contain transition hover:opacity-90" />
+                            </button>
+                          ))}
+                        </div>
+                      )
+                    )}
                     <div className="mt-[14px] text-[12px] text-soft-3">{r.persona}</div>
                   </div>
                 ))}
@@ -577,9 +607,12 @@ export default function LandingPage() {
             ))}
           </div>
 
-          <div className="mt-3 text-center">
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-3 text-center">
             <Link href="/success" className="inline-flex items-center gap-[9px] rounded-full bg-sage px-8 py-[15px] text-[16px] font-bold text-white no-underline hover:bg-sage-600">
               합격 후기 자세히 보기 <Arrow />
+            </Link>
+            <Link href="/review" className="inline-flex items-center gap-[9px] rounded-full border border-sage px-8 py-[15px] text-[16px] font-bold text-sage no-underline hover:bg-sage hover:text-white">
+              후기 남기기 <Arrow color="currentColor" />
             </Link>
           </div>
 
@@ -615,6 +648,8 @@ export default function LandingPage() {
 
       {/* ===== FOOTER ===== */}
       <SiteFooterFull />
+
+      {lightbox && <Lightbox images={lightbox.images} index={lightbox.index} alt="후기 첨부 사진" onClose={() => setLightbox(null)} />}
     </div>
   );
 }
@@ -742,6 +777,8 @@ export function SiteFooterFull() {
               <Link href="/#mentors" className="text-[13.5px] text-soft no-underline hover:text-terracotta">멘토진</Link>
               <Link href="/#success" className="text-[13.5px] text-soft no-underline hover:text-terracotta">컨설팅 후기</Link>
               <Link href="/success" className="text-[13.5px] text-soft no-underline hover:text-terracotta">합격 사례</Link>
+              <Link href="/success/submit" className="text-[13.5px] text-soft no-underline hover:text-terracotta">합격 후기 남기기</Link>
+              <Link href="/review" className="text-[13.5px] text-soft no-underline hover:text-terracotta">후기 남기기</Link>
               <Link href="/contact" className="text-[13.5px] text-soft no-underline hover:text-terracotta">상담신청</Link>
             </div>
           </div>

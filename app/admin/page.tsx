@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { VAPID_PUBLIC_KEY, urlBase64ToUint8Array } from "@/lib/push";
+import { Lightbox } from "@/components/lightbox";
+import { computeLogoFit } from "@/lib/logo-fit";
 
 type Consultation = {
   id: string; created_at: string; name: string; phone: string;
@@ -15,6 +17,7 @@ type StoryRow = {
   logo_url: string; logo_h: number | null; logo_w: number | null; name: string;
   persona: string; service: string; before_text: string; after_text: string;
   quote: string; paragraphs: string[]; tags: string[];
+  proof_photo_urls: string[]; source: string;
 };
 type PkgRow = {
   id?: string; sort_order: number; published: boolean; name: string; sub: string;
@@ -23,6 +26,7 @@ type PkgRow = {
 type ReviewRow = {
   id?: string; sort_order: number; published: boolean; name: string;
   service: string; persona: string; text: string;
+  photo_urls: string[]; source: string;
 };
 type Settings = { id: number; promo_enabled: boolean; promo_label: string; promo_banner: string; stat_companies: string; stat_rating: string; stat_satisfaction: string; companies_text: string };
 type TickerRow = { id?: string; sort_order: number; published: boolean; text: string };
@@ -35,9 +39,9 @@ const SERVICES = ["Real Connect", "Real Bridge", "Real Success"];
 const STATUSES = ["new", "contacted", "done"];
 const STATUS_LABEL: Record<string, string> = { new: "신규", contacted: "연락함", done: "완료" };
 
-const emptyStory = (o: number): StoryRow => ({ sort_order: o, published: true, company: "", logo_url: "", logo_h: null, logo_w: null, name: "", persona: "", service: "Real Success", before_text: "", after_text: "", quote: "", paragraphs: [], tags: [] });
+const emptyStory = (o: number): StoryRow => ({ sort_order: o, published: true, company: "", logo_url: "", logo_h: null, logo_w: null, name: "", persona: "", service: "Real Success", before_text: "", after_text: "", quote: "", paragraphs: [], tags: [], proof_photo_urls: [], source: "admin" });
 const emptyPkg = (o: number): PkgRow => ({ sort_order: o, published: true, name: "", sub: "대면 컨설팅", detail: "", price: "", sale_price: "", features: [], featured: false });
-const emptyReview = (o: number): ReviewRow => ({ sort_order: o, published: true, name: "", service: "Real Connect", persona: "", text: "" });
+const emptyReview = (o: number): ReviewRow => ({ sort_order: o, published: true, name: "", service: "Real Connect", persona: "", text: "", photo_urls: [], source: "admin" });
 const emptyTicker = (o: number): TickerRow => ({ sort_order: o, published: true, text: "" });
 const emptyMentor = (o: number): MentorRow => ({ sort_order: o, published: true, name: "", company: "", background: "", expertise: "" });
 const emptyShot = (o: number): ShotRow => ({ sort_order: o, published: true, image_url: "", label: "" });
@@ -79,7 +83,7 @@ export default function AdminPage() {
   }
   async function loadStories() {
     const { data } = await createClient().from("success_stories").select("*").order("sort_order").order("created_at", { ascending: false });
-    if (data) setStories(data as StoryRow[]);
+    if (data) setStories(data.map((r) => ({ ...r, proof_photo_urls: r.proof_photo_urls ?? [] })) as StoryRow[]);
   }
   async function loadPackages() {
     const { data } = await createClient().from("packages").select("*").order("sort_order");
@@ -87,7 +91,7 @@ export default function AdminPage() {
   }
   async function loadReviews() {
     const { data } = await createClient().from("reviews").select("*").order("sort_order");
-    if (data) setReviews(data as ReviewRow[]);
+    if (data) setReviews(data.map((r) => ({ ...r, photo_urls: r.photo_urls ?? [] })) as ReviewRow[]);
   }
   async function loadTickers() {
     const { data } = await createClient().from("tickers").select("*").order("sort_order");
@@ -118,6 +122,18 @@ export default function AdminPage() {
     if (error) alert("삭제 실패: " + error.message);
     await reload();
   }
+  async function approveReview(id: string | undefined) {
+    if (!id) return;
+    const { error } = await createClient().from("reviews").update({ published: true }).eq("id", id);
+    if (error) { alert("승인 실패: " + error.message); return; }
+    await loadReviews();
+  }
+  async function approveStory(id: string | undefined) {
+    if (!id) return;
+    const { error } = await createClient().from("success_stories").update({ published: true }).eq("id", id);
+    if (error) { alert("승인 실패: " + error.message); return; }
+    await loadStories();
+  }
 
   if (state === "loading") return <Shell onLogout={null}><p className="text-slate-500">불러오는 중…</p></Shell>;
   if (state === "denied") return (
@@ -128,11 +144,14 @@ export default function AdminPage() {
     </Shell>
   );
 
+  const reviewPendingCount = reviews.filter((r) => r.source === "customer" && !r.published).length;
+  const storyPendingCount = stories.filter((s) => s.source === "customer" && !s.published).length;
+
   const tabs: [Tab, string][] = [
     ["consultations", `상담 신청 (${rows.length})`],
-    ["stories", `합격 사례 (${stories.length})`],
+    ["stories", `합격 사례 (${stories.length}${storyPendingCount ? ` · 승인대기 ${storyPendingCount}` : ""})`],
     ["packages", `서비스 비용 (${packages.length})`],
-    ["reviews", `컨설팅 후기 (${reviews.length})`],
+    ["reviews", `컨설팅 후기 (${reviews.length}${reviewPendingCount ? ` · 승인대기 ${reviewPendingCount}` : ""})`],
     ["shots", `후기 캡쳐 (${shots.length})`],
     ["tickers", `성과 티커 (${tickers.length})`],
     ["mentors", `멘토진 (${mentors.length})`],
@@ -152,9 +171,9 @@ export default function AdminPage() {
       </div>
 
       {tab === "consultations" && <ConsultationsView rows={rows} onStatus={setConsultationStatus} onDelete={(id) => del("consultations", id, loadConsultations)} />}
-      {tab === "stories" && <StoriesView stories={stories} onAdd={() => setEditingStory(emptyStory(stories.length + 1))} onEdit={setEditingStory} onDelete={(id) => del("success_stories", id, loadStories)} />}
+      {tab === "stories" && <StoriesView stories={stories} onAdd={() => setEditingStory(emptyStory(stories.length + 1))} onEdit={setEditingStory} onDelete={(id) => del("success_stories", id, loadStories)} onApprove={approveStory} />}
       {tab === "packages" && <PackagesView packages={packages} onAdd={() => setEditingPkg(emptyPkg(packages.length + 1))} onEdit={setEditingPkg} onDelete={(id) => del("packages", id, loadPackages)} />}
-      {tab === "reviews" && <ReviewsView reviews={reviews} onAdd={() => setEditingReview(emptyReview(reviews.length + 1))} onEdit={setEditingReview} onDelete={(id) => del("reviews", id, loadReviews)} />}
+      {tab === "reviews" && <ReviewsView reviews={reviews} onAdd={() => setEditingReview(emptyReview(reviews.length + 1))} onEdit={setEditingReview} onDelete={(id) => del("reviews", id, loadReviews)} onApprove={approveReview} />}
       {tab === "shots" && <ShotsView shots={shots} onAdd={() => setEditingShot(emptyShot(shots.length + 1))} onEdit={setEditingShot} onDelete={(id) => del("review_shots", id, loadShots)} />}
       {tab === "tickers" && <TickersView tickers={tickers} onAdd={() => setEditingTicker(emptyTicker(tickers.length + 1))} onEdit={setEditingTicker} onDelete={(id) => del("tickers", id, loadTickers)} />}
       {tab === "mentors" && <MentorsView mentors={mentors} onAdd={() => setEditingMentor(emptyMentor(mentors.length + 1))} onEdit={setEditingMentor} onDelete={(id) => del("mentors", id, loadMentors)} />}
@@ -206,12 +225,41 @@ function ConsultationsView({ rows, onStatus, onDelete }: { rows: Consultation[];
 }
 
 /* ---------- 합격 사례 목록 ---------- */
-function StoriesView({ stories, onAdd, onEdit, onDelete }: { stories: StoryRow[]; onAdd: () => void; onEdit: (s: StoryRow) => void; onDelete: (id?: string) => void }) {
+function StoriesView({ stories, onAdd, onEdit, onDelete, onApprove }: { stories: StoryRow[]; onAdd: () => void; onEdit: (s: StoryRow) => void; onDelete: (id?: string) => void; onApprove: (id?: string) => void }) {
+  const [lightbox, setLightbox] = useState<{ images: string[]; index: number } | null>(null);
+  const pending = stories.filter((s) => s.source === "customer" && !s.published);
+  const rest = stories.filter((s) => !(s.source === "customer" && !s.published));
   return (
     <ListShell addLabel="+ 새 후기 추가" onAdd={onAdd} empty={stories.length === 0} emptyText="success_stories.sql을 실행했는지 확인하세요.">
-      {stories.map((s) => (
-        <Row key={s.id} order={s.sort_order} title={s.company} sub={`${s.name} · ${s.after_text}`} badge={s.service} hidden={!s.published} onEdit={() => onEdit(s)} onDelete={() => onDelete(s.id)} />
+      {pending.length > 0 && (
+        <p className="-mt-1 mb-1 text-sm font-bold text-terracotta">고객이 직접 남긴 합격 후기 {pending.length}건이 승인 대기 중입니다.</p>
+      )}
+      {[...pending, ...rest].map((s) => (
+        <div key={s.id} className="flex items-center justify-between gap-4 rounded-xl border border-line bg-white p-4">
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="rounded bg-ivory px-2 py-0.5 text-xs font-bold text-slate-500">#{s.sort_order}</span>
+            <PhotoThumb urls={s.proof_photo_urls} alt="첨부 사진" onOpen={() => setLightbox({ images: s.proof_photo_urls, index: 0 })} />
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="font-bold text-ink">{s.company}</span>
+                <span className="rounded-full bg-sand px-2 py-0.5 text-[11px] font-bold text-terracotta">{s.service}</span>
+                {s.source === "customer" && <span className="rounded-full bg-cream px-2 py-0.5 text-[11px] font-bold text-sage-700">고객 제출</span>}
+                {!s.published && <span className="rounded-full bg-slate-200 px-2 py-0.5 text-[11px] font-bold text-slate-500">비공개</span>}
+                {s.source === "customer" && !s.logo_url && <span className="rounded-full bg-rose-100 px-2 py-0.5 text-[11px] font-bold text-rose-500">로고 없음</span>}
+              </div>
+              <p className="mt-1 truncate text-sm text-slate-500">{s.name} · {s.after_text}</p>
+            </div>
+          </div>
+          <div className="flex flex-none gap-2">
+            {s.source === "customer" && !s.published && (
+              <button onClick={() => onApprove(s.id)} className="cursor-pointer rounded-lg bg-sage px-3 py-1.5 text-sm font-semibold text-white hover:bg-sage-600">공개하기</button>
+            )}
+            <button onClick={() => onEdit(s)} className="cursor-pointer rounded-lg border border-line px-3 py-1.5 text-sm font-semibold text-slate-600 hover:bg-ivory">수정</button>
+            <button onClick={() => onDelete(s.id)} className="cursor-pointer rounded-lg border border-rose-200 px-3 py-1.5 text-sm font-semibold text-rose-500 hover:bg-rose-50">삭제</button>
+          </div>
+        </div>
       ))}
+      {lightbox && <Lightbox images={lightbox.images} index={lightbox.index} alt="첨부 사진" onClose={() => setLightbox(null)} />}
     </ListShell>
   );
 }
@@ -228,12 +276,40 @@ function PackagesView({ packages, onAdd, onEdit, onDelete }: { packages: PkgRow[
 }
 
 /* ---------- 컨설팅 후기 목록 ---------- */
-function ReviewsView({ reviews, onAdd, onEdit, onDelete }: { reviews: ReviewRow[]; onAdd: () => void; onEdit: (r: ReviewRow) => void; onDelete: (id?: string) => void }) {
+function ReviewsView({ reviews, onAdd, onEdit, onDelete, onApprove }: { reviews: ReviewRow[]; onAdd: () => void; onEdit: (r: ReviewRow) => void; onDelete: (id?: string) => void; onApprove: (id?: string) => void }) {
+  const [lightbox, setLightbox] = useState<{ images: string[]; index: number } | null>(null);
+  const pending = reviews.filter((r) => r.source === "customer" && !r.published);
+  const rest = reviews.filter((r) => !(r.source === "customer" && !r.published));
   return (
     <ListShell addLabel="+ 새 후기 추가" onAdd={onAdd} empty={reviews.length === 0} emptyText="site_content.sql을 실행했는지 확인하세요.">
-      {reviews.map((r) => (
-        <Row key={r.id} order={r.sort_order} title={r.name} sub={r.text} badge={r.service} hidden={!r.published} onEdit={() => onEdit(r)} onDelete={() => onDelete(r.id)} />
+      {pending.length > 0 && (
+        <p className="-mt-1 mb-1 text-sm font-bold text-terracotta">고객이 직접 남긴 후기 {pending.length}건이 승인 대기 중입니다.</p>
+      )}
+      {[...pending, ...rest].map((r) => (
+        <div key={r.id} className="flex items-center justify-between gap-4 rounded-xl border border-line bg-white p-4">
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="rounded bg-ivory px-2 py-0.5 text-xs font-bold text-slate-500">#{r.sort_order}</span>
+            <PhotoThumb urls={r.photo_urls} alt="첨부 사진" onOpen={() => setLightbox({ images: r.photo_urls, index: 0 })} />
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="font-bold text-ink">{r.name}</span>
+                <span className="rounded-full bg-sand px-2 py-0.5 text-[11px] font-bold text-terracotta">{r.service}</span>
+                {r.source === "customer" && <span className="rounded-full bg-cream px-2 py-0.5 text-[11px] font-bold text-sage-700">고객 제출</span>}
+                {!r.published && <span className="rounded-full bg-slate-200 px-2 py-0.5 text-[11px] font-bold text-slate-500">비공개</span>}
+              </div>
+              <p className="mt-1 truncate text-sm text-slate-500">{r.text}</p>
+            </div>
+          </div>
+          <div className="flex flex-none gap-2">
+            {r.source === "customer" && !r.published && (
+              <button onClick={() => onApprove(r.id)} className="cursor-pointer rounded-lg bg-sage px-3 py-1.5 text-sm font-semibold text-white hover:bg-sage-600">공개하기</button>
+            )}
+            <button onClick={() => onEdit(r)} className="cursor-pointer rounded-lg border border-line px-3 py-1.5 text-sm font-semibold text-slate-600 hover:bg-ivory">수정</button>
+            <button onClick={() => onDelete(r.id)} className="cursor-pointer rounded-lg border border-rose-200 px-3 py-1.5 text-sm font-semibold text-rose-500 hover:bg-rose-50">삭제</button>
+          </div>
+        </div>
       ))}
+      {lightbox && <Lightbox images={lightbox.images} index={lightbox.index} alt="첨부 사진" onClose={() => setLightbox(null)} />}
     </ListShell>
   );
 }
@@ -333,6 +409,18 @@ function SettingsView({ settings, onSaved }: { settings: Settings | null; onSave
 }
 
 /* ---------- 공용 리스트/행 ---------- */
+function PhotoThumb({ urls, alt, onOpen }: { urls: string[]; alt: string; onOpen: () => void }) {
+  if (!urls || urls.length === 0) return null;
+  return (
+    <button type="button" onClick={onOpen} className="relative flex-none cursor-zoom-in" title="크게 보기">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={urls[0]} alt={alt} className="h-20 w-20 rounded-lg border border-line object-cover transition hover:opacity-80" />
+      {urls.length > 1 && (
+        <span className="absolute -top-1.5 -right-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-sage px-1 text-[10px] font-bold text-white">+{urls.length - 1}</span>
+      )}
+    </button>
+  );
+}
 function ListShell({ addLabel, onAdd, empty, emptyText, children }: { addLabel: string; onAdd: () => void; empty: boolean; emptyText: string; children: React.ReactNode }) {
   return (
     <div>
@@ -372,6 +460,8 @@ function StoryEditor({ initial, onClose, onSaved }: { initial: StoryRow; onClose
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [err, setErr] = useState("");
+  const [lightbox, setLightbox] = useState<number | null>(null);
+  const [advancedLogo, setAdvancedLogo] = useState(false);
   const set = <K extends keyof StoryRow>(k: K, v: StoryRow[K]) => setF((p) => ({ ...p, [k]: v }));
 
   async function handleLogo(e: React.ChangeEvent<HTMLInputElement>) {
@@ -380,21 +470,49 @@ function StoryEditor({ initial, onClose, onSaved }: { initial: StoryRow; onClose
     try {
       const supabase = createClient();
       const path = `${crypto.randomUUID()}.${file.name.split(".").pop() || "png"}`;
-      const { error } = await supabase.storage.from("story-logos").upload(path, file);
-      if (error) throw new Error(error.message);
+      const [uploadRes, fit] = await Promise.all([
+        supabase.storage.from("story-logos").upload(path, file),
+        computeLogoFit(file),
+      ]);
+      if (uploadRes.error) throw new Error(uploadRes.error.message);
       set("logo_url", supabase.storage.from("story-logos").getPublicUrl(path).data.publicUrl);
+      set("logo_h", fit.h);
+      set("logo_w", fit.w);
     } catch (e) { setErr("로고 업로드 실패: " + (e instanceof Error ? e.message : "")); } finally { setUploading(false); }
+  }
+  async function handleProofPhotos(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files ?? []);
+    e.target.value = "";
+    if (files.length === 0) return;
+    setUploading(true); setErr("");
+    try {
+      const supabase = createClient();
+      const urls: string[] = [];
+      for (const file of files) {
+        const path = `${crypto.randomUUID()}.${file.name.split(".").pop() || "jpg"}`;
+        const { error } = await supabase.storage.from("review-photos").upload(path, file);
+        if (error) throw new Error(error.message);
+        urls.push(supabase.storage.from("review-photos").getPublicUrl(path).data.publicUrl);
+      }
+      set("proof_photo_urls", [...f.proof_photo_urls, ...urls]);
+    } catch (e) { setErr("사진 업로드 실패: " + (e instanceof Error ? e.message : "")); } finally { setUploading(false); }
+  }
+  function removeProofPhoto(idx: number) {
+    set("proof_photo_urls", f.proof_photo_urls.filter((_, i) => i !== idx));
   }
   async function save() {
     if (!f.company.trim() || !f.name.trim()) { setErr("회사명과 이름은 필수입니다."); return; }
     setSaving(true); setErr("");
-    const payload = { sort_order: f.sort_order, published: f.published, company: f.company.trim(), logo_url: f.logo_url || null, logo_h: f.logo_h, logo_w: f.logo_w, name: f.name.trim(), persona: f.persona.trim(), service: f.service, before_text: f.before_text.trim(), after_text: f.after_text.trim(), quote: f.quote.trim(), paragraphs: paras.split(/\n\s*\n|\n/).map((p) => p.trim()).filter(Boolean), tags: tags.split(",").map((t) => t.trim()).filter(Boolean) };
+    const payload = { sort_order: f.sort_order, published: f.published, company: f.company.trim(), logo_url: f.logo_url || null, logo_h: f.logo_h, logo_w: f.logo_w, name: f.name.trim(), persona: f.persona.trim(), service: f.service, before_text: f.before_text.trim(), after_text: f.after_text.trim(), quote: f.quote.trim(), paragraphs: paras.split(/\n\s*\n|\n/).map((p) => p.trim()).filter(Boolean), tags: tags.split(",").map((t) => t.trim()).filter(Boolean), proof_photo_urls: f.proof_photo_urls, source: f.source || "admin" };
     const res = f.id ? await createClient().from("success_stories").update(payload).eq("id", f.id) : await createClient().from("success_stories").insert(payload);
     if (res.error) { setErr("저장 실패: " + res.error.message); setSaving(false); return; }
     onSaved();
   }
   return (
     <Modal title={f.id ? "합격 사례 수정" : "새 합격 사례"} onClose={onClose}>
+      {f.source === "customer" && (
+        <p className="mb-3 rounded-lg bg-sand px-3 py-2 text-sm font-semibold text-terracotta">고객이 직접 제출한 합격 후기입니다. 회사 로고를 추가하고 내용을 확인한 뒤 아래 &quot;공개&quot;를 켜면 페이지에 노출됩니다.</p>
+      )}
       <div className="grid grid-cols-2 gap-4">
         <L label="회사명 *"><In value={f.company} onChange={(v) => set("company", v)} /></L>
         <L label="서비스"><Sel value={f.service} onChange={(v) => set("service", v)} /></L>
@@ -411,12 +529,36 @@ function StoryEditor({ initial, onClose, onSaved }: { initial: StoryRow; onClose
           {f.logo_url ? <img src={f.logo_url} alt="로고" className="h-12 w-auto rounded border border-line object-contain px-2" /> : <span className="text-sm text-slate-400">로고 없음</span>}
           <label className="cursor-pointer rounded-lg border border-line px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-ivory">{uploading ? "업로드 중…" : "이미지 업로드"}<input type="file" accept="image/*" onChange={handleLogo} className="hidden" disabled={uploading} /></label>
         </div>
+        {f.logo_url && (
+          <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-slate-400">
+            <span>표시 크기가 자동으로 맞춰집니다 (높이 {f.logo_h ?? 42}px · 너비 {f.logo_w ?? 120}px)</span>
+            <button type="button" onClick={() => setAdvancedLogo((v) => !v)} className="cursor-pointer font-semibold text-sage hover:underline">
+              {advancedLogo ? "직접 조정 닫기" : "크기가 이상하면 직접 조정"}
+            </button>
+          </div>
+        )}
+        {advancedLogo && (
+          <div className="mt-2 grid grid-cols-2 gap-4">
+            <L label="로고 최대높이(px)"><In type="number" value={f.logo_h == null ? "" : String(f.logo_h)} onChange={(v) => set("logo_h", v ? Number(v) : null)} /></L>
+            <L label="로고 최대너비(px)"><In type="number" value={f.logo_w == null ? "" : String(f.logo_w)} onChange={(v) => set("logo_w", v ? Number(v) : null)} /></L>
+          </div>
+        )}
       </L>
-      <div className="grid grid-cols-3 gap-4">
-        <L label="노출 순서"><In type="number" value={String(f.sort_order)} onChange={(v) => set("sort_order", Number(v) || 0)} /></L>
-        <L label="로고 최대높이(px)"><In type="number" value={f.logo_h == null ? "" : String(f.logo_h)} onChange={(v) => set("logo_h", v ? Number(v) : null)} /></L>
-        <L label="로고 최대너비(px)"><In type="number" value={f.logo_w == null ? "" : String(f.logo_w)} onChange={(v) => set("logo_w", v ? Number(v) : null)} /></L>
-      </div>
+      <L label="첨부 사진">
+        <div className="flex flex-wrap items-center gap-3">
+          {f.proof_photo_urls.map((url, i) => (
+            <div key={url} className="relative h-20 w-20 flex-none">
+              <button type="button" onClick={() => setLightbox(i)} className="cursor-zoom-in" title="크게 보기">
+                <img src={url} alt="첨부 사진" className="h-20 w-20 rounded border border-line object-cover transition hover:opacity-80" />
+              </button>
+              <button type="button" onClick={() => removeProofPhoto(i)} aria-label="사진 제거" className="absolute -top-2 -right-2 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-rose-500 text-xs font-bold text-white hover:bg-rose-600">✕</button>
+            </div>
+          ))}
+          <label className="cursor-pointer rounded-lg border border-line px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-ivory">{uploading ? "업로드 중…" : "사진 추가"}<input type="file" accept="image/*" multiple onChange={handleProofPhotos} className="hidden" disabled={uploading} /></label>
+          {lightbox !== null && <Lightbox images={f.proof_photo_urls} index={lightbox} alt="첨부 사진" onClose={() => setLightbox(null)} />}
+        </div>
+      </L>
+      <L label="노출 순서"><In type="number" value={String(f.sort_order)} onChange={(v) => set("sort_order", Number(v) || 0)} /></L>
       <Pub checked={f.published} onChange={(v) => set("published", v)} />
       <Save err={err} saving={saving || uploading} onClose={onClose} onSave={save} />
     </Modal>
@@ -460,27 +602,67 @@ function PkgEditor({ initial, onClose, onSaved }: { initial: PkgRow; onClose: ()
 function ReviewEditor({ initial, onClose, onSaved }: { initial: ReviewRow; onClose: () => void; onSaved: () => void }) {
   const [f, setF] = useState<ReviewRow>(initial);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [err, setErr] = useState("");
+  const [lightbox, setLightbox] = useState<number | null>(null);
   const set = <K extends keyof ReviewRow>(k: K, v: ReviewRow[K]) => setF((p) => ({ ...p, [k]: v }));
+
+  async function handlePhotos(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files ?? []);
+    e.target.value = "";
+    if (files.length === 0) return;
+    setUploading(true); setErr("");
+    try {
+      const supabase = createClient();
+      const urls: string[] = [];
+      for (const file of files) {
+        const path = `${crypto.randomUUID()}.${file.name.split(".").pop() || "jpg"}`;
+        const { error } = await supabase.storage.from("review-photos").upload(path, file);
+        if (error) throw new Error(error.message);
+        urls.push(supabase.storage.from("review-photos").getPublicUrl(path).data.publicUrl);
+      }
+      set("photo_urls", [...f.photo_urls, ...urls]);
+    } catch (e) { setErr("사진 업로드 실패: " + (e instanceof Error ? e.message : "")); } finally { setUploading(false); }
+  }
+  function removePhoto(idx: number) {
+    set("photo_urls", f.photo_urls.filter((_, i) => i !== idx));
+  }
   async function save() {
     if (!f.name.trim() || !f.text.trim()) { setErr("이름과 후기 내용은 필수입니다."); return; }
     setSaving(true); setErr("");
-    const payload = { sort_order: f.sort_order, published: f.published, name: f.name.trim(), service: f.service, persona: f.persona.trim(), text: f.text.trim() };
+    const payload = { sort_order: f.sort_order, published: f.published, name: f.name.trim(), service: f.service, persona: f.persona.trim(), text: f.text.trim(), photo_urls: f.photo_urls, source: f.source || "admin" };
     const res = f.id ? await createClient().from("reviews").update(payload).eq("id", f.id) : await createClient().from("reviews").insert(payload);
     if (res.error) { setErr("저장 실패: " + res.error.message); setSaving(false); return; }
     onSaved();
   }
   return (
     <Modal title={f.id ? "컨설팅 후기 수정" : "새 컨설팅 후기"} onClose={onClose}>
+      {f.source === "customer" && (
+        <p className="mb-3 rounded-lg bg-sand px-3 py-2 text-sm font-semibold text-terracotta">고객이 직접 제출한 후기입니다. 내용을 확인 후 아래 &quot;공개&quot;를 켜면 홈페이지에 노출됩니다.</p>
+      )}
       <div className="grid grid-cols-2 gap-4">
         <L label="이름 *"><In value={f.name} onChange={(v) => set("name", v)} placeholder="예: 김ㅇㅇ 님" /></L>
         <L label="서비스"><Sel value={f.service} onChange={(v) => set("service", v)} /></L>
       </div>
       <L label="페르소나"><In value={f.persona} onChange={(v) => set("persona", v)} placeholder="예: 신입 · 면접 준비" /></L>
       <L label="후기 내용 *"><Area value={f.text} onChange={(v) => set("text", v)} rows={5} /></L>
+      <L label="첨부 사진(합격 인증 등)">
+        <div className="flex flex-wrap items-center gap-3">
+          {f.photo_urls.map((url, i) => (
+            <div key={url} className="relative h-20 w-20 flex-none">
+              <button type="button" onClick={() => setLightbox(i)} className="cursor-zoom-in" title="크게 보기">
+                <img src={url} alt="첨부 사진" className="h-20 w-20 rounded border border-line object-cover transition hover:opacity-80" />
+              </button>
+              <button type="button" onClick={() => removePhoto(i)} aria-label="사진 제거" className="absolute -top-2 -right-2 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-rose-500 text-xs font-bold text-white hover:bg-rose-600">✕</button>
+            </div>
+          ))}
+          <label className="cursor-pointer rounded-lg border border-line px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-ivory">{uploading ? "업로드 중…" : "사진 추가"}<input type="file" accept="image/*" multiple onChange={handlePhotos} className="hidden" disabled={uploading} /></label>
+          {lightbox !== null && <Lightbox images={f.photo_urls} index={lightbox} alt="첨부 사진" onClose={() => setLightbox(null)} />}
+        </div>
+      </L>
       <L label="노출 순서"><In type="number" value={String(f.sort_order)} onChange={(v) => set("sort_order", Number(v) || 0)} /></L>
       <Pub checked={f.published} onChange={(v) => set("published", v)} />
-      <Save err={err} saving={saving} onClose={onClose} onSave={save} />
+      <Save err={err} saving={saving || uploading} onClose={onClose} onSave={save} />
     </Modal>
   );
 }

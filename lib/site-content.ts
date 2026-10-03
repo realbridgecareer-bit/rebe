@@ -22,6 +22,10 @@ export type Review = {
   persona: string;
   text: string;
   published: boolean;
+  /** 첨부 이미지 (선택, 여러 장 가능) */
+  photo_urls?: string[];
+  /** 'admin'=관리자 작성, 'customer'=고객이 직접 제출 */
+  source?: "admin" | "customer";
 };
 
 export type SiteSettings = {
@@ -93,6 +97,8 @@ export function rowToReview(r: Record<string, unknown>): Review {
     persona: (r.persona as string) ?? "",
     text: (r.text as string) ?? "",
     published: r.published === undefined ? true : Boolean(r.published),
+    photo_urls: (r.photo_urls as string[]) ?? [],
+    source: (r.source as Review["source"]) ?? "admin",
   };
 }
 export function reviewToRow(r: Review) {
@@ -103,6 +109,8 @@ export function reviewToRow(r: Review) {
     persona: r.persona,
     text: r.text,
     published: r.published,
+    photo_urls: r.photo_urls ?? [],
+    source: r.source ?? "admin",
   };
 }
 

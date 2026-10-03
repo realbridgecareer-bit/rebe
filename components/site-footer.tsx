@@ -16,6 +16,12 @@ export function SiteFooter() {
           <Link href="/contact" className="hover:text-terracotta">
             상담신청
           </Link>
+          <Link href="/review" className="hover:text-terracotta">
+            후기 남기기
+          </Link>
+          <Link href="/success/submit" className="hover:text-terracotta">
+            합격 후기 남기기
+          </Link>
           <Link href="/privacy" className="hover:text-terracotta">
             개인정보처리방침
           </Link>

@@ -75,6 +75,10 @@ export default function SignupPage() {
           입력하신 이메일로 인증 링크를 보냈습니다. 링크를 클릭해 가입을 완료한
           뒤 로그인해 주세요.
         </p>
+        <p className="mt-3 rounded-lg bg-sand px-4 py-3 text-xs leading-relaxed text-terracotta">
+          메일이 안 보이면 <strong>스팸(정크) 메일함</strong>을 꼭 확인해 주세요. 몇 분 정도 늦게
+          도착할 수도 있습니다.
+        </p>
         <Link
           href="/login"
           className="mt-6 inline-block font-medium text-terracotta hover:underline"

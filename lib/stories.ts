@@ -16,6 +16,10 @@ export type Story = {
   quote: string;
   paragraphs: string[];
   tags: string[];
+  /** 첨부 이미지 (선택, 여러 장 가능) */
+  proofPhotos?: string[];
+  /** 'admin'=관리자 작성, 'customer'=고객이 직접 제출 */
+  source?: "admin" | "customer";
 };
 
 /** 실제 후기 원본(카톡 캡쳐) 갤러리 항목 */
@@ -41,6 +45,8 @@ export function rowToStory(r: Record<string, unknown>): Story {
     quote: (r.quote as string) ?? "",
     paragraphs: (r.paragraphs as string[]) ?? [],
     tags: (r.tags as string[]) ?? [],
+    proofPhotos: (r.proof_photo_urls as string[]) ?? [],
+    source: (r.source as Story["source"]) ?? "admin",
   };
 }
 
@@ -59,6 +65,8 @@ export function storyToRow(s: Story) {
     quote: s.quote,
     paragraphs: s.paragraphs,
     tags: s.tags,
+    proof_photo_urls: s.proofPhotos ?? [],
+    source: s.source ?? "admin",
   };
 }
 

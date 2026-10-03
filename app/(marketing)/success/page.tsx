@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { BrandWordmark } from "@/components/icons";
 import { createClient } from "@/lib/supabase/client";
+import { Lightbox } from "@/components/lightbox";
 import { rowToStory, rowToShot, type Story, type ReviewShot } from "@/lib/stories";
 import { FALLBACK_SETTINGS, type SiteSettings } from "@/lib/site-content";
 
@@ -137,6 +138,7 @@ export default function SuccessStoriesPage() {
   const [stories, setStories] = useState<Story[]>(STORIES);
   const [settings, setSettings] = useState<SiteSettings>(FALLBACK_SETTINGS);
   const [shots, setShots] = useState<ReviewShot[]>(REVIEW_SHOTS);
+  const [proofLightbox, setProofLightbox] = useState<{ images: string[]; index: number } | null>(null);
 
   // 공개된 합격 사례 + 지표 + 후기 캡쳐를 Supabase에서 읽어온다(없거나 실패 시 폴백 유지)
   useEffect(() => {
@@ -241,6 +243,19 @@ export default function SuccessStoriesPage() {
       {/* ===== FILTER + REVIEWS ===== */}
       <section className="bg-white px-6 pt-14 pb-24">
         <div className="mx-auto max-w-[880px]">
+          <div className="mb-7 flex flex-wrap items-center justify-between gap-4 rounded-[18px] border border-terracotta/25 bg-sand px-6 py-5">
+            <div>
+              <p className="text-[16px] font-extrabold text-ink">합격하셨나요?</p>
+              <p className="mt-[3px] text-[13.5px] text-muted-2">나의 합격 스토리를 남기고 다른 취준생에게 힘이 되어주세요.</p>
+            </div>
+            <Link
+              href="/success/submit"
+              className="inline-flex flex-none items-center gap-2 rounded-full bg-terracotta px-6 py-[13px] text-[15px] font-bold text-white no-underline shadow-[0_4px_14px_rgba(192,106,69,0.3)] hover:brightness-95"
+            >
+              나도 합격 후기 남기기 <Arrow color="#fff" size={15} />
+            </Link>
+          </div>
+
           <div className="flex flex-wrap items-center justify-between gap-4 border-b border-line-2 pb-[26px]">
             <div className="text-[15px] font-bold text-muted-2">
               총 <span className="text-terracotta">{visible.length}</span>건의 합격 후기
@@ -264,7 +279,7 @@ export default function SuccessStoriesPage() {
             </div>
           </div>
 
-          <div className="mt-[34px] flex flex-col gap-[22px]">
+          <div className="mt-[18px] flex flex-col gap-[22px]">
             {visible.map((s) => (
               <article key={s.company + s.name} className="rounded-[20px] border border-line bg-white p-8 shadow-[0_8px_24px_rgba(47,58,46,0.05)] transition-colors hover:border-sage/[0.28] md:px-9">
                 {/* header */}
@@ -291,7 +306,7 @@ export default function SuccessStoriesPage() {
                   </div>
                 </div>
 
-                {/* before -> after (모바일에서도 한 줄 유지) */}
+                {/* before -> after (모바일에서도 한 줄 유지, 카드 전체 너비 유지) */}
                 <div className="mt-[22px] flex items-center gap-3 rounded-[14px] border border-line-2 bg-ivory px-4 py-[14px] md:gap-[14px] md:px-5 md:py-[15px]">
                   <div className="min-w-0 flex-1">
                     <div className="text-[11px] font-bold tracking-[0.04em] text-soft-3">지원 전</div>
@@ -304,25 +319,59 @@ export default function SuccessStoriesPage() {
                   </div>
                 </div>
 
-                {/* pull quote */}
-                <p className="mt-6 text-[21px] leading-[1.5] font-extrabold tracking-[-0.01em] text-sage">“{s.quote}”</p>
+                <div className="mt-6 flex flex-col gap-6 md:flex-row md:items-start md:gap-8">
+                  <div className="min-w-0 flex-1">
+                    {/* pull quote */}
+                    {s.quote && (
+                      <p className="text-[21px] leading-[1.5] font-extrabold tracking-[-0.01em] text-sage">“{s.quote}”</p>
+                    )}
 
-                {/* paragraphs */}
-                <div className="mt-[15px] flex flex-col gap-[13px]">
-                  {s.paragraphs.map((p, i) => (
-                    <p key={i} className="text-[15px] leading-[1.85] text-muted">{p}</p>
-                  ))}
-                </div>
+                    {/* paragraphs */}
+                    <div className={`${s.quote ? "mt-[15px]" : ""} flex flex-col gap-[13px]`}>
+                      {s.paragraphs.map((p, i) => (
+                        <p key={i} className="text-[15px] leading-[1.85] text-muted">{p}</p>
+                      ))}
+                    </div>
 
-                {/* tags */}
-                <div className="mt-[22px] flex flex-wrap items-center gap-[9px] border-t border-line-3 pt-5">
-                  <span className="text-[12.5px] font-bold text-soft-2">이런 점이 좋았어요</span>
-                  {s.tags.map((t) => (
-                    <span key={t} className="inline-flex items-center gap-1.5 rounded-full bg-sand px-[13px] py-1.5 text-[13px] font-semibold text-terracotta">
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#C06A45" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                      {t}
-                    </span>
-                  ))}
+                    {/* tags */}
+                    <div className="mt-[22px] flex flex-wrap items-center gap-[9px] border-t border-line-3 pt-5">
+                      <span className="text-[12.5px] font-bold text-soft-2">이런 점이 좋았어요</span>
+                      {s.tags.map((t) => (
+                        <span key={t} className="inline-flex items-center gap-1.5 rounded-full bg-sand px-[13px] py-1.5 text-[13px] font-semibold text-terracotta">
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#C06A45" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 첨부 사진 미리보기 (최대 2장, 크게 표시) */}
+                  {(s.proofPhotos?.length ?? 0) > 0 && (
+                    <div className="w-full flex-none md:w-[180px]">
+                      <div className="grid grid-cols-2 gap-2 md:grid-cols-1">
+                        {s.proofPhotos!.slice(0, 2).map((url, i) => {
+                          const hiddenCount = s.proofPhotos!.length - 2;
+                          const showOverlay = i === 1 && hiddenCount > 0;
+                          return (
+                            <button
+                              key={url}
+                              type="button"
+                              onClick={() => setProofLightbox({ images: s.proofPhotos!, index: i })}
+                              className="relative aspect-[4/3] cursor-zoom-in overflow-hidden rounded-[12px] border border-line bg-ivory"
+                              title="사진 크게 보기"
+                            >
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img src={url} alt="" className="h-full w-full object-cover transition hover:opacity-90" />
+                              {showOverlay && (
+                                <span className="absolute inset-0 flex items-center justify-center bg-black/55 text-[15px] font-bold text-white">+{hiddenCount}</span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      <p className="mt-2 text-center text-[11px] font-semibold text-soft-3">실제 후기 및 인증사진</p>
+                    </div>
+                  )}
                 </div>
               </article>
             ))}
@@ -418,6 +467,8 @@ export default function SuccessStoriesPage() {
           </figure>
         </div>
       )}
+
+      {proofLightbox && <Lightbox images={proofLightbox.images} index={proofLightbox.index} alt="첨부 사진" onClose={() => setProofLightbox(null)} />}
     </div>
   );
 }
