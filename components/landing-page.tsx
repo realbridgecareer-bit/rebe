@@ -154,6 +154,17 @@ export default function LandingPage() {
   const [settings, setSettings] = useState<SiteSettings>(FALLBACK_SETTINGS);
   const [tickers, setTickers] = useState<string[]>(TICKER);
   const [mentors, setMentors] = useState<Mentor[]>(() => MENTORS.map((m, i) => ({ ...m, sort_order: i + 1, published: true })));
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // 로그인 상태를 반영해 네비게이션의 "로그인"↔"마이페이지"를 전환한다
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getSession().then(({ data }) => setIsLoggedIn(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session);
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
 
   // 콘텐츠를 Supabase에서 읽는다(없거나 실패 시 폴백 유지)
   useEffect(() => {
@@ -233,8 +244,8 @@ export default function LandingPage() {
               </a>
             ))}
             <span className="h-[15px] w-px bg-line" />
-            <Link href="/login" className="text-[14.5px] font-semibold text-muted-2 no-underline hover:text-ink">
-              로그인
+            <Link href={isLoggedIn ? "/dashboard" : "/login"} className="text-[14.5px] font-semibold text-muted-2 no-underline hover:text-ink">
+              {isLoggedIn ? "마이페이지" : "로그인"}
             </Link>
             <Link href="/contact" className="rounded-full bg-sage px-5 py-[10px] text-[14.5px] font-bold text-white no-underline hover:bg-sage-600">
               문의하기
@@ -260,8 +271,8 @@ export default function LandingPage() {
                 </a>
               ))}
               <div className="mt-2 flex gap-3">
-                <Link href="/login" className="rounded-full border border-line px-5 py-[10px] text-[14px] font-bold text-muted-2 no-underline">
-                  로그인
+                <Link href={isLoggedIn ? "/dashboard" : "/login"} className="rounded-full border border-line px-5 py-[10px] text-[14px] font-bold text-muted-2 no-underline">
+                  {isLoggedIn ? "마이페이지" : "로그인"}
                 </Link>
                 <Link href="/contact" className="rounded-full bg-sage px-5 py-[10px] text-[14px] font-bold text-white no-underline">
                   문의하기

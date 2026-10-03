@@ -56,7 +56,7 @@ function SignupForm() {
 
       // 이메일 확인이 꺼져 있으면 즉시 세션 발급 → 바로 로그인 상태
       if (data.session) {
-        router.push(next || "/dashboard");
+        router.push(next || "/");
         router.refresh();
         return;
       }

@@ -1,5 +1,9 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { BrandLockup } from "@/components/icons";
+import { createClient } from "@/lib/supabase/client";
 
 const navItems = [
   { href: "/#about", label: "브랜드 소개" },
@@ -8,6 +12,17 @@ const navItems = [
 ];
 
 export function SiteHeader() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getSession().then(({ data }) => setIsLoggedIn(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session);
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
   return (
     <header className="border-b border-line bg-white">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
@@ -26,10 +41,10 @@ export function SiteHeader() {
             </Link>
           ))}
           <Link
-            href="/login"
+            href={isLoggedIn ? "/dashboard" : "/login"}
             className="font-medium text-slate-600 transition hover:text-ink"
           >
-            로그인
+            {isLoggedIn ? "마이페이지" : "로그인"}
           </Link>
           <Link
             href="/contact"

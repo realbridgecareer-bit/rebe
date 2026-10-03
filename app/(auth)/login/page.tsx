@@ -40,8 +40,8 @@ function LoginForm() {
         return;
       }
 
-      // 관리자면 /admin, 아니면 /dashboard 로 이동
-      let dest = "/dashboard";
+      // 관리자면 /admin, 아니면 메인으로 이동
+      let dest = "/";
       const uid = data.user?.id;
       if (uid) {
         const { data: adminRow } = await supabase
