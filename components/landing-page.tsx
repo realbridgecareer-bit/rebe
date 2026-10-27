@@ -309,10 +309,9 @@ export default function LandingPage() {
           </div>
           <div className="relative" style={{ animation: "rbup .6s ease .15s both" }}>
             <div className="rounded-[20px] border border-line bg-white p-8 shadow-[0_18px_44px_rgba(47,58,46,0.08)]">
-              <div className="grid grid-cols-2 gap-[22px]">
+              <div className="grid grid-cols-3 gap-[22px]">
                 {[
                   ["100+", "현직 멘토"],
-                  ["95%", "합격률"],
                   ["12+", "업종 커버리지"],
                   ["5.0", "만족도"],
                 ].map(([v, l]) => (
@@ -328,7 +327,7 @@ export default function LandingPage() {
                 </span>
                 <p className="text-[14.5px] font-semibold text-[#4A4234]">100% 현직자 멘토와의 1:1 맞춤형 컨설팅</p>
               </div>
-              <p className="mt-4 text-[11px] leading-[1.6] text-soft-3">※ 합격률·만족도는 자체 수강생 응답을 기준으로 집계한 수치입니다.</p>
+              <p className="mt-4 text-[11px] leading-[1.6] text-soft-3">※ 만족도는 자체 수강생 응답을 기준으로 집계한 수치입니다.</p>
             </div>
             <div className="absolute -right-[10px] -bottom-[18px] flex items-center gap-[9px] rounded-[14px] border border-line bg-white px-[15px] py-[11px] shadow-[0_10px_26px_rgba(47,58,46,0.1)]">
               <StarG size={19} />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
@@ -122,6 +122,29 @@ export default function AdminPage() {
     if (error) alert("삭제 실패: " + error.message);
     await reload();
   }
+  /** 화면에 보이는 목록(items) 기준으로 바로 위/아래 항목과 노출 순서를 맞바꾼다. 다른 항목 번호는 건드리지 않아도 된다. */
+  async function reorder(table: string, id: string | undefined, items: { id?: string; sort_order: number }[], dir: "up" | "down", reload: () => Promise<void>) {
+    if (!id) return;
+    const idx = items.findIndex((x) => x.id === id);
+    const swapIdx = dir === "up" ? idx - 1 : idx + 1;
+    if (idx === -1 || swapIdx < 0 || swapIdx >= items.length) return;
+    const a = items[idx], b = items[swapIdx];
+    const supabase = createClient();
+    const [r1, r2] = await Promise.all([
+      supabase.from(table).update({ sort_order: b.sort_order }).eq("id", a.id as string),
+      supabase.from(table).update({ sort_order: a.sort_order }).eq("id", b.id as string),
+    ]);
+    if (r1.error || r2.error) { alert("순서 변경 실패: " + (r1.error?.message || r2.error?.message)); }
+    await reload();
+  }
+  /** 다른 항목들의 번호를 바꾸지 않고, 이 항목만 현재 최소값보다 작게 만들어 맨 위로 올린다. */
+  async function moveToTop(table: string, id: string | undefined, items: { id?: string; sort_order: number }[], reload: () => Promise<void>) {
+    if (!id || items.length === 0) return;
+    const min = Math.min(...items.map((x) => x.sort_order));
+    const { error } = await createClient().from(table).update({ sort_order: min - 1 }).eq("id", id);
+    if (error) { alert("순서 변경 실패: " + error.message); return; }
+    await reload();
+  }
   async function approveReview(id: string | undefined) {
     if (!id) return;
     const { error } = await createClient().from("reviews").update({ published: true }).eq("id", id);
@@ -158,6 +181,10 @@ export default function AdminPage() {
     ["settings", "홈·할인 설정"],
   ];
 
+  const companyOptions = [...new Set(stories.map((s) => s.company).filter(Boolean))].sort();
+  const personaOptions = [...new Set([...stories.map((s) => s.persona), ...reviews.map((r) => r.persona)].filter(Boolean))].sort();
+  const tagOptions = [...new Set(stories.flatMap((s) => s.tags))].sort();
+
   return (
     <Shell onLogout={handleLogout}>
       <NotifyToggle />
@@ -171,17 +198,17 @@ export default function AdminPage() {
       </div>
 
       {tab === "consultations" && <ConsultationsView rows={rows} onStatus={setConsultationStatus} onDelete={(id) => del("consultations", id, loadConsultations)} />}
-      {tab === "stories" && <StoriesView stories={stories} onAdd={() => setEditingStory(emptyStory(stories.length + 1))} onEdit={setEditingStory} onDelete={(id) => del("success_stories", id, loadStories)} onApprove={approveStory} />}
-      {tab === "packages" && <PackagesView packages={packages} onAdd={() => setEditingPkg(emptyPkg(packages.length + 1))} onEdit={setEditingPkg} onDelete={(id) => del("packages", id, loadPackages)} />}
-      {tab === "reviews" && <ReviewsView reviews={reviews} onAdd={() => setEditingReview(emptyReview(reviews.length + 1))} onEdit={setEditingReview} onDelete={(id) => del("reviews", id, loadReviews)} onApprove={approveReview} />}
-      {tab === "shots" && <ShotsView shots={shots} onAdd={() => setEditingShot(emptyShot(shots.length + 1))} onEdit={setEditingShot} onDelete={(id) => del("review_shots", id, loadShots)} />}
-      {tab === "tickers" && <TickersView tickers={tickers} onAdd={() => setEditingTicker(emptyTicker(tickers.length + 1))} onEdit={setEditingTicker} onDelete={(id) => del("tickers", id, loadTickers)} />}
-      {tab === "mentors" && <MentorsView mentors={mentors} onAdd={() => setEditingMentor(emptyMentor(mentors.length + 1))} onEdit={setEditingMentor} onDelete={(id) => del("mentors", id, loadMentors)} />}
+      {tab === "stories" && <StoriesView stories={stories} onAdd={() => setEditingStory(emptyStory(stories.length + 1))} onEdit={setEditingStory} onDelete={(id) => del("success_stories", id, loadStories)} onApprove={approveStory} onMove={(id, dir) => reorder("success_stories", id, stories, dir, loadStories)} onMoveTop={(id) => moveToTop("success_stories", id, stories, loadStories)} />}
+      {tab === "packages" && <PackagesView packages={packages} onAdd={() => setEditingPkg(emptyPkg(packages.length + 1))} onEdit={setEditingPkg} onDelete={(id) => del("packages", id, loadPackages)} onMove={(id, dir) => reorder("packages", id, packages, dir, loadPackages)} onMoveTop={(id) => moveToTop("packages", id, packages, loadPackages)} />}
+      {tab === "reviews" && <ReviewsView reviews={reviews} onAdd={() => setEditingReview(emptyReview(reviews.length + 1))} onEdit={setEditingReview} onDelete={(id) => del("reviews", id, loadReviews)} onApprove={approveReview} onMove={(id, dir) => reorder("reviews", id, reviews, dir, loadReviews)} onMoveTop={(id) => moveToTop("reviews", id, reviews, loadReviews)} />}
+      {tab === "shots" && <ShotsView shots={shots} onAdd={() => setEditingShot(emptyShot(shots.length + 1))} onEdit={setEditingShot} onDelete={(id) => del("review_shots", id, loadShots)} onMove={(id, dir) => reorder("review_shots", id, shots, dir, loadShots)} onMoveTop={(id) => moveToTop("review_shots", id, shots, loadShots)} />}
+      {tab === "tickers" && <TickersView tickers={tickers} onAdd={() => setEditingTicker(emptyTicker(tickers.length + 1))} onEdit={setEditingTicker} onDelete={(id) => del("tickers", id, loadTickers)} onMove={(id, dir) => reorder("tickers", id, tickers, dir, loadTickers)} onMoveTop={(id) => moveToTop("tickers", id, tickers, loadTickers)} />}
+      {tab === "mentors" && <MentorsView mentors={mentors} onAdd={() => setEditingMentor(emptyMentor(mentors.length + 1))} onEdit={setEditingMentor} onDelete={(id) => del("mentors", id, loadMentors)} onMove={(id, dir) => reorder("mentors", id, mentors, dir, loadMentors)} onMoveTop={(id) => moveToTop("mentors", id, mentors, loadMentors)} />}
       {tab === "settings" && <SettingsView settings={settings} onSaved={loadSettings} />}
 
-      {editingStory && <StoryEditor initial={editingStory} onClose={() => setEditingStory(null)} onSaved={async () => { setEditingStory(null); await loadStories(); }} />}
+      {editingStory && <StoryEditor initial={editingStory} onClose={() => setEditingStory(null)} onSaved={async () => { setEditingStory(null); await loadStories(); }} companies={companyOptions} personas={personaOptions} tagOptions={tagOptions} />}
       {editingPkg && <PkgEditor initial={editingPkg} onClose={() => setEditingPkg(null)} onSaved={async () => { setEditingPkg(null); await loadPackages(); }} />}
-      {editingReview && <ReviewEditor initial={editingReview} onClose={() => setEditingReview(null)} onSaved={async () => { setEditingReview(null); await loadReviews(); }} />}
+      {editingReview && <ReviewEditor initial={editingReview} onClose={() => setEditingReview(null)} onSaved={async () => { setEditingReview(null); await loadReviews(); }} personas={personaOptions} />}
       {editingTicker && <TickerEditor initial={editingTicker} onClose={() => setEditingTicker(null)} onSaved={async () => { setEditingTicker(null); await loadTickers(); }} />}
       {editingMentor && <MentorEditor initial={editingMentor} onClose={() => setEditingMentor(null)} onSaved={async () => { setEditingMentor(null); await loadMentors(); }} />}
       {editingShot && <ShotEditor initial={editingShot} onClose={() => setEditingShot(null)} onSaved={async () => { setEditingShot(null); await loadShots(); }} />}
@@ -225,18 +252,22 @@ function ConsultationsView({ rows, onStatus, onDelete }: { rows: Consultation[];
 }
 
 /* ---------- 합격 사례 목록 ---------- */
-function StoriesView({ stories, onAdd, onEdit, onDelete, onApprove }: { stories: StoryRow[]; onAdd: () => void; onEdit: (s: StoryRow) => void; onDelete: (id?: string) => void; onApprove: (id?: string) => void }) {
+function StoriesView({ stories, onAdd, onEdit, onDelete, onApprove, onMove, onMoveTop }: { stories: StoryRow[]; onAdd: () => void; onEdit: (s: StoryRow) => void; onDelete: (id?: string) => void; onApprove: (id?: string) => void; onMove: (id: string | undefined, dir: "up" | "down") => void; onMoveTop: (id: string | undefined) => void }) {
   const [lightbox, setLightbox] = useState<{ images: string[]; index: number } | null>(null);
   const pending = stories.filter((s) => s.source === "customer" && !s.published);
   const rest = stories.filter((s) => !(s.source === "customer" && !s.published));
   return (
     <ListShell addLabel="+ 새 후기 추가" onAdd={onAdd} empty={stories.length === 0} emptyText="success_stories.sql을 실행했는지 확인하세요.">
       {pending.length > 0 && (
-        <p className="-mt-1 mb-1 text-sm font-bold text-terracotta">고객이 직접 남긴 합격 후기 {pending.length}건이 승인 대기 중입니다.</p>
+        <p className="-mt-1 mb-1 text-sm font-bold text-terracotta">고객이 직접 남긴 합격 후기 {pending.length}건이 승인 대기 중입니다. (공개 전까지는 순서 변경 불가)</p>
       )}
-      {[...pending, ...rest].map((s) => (
+      {[...pending, ...rest].map((s) => {
+        const restIdx = rest.findIndex((x) => x.id === s.id);
+        const isPending = restIdx === -1;
+        return (
         <div key={s.id} className="flex items-center justify-between gap-4 rounded-xl border border-line bg-white p-4">
           <div className="flex min-w-0 items-center gap-3">
+            {isPending ? <div className="w-[34px] flex-none" /> : <MoveButtons isFirst={restIdx === 0} isLast={restIdx === rest.length - 1} onUp={() => onMove(s.id, "up")} onDown={() => onMove(s.id, "down")} onTop={() => onMoveTop(s.id)} />}
             <span className="rounded bg-ivory px-2 py-0.5 text-xs font-bold text-slate-500">#{s.sort_order}</span>
             <PhotoThumb urls={s.proof_photo_urls} alt="첨부 사진" onOpen={() => setLightbox({ images: s.proof_photo_urls, index: 0 })} />
             <div className="min-w-0">
@@ -258,36 +289,41 @@ function StoriesView({ stories, onAdd, onEdit, onDelete, onApprove }: { stories:
             <button onClick={() => onDelete(s.id)} className="cursor-pointer rounded-lg border border-rose-200 px-3 py-1.5 text-sm font-semibold text-rose-500 hover:bg-rose-50">삭제</button>
           </div>
         </div>
-      ))}
+        );
+      })}
       {lightbox && <Lightbox images={lightbox.images} index={lightbox.index} alt="첨부 사진" onClose={() => setLightbox(null)} />}
     </ListShell>
   );
 }
 
 /* ---------- 서비스 비용 목록 ---------- */
-function PackagesView({ packages, onAdd, onEdit, onDelete }: { packages: PkgRow[]; onAdd: () => void; onEdit: (p: PkgRow) => void; onDelete: (id?: string) => void }) {
+function PackagesView({ packages, onAdd, onEdit, onDelete, onMove, onMoveTop }: { packages: PkgRow[]; onAdd: () => void; onEdit: (p: PkgRow) => void; onDelete: (id?: string) => void; onMove: (id: string | undefined, dir: "up" | "down") => void; onMoveTop: (id: string | undefined) => void }) {
   return (
     <ListShell addLabel="+ 새 패키지 추가" onAdd={onAdd} empty={packages.length === 0} emptyText="site_content.sql을 실행했는지 확인하세요.">
-      {packages.map((p) => (
-        <Row key={p.id} order={p.sort_order} title={p.name} sub={`${p.sub} ${p.detail} · 정가 ${p.price}${p.sale_price ? ` → 할인 ${p.sale_price}` : ""}`} badge={p.featured ? "인기" : undefined} hidden={!p.published} onEdit={() => onEdit(p)} onDelete={() => onDelete(p.id)} />
+      {packages.map((p, i) => (
+        <Row key={p.id} order={p.sort_order} title={p.name} sub={`${p.sub} ${p.detail} · 정가 ${p.price}${p.sale_price ? ` → 할인 ${p.sale_price}` : ""}`} badge={p.featured ? "인기" : undefined} hidden={!p.published} onEdit={() => onEdit(p)} onDelete={() => onDelete(p.id)} onMoveUp={() => onMove(p.id, "up")} onMoveDown={() => onMove(p.id, "down")} onMoveTop={() => onMoveTop(p.id)} isFirst={i === 0} isLast={i === packages.length - 1} />
       ))}
     </ListShell>
   );
 }
 
 /* ---------- 컨설팅 후기 목록 ---------- */
-function ReviewsView({ reviews, onAdd, onEdit, onDelete, onApprove }: { reviews: ReviewRow[]; onAdd: () => void; onEdit: (r: ReviewRow) => void; onDelete: (id?: string) => void; onApprove: (id?: string) => void }) {
+function ReviewsView({ reviews, onAdd, onEdit, onDelete, onApprove, onMove, onMoveTop }: { reviews: ReviewRow[]; onAdd: () => void; onEdit: (r: ReviewRow) => void; onDelete: (id?: string) => void; onApprove: (id?: string) => void; onMove: (id: string | undefined, dir: "up" | "down") => void; onMoveTop: (id: string | undefined) => void }) {
   const [lightbox, setLightbox] = useState<{ images: string[]; index: number } | null>(null);
   const pending = reviews.filter((r) => r.source === "customer" && !r.published);
   const rest = reviews.filter((r) => !(r.source === "customer" && !r.published));
   return (
     <ListShell addLabel="+ 새 후기 추가" onAdd={onAdd} empty={reviews.length === 0} emptyText="site_content.sql을 실행했는지 확인하세요.">
       {pending.length > 0 && (
-        <p className="-mt-1 mb-1 text-sm font-bold text-terracotta">고객이 직접 남긴 후기 {pending.length}건이 승인 대기 중입니다.</p>
+        <p className="-mt-1 mb-1 text-sm font-bold text-terracotta">고객이 직접 남긴 후기 {pending.length}건이 승인 대기 중입니다. (공개 전까지는 순서 변경 불가)</p>
       )}
-      {[...pending, ...rest].map((r) => (
+      {[...pending, ...rest].map((r) => {
+        const restIdx = rest.findIndex((x) => x.id === r.id);
+        const isPending = restIdx === -1;
+        return (
         <div key={r.id} className="flex items-center justify-between gap-4 rounded-xl border border-line bg-white p-4">
           <div className="flex min-w-0 items-center gap-3">
+            {isPending ? <div className="w-[34px] flex-none" /> : <MoveButtons isFirst={restIdx === 0} isLast={restIdx === rest.length - 1} onUp={() => onMove(r.id, "up")} onDown={() => onMove(r.id, "down")} onTop={() => onMoveTop(r.id)} />}
             <span className="rounded bg-ivory px-2 py-0.5 text-xs font-bold text-slate-500">#{r.sort_order}</span>
             <PhotoThumb urls={r.photo_urls} alt="첨부 사진" onOpen={() => setLightbox({ images: r.photo_urls, index: 0 })} />
             <div className="min-w-0">
@@ -308,41 +344,43 @@ function ReviewsView({ reviews, onAdd, onEdit, onDelete, onApprove }: { reviews:
             <button onClick={() => onDelete(r.id)} className="cursor-pointer rounded-lg border border-rose-200 px-3 py-1.5 text-sm font-semibold text-rose-500 hover:bg-rose-50">삭제</button>
           </div>
         </div>
-      ))}
+        );
+      })}
       {lightbox && <Lightbox images={lightbox.images} index={lightbox.index} alt="첨부 사진" onClose={() => setLightbox(null)} />}
     </ListShell>
   );
 }
 
 /* ---------- 성과 티커 목록 ---------- */
-function TickersView({ tickers, onAdd, onEdit, onDelete }: { tickers: TickerRow[]; onAdd: () => void; onEdit: (t: TickerRow) => void; onDelete: (id?: string) => void }) {
+function TickersView({ tickers, onAdd, onEdit, onDelete, onMove, onMoveTop }: { tickers: TickerRow[]; onAdd: () => void; onEdit: (t: TickerRow) => void; onDelete: (id?: string) => void; onMove: (id: string | undefined, dir: "up" | "down") => void; onMoveTop: (id: string | undefined) => void }) {
   return (
     <ListShell addLabel="+ 새 성과 추가" onAdd={onAdd} empty={tickers.length === 0} emptyText="admin_extras.sql을 실행했는지 확인하세요.">
-      {tickers.map((t) => (
-        <Row key={t.id} order={t.sort_order} title={t.text} sub="" hidden={!t.published} onEdit={() => onEdit(t)} onDelete={() => onDelete(t.id)} />
+      {tickers.map((t, i) => (
+        <Row key={t.id} order={t.sort_order} title={t.text} sub="" hidden={!t.published} onEdit={() => onEdit(t)} onDelete={() => onDelete(t.id)} onMoveUp={() => onMove(t.id, "up")} onMoveDown={() => onMove(t.id, "down")} onMoveTop={() => onMoveTop(t.id)} isFirst={i === 0} isLast={i === tickers.length - 1} />
       ))}
     </ListShell>
   );
 }
 
 /* ---------- 멘토진 목록 ---------- */
-function MentorsView({ mentors, onAdd, onEdit, onDelete }: { mentors: MentorRow[]; onAdd: () => void; onEdit: (m: MentorRow) => void; onDelete: (id?: string) => void }) {
+function MentorsView({ mentors, onAdd, onEdit, onDelete, onMove, onMoveTop }: { mentors: MentorRow[]; onAdd: () => void; onEdit: (m: MentorRow) => void; onDelete: (id?: string) => void; onMove: (id: string | undefined, dir: "up" | "down") => void; onMoveTop: (id: string | undefined) => void }) {
   return (
     <ListShell addLabel="+ 새 멘토 추가" onAdd={onAdd} empty={mentors.length === 0} emptyText="admin_extras.sql을 실행했는지 확인하세요.">
-      {mentors.map((m) => (
-        <Row key={m.id} order={m.sort_order} title={`${m.name} · ${m.company}`} sub={`${m.background} / ${m.expertise}`} hidden={!m.published} onEdit={() => onEdit(m)} onDelete={() => onDelete(m.id)} />
+      {mentors.map((m, i) => (
+        <Row key={m.id} order={m.sort_order} title={`${m.name} · ${m.company}`} sub={`${m.background} / ${m.expertise}`} hidden={!m.published} onEdit={() => onEdit(m)} onDelete={() => onDelete(m.id)} onMoveUp={() => onMove(m.id, "up")} onMoveDown={() => onMove(m.id, "down")} onMoveTop={() => onMoveTop(m.id)} isFirst={i === 0} isLast={i === mentors.length - 1} />
       ))}
     </ListShell>
   );
 }
 
 /* ---------- 후기 캡쳐 목록 ---------- */
-function ShotsView({ shots, onAdd, onEdit, onDelete }: { shots: ShotRow[]; onAdd: () => void; onEdit: (s: ShotRow) => void; onDelete: (id?: string) => void }) {
+function ShotsView({ shots, onAdd, onEdit, onDelete, onMove, onMoveTop }: { shots: ShotRow[]; onAdd: () => void; onEdit: (s: ShotRow) => void; onDelete: (id?: string) => void; onMove: (id: string | undefined, dir: "up" | "down") => void; onMoveTop: (id: string | undefined) => void }) {
   return (
     <ListShell addLabel="+ 새 캡쳐 추가" onAdd={onAdd} empty={shots.length === 0} emptyText="review_shots.sql을 실행했는지 확인하세요.">
-      {shots.map((s) => (
+      {shots.map((s, i) => (
         <div key={s.id} className="flex items-center justify-between gap-4 rounded-xl border border-line bg-white p-4">
           <div className="flex min-w-0 items-center gap-3">
+            <MoveButtons isFirst={i === 0} isLast={i === shots.length - 1} onUp={() => onMove(s.id, "up")} onDown={() => onMove(s.id, "down")} onTop={() => onMoveTop(s.id)} />
             <span className="rounded bg-ivory px-2 py-0.5 text-xs font-bold text-slate-500">#{s.sort_order}</span>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={s.image_url} alt={s.label} className="h-12 w-12 rounded border border-line object-cover" />
@@ -432,17 +470,20 @@ function ListShell({ addLabel, onAdd, empty, emptyText, children }: { addLabel: 
     </div>
   );
 }
-function Row({ order, title, sub, badge, hidden, onEdit, onDelete }: { order: number; title: string; sub: string; badge?: string; hidden?: boolean; onEdit: () => void; onDelete: () => void }) {
+function Row({ order, title, sub, badge, hidden, onEdit, onDelete, onMoveUp, onMoveDown, onMoveTop, isFirst, isLast }: { order: number; title: string; sub: string; badge?: string; hidden?: boolean; onEdit: () => void; onDelete: () => void; onMoveUp: () => void; onMoveDown: () => void; onMoveTop: () => void; isFirst: boolean; isLast: boolean }) {
   return (
     <div className="flex items-center justify-between gap-4 rounded-xl border border-line bg-white p-4">
-      <div className="min-w-0">
-        <div className="flex items-center gap-2">
-          <span className="rounded bg-ivory px-2 py-0.5 text-xs font-bold text-slate-500">#{order}</span>
-          <span className="font-bold text-ink">{title}</span>
-          {badge && <span className="rounded-full bg-sand px-2 py-0.5 text-[11px] font-bold text-terracotta">{badge}</span>}
-          {hidden && <span className="rounded-full bg-slate-200 px-2 py-0.5 text-[11px] font-bold text-slate-500">비공개</span>}
+      <div className="flex min-w-0 items-center gap-3">
+        <MoveButtons isFirst={isFirst} isLast={isLast} onUp={onMoveUp} onDown={onMoveDown} onTop={onMoveTop} />
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="rounded bg-ivory px-2 py-0.5 text-xs font-bold text-slate-500">#{order}</span>
+            <span className="font-bold text-ink">{title}</span>
+            {badge && <span className="rounded-full bg-sand px-2 py-0.5 text-[11px] font-bold text-terracotta">{badge}</span>}
+            {hidden && <span className="rounded-full bg-slate-200 px-2 py-0.5 text-[11px] font-bold text-slate-500">비공개</span>}
+          </div>
+          <p className="mt-1 truncate text-sm text-slate-500">{sub}</p>
         </div>
-        <p className="mt-1 truncate text-sm text-slate-500">{sub}</p>
       </div>
       <div className="flex flex-none gap-2">
         <button onClick={onEdit} className="cursor-pointer rounded-lg border border-line px-3 py-1.5 text-sm font-semibold text-slate-600 hover:bg-ivory">수정</button>
@@ -451,9 +492,21 @@ function Row({ order, title, sub, badge, hidden, onEdit, onDelete }: { order: nu
     </div>
   );
 }
+/** 맨위/위로/아래로 순서 변경 버튼 묶음. 다른 항목 번호를 손대지 않고도 순서를 바꿀 수 있게 해준다. */
+function MoveButtons({ isFirst, isLast, onUp, onDown, onTop }: { isFirst: boolean; isLast: boolean; onUp: () => void; onDown: () => void; onTop: () => void }) {
+  return (
+    <div className="flex flex-none flex-col items-center gap-0.5">
+      <button type="button" onClick={onTop} disabled={isFirst} title="맨 위로" aria-label="맨 위로" className="cursor-pointer rounded border border-line px-1.5 py-0.5 text-[10px] font-bold text-slate-500 hover:bg-ivory disabled:cursor-not-allowed disabled:opacity-30">맨위</button>
+      <div className="flex gap-0.5">
+        <button type="button" onClick={onUp} disabled={isFirst} title="위로" aria-label="위로" className="cursor-pointer rounded border border-line px-1.5 text-xs text-slate-500 hover:bg-ivory disabled:cursor-not-allowed disabled:opacity-30">▲</button>
+        <button type="button" onClick={onDown} disabled={isLast} title="아래로" aria-label="아래로" className="cursor-pointer rounded border border-line px-1.5 text-xs text-slate-500 hover:bg-ivory disabled:cursor-not-allowed disabled:opacity-30">▼</button>
+      </div>
+    </div>
+  );
+}
 
 /* ---------- 합격 사례 편집 ---------- */
-function StoryEditor({ initial, onClose, onSaved }: { initial: StoryRow; onClose: () => void; onSaved: () => void }) {
+function StoryEditor({ initial, onClose, onSaved, companies, personas, tagOptions }: { initial: StoryRow; onClose: () => void; onSaved: () => void; companies: string[]; personas: string[]; tagOptions: string[] }) {
   const [f, setF] = useState<StoryRow>(initial);
   const [paras, setParas] = useState(initial.paragraphs.join("\n\n"));
   const [tags, setTags] = useState(initial.tags.join(", "));
@@ -514,16 +567,16 @@ function StoryEditor({ initial, onClose, onSaved }: { initial: StoryRow; onClose
         <p className="mb-3 rounded-lg bg-sand px-3 py-2 text-sm font-semibold text-terracotta">고객이 직접 제출한 합격 후기입니다. 회사 로고를 추가하고 내용을 확인한 뒤 아래 &quot;공개&quot;를 켜면 페이지에 노출됩니다.</p>
       )}
       <div className="grid grid-cols-2 gap-4">
-        <L label="회사명 *"><In value={f.company} onChange={(v) => set("company", v)} /></L>
+        <L label="회사명 *"><Combo value={f.company} onChange={(v) => set("company", v)} options={companies} /></L>
         <L label="서비스"><Sel value={f.service} onChange={(v) => set("service", v)} /></L>
         <L label="이름 *"><In value={f.name} onChange={(v) => set("name", v)} placeholder="예: 김ㅇㅇ 님" /></L>
-        <L label="페르소나"><In value={f.persona} onChange={(v) => set("persona", v)} /></L>
+        <L label="페르소나"><SelectOrCustom value={f.persona} onChange={(v) => set("persona", v)} options={personas} /></L>
         <L label="지원 전"><In value={f.before_text} onChange={(v) => set("before_text", v)} /></L>
         <L label="합격 (지원 후)"><In value={f.after_text} onChange={(v) => set("after_text", v)} /></L>
       </div>
       <L label="인용구"><In value={f.quote} onChange={(v) => set("quote", v)} /></L>
       <L label="본문 문단 (빈 줄로 문단 구분)"><Area value={paras} onChange={setParas} rows={6} /></L>
-      <L label="태그 (쉼표로 구분)"><In value={tags} onChange={setTags} /></L>
+      <L label="태그"><TagPicker value={tags} onChange={setTags} suggestions={tagOptions} /></L>
       <L label="회사 로고">
         <div className="flex items-center gap-4">
           {f.logo_url ? <img src={f.logo_url} alt="로고" className="h-12 w-auto rounded border border-line object-contain px-2" /> : <span className="text-sm text-slate-400">로고 없음</span>}
@@ -599,7 +652,7 @@ function PkgEditor({ initial, onClose, onSaved }: { initial: PkgRow; onClose: ()
 }
 
 /* ---------- 컨설팅 후기 편집 ---------- */
-function ReviewEditor({ initial, onClose, onSaved }: { initial: ReviewRow; onClose: () => void; onSaved: () => void }) {
+function ReviewEditor({ initial, onClose, onSaved, personas }: { initial: ReviewRow; onClose: () => void; onSaved: () => void; personas: string[] }) {
   const [f, setF] = useState<ReviewRow>(initial);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -644,7 +697,7 @@ function ReviewEditor({ initial, onClose, onSaved }: { initial: ReviewRow; onClo
         <L label="이름 *"><In value={f.name} onChange={(v) => set("name", v)} placeholder="예: 김ㅇㅇ 님" /></L>
         <L label="서비스"><Sel value={f.service} onChange={(v) => set("service", v)} /></L>
       </div>
-      <L label="페르소나"><In value={f.persona} onChange={(v) => set("persona", v)} placeholder="예: 신입 · 면접 준비" /></L>
+      <L label="페르소나"><SelectOrCustom value={f.persona} onChange={(v) => set("persona", v)} options={personas} placeholder="예: 신입 · 면접 준비" /></L>
       <L label="후기 내용 *"><Area value={f.text} onChange={(v) => set("text", v)} rows={5} /></L>
       <L label="첨부 사진(합격 인증 등)">
         <div className="flex flex-wrap items-center gap-3">
@@ -803,6 +856,79 @@ function Area({ value, onChange, rows }: { value: string; onChange: (v: string) 
 }
 function Sel({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   return <select value={value} onChange={(e) => onChange(e.target.value)} className="w-full rounded-lg border border-line px-3 py-2 text-sm outline-none focus:border-sage">{SERVICES.map((s) => <option key={s}>{s}</option>)}</select>;
+}
+/** 자유 입력 + 기존 값 드롭다운 제안(datalist). 목록에 없는 값도 직접 입력 가능. */
+function Combo({ value, onChange, options, placeholder }: { value: string; onChange: (v: string) => void; options: string[]; placeholder?: string }) {
+  const id = useId();
+  return (
+    <>
+      <input list={id} value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} className="w-full rounded-lg border border-line px-3 py-2 text-sm outline-none focus:border-sage" />
+      <datalist id={id}>{options.map((o) => <option key={o} value={o} />)}</datalist>
+    </>
+  );
+}
+const CUSTOM_OPTION = "__custom__";
+/** 순수 드롭다운(select)으로 기존 값 중 선택. 목록에 없는 값은 "직접 입력"을 골라 입력란으로 전환. */
+function SelectOrCustom({ value, onChange, options, placeholder }: { value: string; onChange: (v: string) => void; options: string[]; placeholder?: string }) {
+  const isPreset = options.includes(value);
+  const [customMode, setCustomMode] = useState(value !== "" && !isPreset);
+  return (
+    <div>
+      <select
+        value={customMode ? CUSTOM_OPTION : value}
+        onChange={(e) => {
+          if (e.target.value === CUSTOM_OPTION) { setCustomMode(true); onChange(""); }
+          else { setCustomMode(false); onChange(e.target.value); }
+        }}
+        className="w-full rounded-lg border border-line px-3 py-2 text-sm outline-none focus:border-sage"
+      >
+        <option value="" disabled>선택하세요</option>
+        {options.map((o) => <option key={o} value={o}>{o}</option>)}
+        <option value={CUSTOM_OPTION}>직접 입력…</option>
+      </select>
+      {customMode && (
+        <input autoFocus value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} className="mt-2 w-full rounded-lg border border-line px-3 py-2 text-sm outline-none focus:border-sage" />
+      )}
+    </div>
+  );
+}
+/** 기존 태그를 드롭다운으로 골라 칩으로 추가하거나, 새 태그를 직접 입력. */
+function TagPicker({ value, onChange, suggestions }: { value: string; onChange: (v: string) => void; suggestions: string[] }) {
+  const tags = value.split(",").map((t) => t.trim()).filter(Boolean);
+  const [draft, setDraft] = useState("");
+  const avail = suggestions.filter((s) => !tags.includes(s));
+  function add(t: string) {
+    const trimmed = t.trim();
+    if (!trimmed || tags.includes(trimmed)) return;
+    onChange([...tags, trimmed].join(", "));
+    setDraft("");
+  }
+  function remove(t: string) {
+    onChange(tags.filter((x) => x !== t).join(", "));
+  }
+  return (
+    <div>
+      {tags.length > 0 && (
+        <div className="mb-2 flex flex-wrap gap-1.5">
+          {tags.map((t) => (
+            <span key={t} className="inline-flex items-center gap-1 rounded-full bg-sand px-2.5 py-1 text-xs font-semibold text-terracotta">
+              {t}
+              <button type="button" onClick={() => remove(t)} aria-label={`${t} 제거`} className="cursor-pointer text-terracotta/70 hover:text-terracotta">✕</button>
+            </span>
+          ))}
+        </div>
+      )}
+      <div className="flex gap-2">
+        {avail.length > 0 && (
+          <select onChange={(e) => { if (e.target.value) add(e.target.value); e.target.value = ""; }} defaultValue="" className="rounded-lg border border-line px-2 py-2 text-sm outline-none focus:border-sage">
+            <option value="">기존 태그 선택…</option>
+            {avail.map((s) => <option key={s} value={s}>{s}</option>)}
+          </select>
+        )}
+        <input value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); add(draft); } }} placeholder="새 태그 입력 후 Enter" className="flex-1 rounded-lg border border-line px-3 py-2 text-sm outline-none focus:border-sage" />
+      </div>
+    </div>
+  );
 }
 /* ---------- 상담 알림(웹 푸시) 켜기/끄기 ---------- */
 function NotifyToggle() {
