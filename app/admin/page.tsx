@@ -21,7 +21,9 @@ type StoryRow = {
 };
 type PkgRow = {
   id?: string; sort_order: number; published: boolean; name: string; sub: string;
-  detail: string; price: string; sale_price: string | null; features: string[]; featured: boolean;
+  detail: string; price: string; sale_price: string | null;
+  amount_krw: number | null; sale_amount_krw: number | null;
+  features: string[]; featured: boolean;
 };
 type ReviewRow = {
   id?: string; sort_order: number; published: boolean; name: string;
@@ -32,15 +34,20 @@ type Settings = { id: number; promo_enabled: boolean; promo_label: string; promo
 type TickerRow = { id?: string; sort_order: number; published: boolean; text: string };
 type MentorRow = { id?: string; sort_order: number; published: boolean; name: string; company: string; background: string; expertise: string };
 type ShotRow = { id?: string; sort_order: number; published: boolean; image_url: string; label: string };
+type OrderRow = {
+  id: string; created_at: string; order_id: string; package_name: string; amount: number;
+  buyer_name: string; buyer_phone: string; buyer_email: string | null;
+  status: "pending" | "paid" | "failed"; payment_key: string | null; approved_at: string | null;
+};
 
 type State = "loading" | "denied" | "ready";
-type Tab = "consultations" | "stories" | "packages" | "reviews" | "shots" | "tickers" | "mentors" | "settings";
+type Tab = "consultations" | "orders" | "stories" | "packages" | "reviews" | "shots" | "tickers" | "mentors" | "settings";
 const SERVICES = ["Real Connect", "Real Bridge", "Real Success"];
 const STATUSES = ["new", "contacted", "done"];
 const STATUS_LABEL: Record<string, string> = { new: "신규", contacted: "연락함", done: "완료" };
 
 const emptyStory = (o: number): StoryRow => ({ sort_order: o, published: true, company: "", logo_url: "", logo_h: null, logo_w: null, name: "", persona: "", service: "Real Success", before_text: "", after_text: "", quote: "", paragraphs: [], tags: [], proof_photo_urls: [], source: "admin" });
-const emptyPkg = (o: number): PkgRow => ({ sort_order: o, published: true, name: "", sub: "대면 컨설팅", detail: "", price: "", sale_price: "", features: [], featured: false });
+const emptyPkg = (o: number): PkgRow => ({ sort_order: o, published: true, name: "", sub: "대면 컨설팅", detail: "", price: "", sale_price: "", amount_krw: null, sale_amount_krw: null, features: [], featured: false });
 const emptyReview = (o: number): ReviewRow => ({ sort_order: o, published: true, name: "", service: "Real Connect", persona: "", text: "", photo_urls: [], source: "admin" });
 const emptyTicker = (o: number): TickerRow => ({ sort_order: o, published: true, text: "" });
 const emptyMentor = (o: number): MentorRow => ({ sort_order: o, published: true, name: "", company: "", background: "", expertise: "" });
@@ -51,6 +58,7 @@ export default function AdminPage() {
   const [state, setState] = useState<State>("loading");
   const [tab, setTab] = useState<Tab>("consultations");
   const [rows, setRows] = useState<Consultation[]>([]);
+  const [orders, setOrders] = useState<OrderRow[]>([]);
   const [stories, setStories] = useState<StoryRow[]>([]);
   const [packages, setPackages] = useState<PkgRow[]>([]);
   const [reviews, setReviews] = useState<ReviewRow[]>([]);
@@ -72,7 +80,7 @@ export default function AdminPage() {
       if (!sess.session) { router.replace("/login"); return; }
       const { data: adminRow } = await supabase.from("admins").select("user_id").eq("user_id", sess.session.user.id).maybeSingle();
       if (!adminRow) { setState("denied"); return; }
-      await Promise.all([loadConsultations(), loadStories(), loadPackages(), loadReviews(), loadTickers(), loadMentors(), loadShots(), loadSettings()]);
+      await Promise.all([loadConsultations(), loadOrders(), loadStories(), loadPackages(), loadReviews(), loadTickers(), loadMentors(), loadShots(), loadSettings()]);
       setState("ready");
     })();
   }, [router]);
@@ -80,6 +88,10 @@ export default function AdminPage() {
   async function loadConsultations() {
     const { data } = await createClient().from("consultations").select("*").order("created_at", { ascending: false });
     if (data) setRows(data as Consultation[]);
+  }
+  async function loadOrders() {
+    const { data } = await createClient().from("orders").select("*").order("created_at", { ascending: false });
+    if (data) setOrders(data as OrderRow[]);
   }
   async function loadStories() {
     const { data } = await createClient().from("success_stories").select("*").order("sort_order").order("created_at", { ascending: false });
@@ -170,8 +182,10 @@ export default function AdminPage() {
   const reviewPendingCount = reviews.filter((r) => r.source === "customer" && !r.published).length;
   const storyPendingCount = stories.filter((s) => s.source === "customer" && !s.published).length;
 
+  const paidOrderCount = orders.filter((o) => o.status === "paid").length;
   const tabs: [Tab, string][] = [
     ["consultations", `상담 신청 (${rows.length})`],
+    ["orders", `주문 내역 (${orders.length}${paidOrderCount ? ` · 결제완료 ${paidOrderCount}` : ""})`],
     ["stories", `합격 사례 (${stories.length}${storyPendingCount ? ` · 승인대기 ${storyPendingCount}` : ""})`],
     ["packages", `서비스 비용 (${packages.length})`],
     ["reviews", `컨설팅 후기 (${reviews.length}${reviewPendingCount ? ` · 승인대기 ${reviewPendingCount}` : ""})`],
@@ -198,6 +212,7 @@ export default function AdminPage() {
       </div>
 
       {tab === "consultations" && <ConsultationsView rows={rows} onStatus={setConsultationStatus} onDelete={(id) => del("consultations", id, loadConsultations)} />}
+      {tab === "orders" && <OrdersView orders={orders} />}
       {tab === "stories" && <StoriesView stories={stories} onAdd={() => setEditingStory(emptyStory(stories.length + 1))} onEdit={setEditingStory} onDelete={(id) => del("success_stories", id, loadStories)} onApprove={approveStory} onMove={(id, dir) => reorder("success_stories", id, stories, dir, loadStories)} onMoveTop={(id) => moveToTop("success_stories", id, stories, loadStories)} />}
       {tab === "packages" && <PackagesView packages={packages} onAdd={() => setEditingPkg(emptyPkg(packages.length + 1))} onEdit={setEditingPkg} onDelete={(id) => del("packages", id, loadPackages)} onMove={(id, dir) => reorder("packages", id, packages, dir, loadPackages)} onMoveTop={(id) => moveToTop("packages", id, packages, loadPackages)} />}
       {tab === "reviews" && <ReviewsView reviews={reviews} onAdd={() => setEditingReview(emptyReview(reviews.length + 1))} onEdit={setEditingReview} onDelete={(id) => del("reviews", id, loadReviews)} onApprove={approveReview} onMove={(id, dir) => reorder("reviews", id, reviews, dir, loadReviews)} onMoveTop={(id) => moveToTop("reviews", id, reviews, loadReviews)} />}
@@ -243,6 +258,42 @@ function ConsultationsView({ rows, onStatus, onDelete }: { rows: Consultation[];
               <td className="px-4 py-3 text-slate-600">{r.program ?? "-"}</td>
               <td className="px-4 py-3 text-slate-600">{r.message}</td>
               <td className="px-4 py-3"><button onClick={() => onDelete(r.id)} className="cursor-pointer rounded-lg border border-rose-200 px-2.5 py-1 text-xs font-semibold text-rose-500 hover:bg-rose-50">삭제</button></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+/* ---------- 주문 내역(결제) ---------- */
+const ORDER_STATUS_LABEL: Record<string, string> = { pending: "결제 대기", paid: "결제 완료", failed: "실패" };
+function OrdersView({ orders }: { orders: OrderRow[] }) {
+  if (orders.length === 0) return <p className="text-slate-500">아직 결제된 주문이 없습니다. (orders.sql을 실행했는지 확인하세요)</p>;
+  return (
+    <div className="overflow-x-auto rounded-xl border border-line">
+      <table className="w-full text-left text-sm">
+        <thead className="bg-ivory text-slate-500"><tr>
+          <th className="px-4 py-3 font-semibold">결제일</th><th className="px-4 py-3 font-semibold">상태</th>
+          <th className="px-4 py-3 font-semibold">패키지</th><th className="px-4 py-3 font-semibold">금액</th>
+          <th className="px-4 py-3 font-semibold">이름</th><th className="px-4 py-3 font-semibold">연락처</th>
+          <th className="px-4 py-3 font-semibold">이메일</th><th className="px-4 py-3 font-semibold">주문번호</th>
+        </tr></thead>
+        <tbody className="divide-y divide-line">
+          {orders.map((o) => (
+            <tr key={o.id} className="align-top">
+              <td className="px-4 py-3 whitespace-nowrap text-slate-500">{new Date(o.approved_at ?? o.created_at).toLocaleString("ko-KR")}</td>
+              <td className="px-4 py-3">
+                <span className={`rounded-full border px-2 py-1 text-xs font-bold ${o.status === "paid" ? "border-sage bg-sage text-white" : o.status === "failed" ? "border-rose-300 text-rose-500" : "border-line text-slate-500"}`}>
+                  {ORDER_STATUS_LABEL[o.status]}
+                </span>
+              </td>
+              <td className="px-4 py-3 text-slate-700">{o.package_name}</td>
+              <td className="px-4 py-3 font-semibold text-ink whitespace-nowrap">{o.amount.toLocaleString()}원</td>
+              <td className="px-4 py-3 font-medium text-ink">{o.buyer_name}</td>
+              <td className="px-4 py-3 whitespace-nowrap text-slate-700">{o.buyer_phone}</td>
+              <td className="px-4 py-3 text-slate-600">{o.buyer_email ?? "-"}</td>
+              <td className="px-4 py-3 font-mono text-xs text-slate-400">{o.order_id}</td>
             </tr>
           ))}
         </tbody>
@@ -628,7 +679,7 @@ function PkgEditor({ initial, onClose, onSaved }: { initial: PkgRow; onClose: ()
   async function save() {
     if (!f.name.trim()) { setErr("패키지명은 필수입니다."); return; }
     setSaving(true); setErr("");
-    const payload = { sort_order: f.sort_order, published: f.published, name: f.name.trim(), sub: f.sub.trim(), detail: f.detail.trim(), price: f.price.trim(), sale_price: f.sale_price?.trim() || null, features: feat.split("\n").map((s) => s.trim()).filter(Boolean), featured: f.featured };
+    const payload = { sort_order: f.sort_order, published: f.published, name: f.name.trim(), sub: f.sub.trim(), detail: f.detail.trim(), price: f.price.trim(), sale_price: f.sale_price?.trim() || null, amount_krw: f.amount_krw, sale_amount_krw: f.sale_amount_krw, features: feat.split("\n").map((s) => s.trim()).filter(Boolean), featured: f.featured };
     const res = f.id ? await createClient().from("packages").update(payload).eq("id", f.id) : await createClient().from("packages").insert(payload);
     if (res.error) { setErr("저장 실패: " + res.error.message); setSaving(false); return; }
     onSaved();
@@ -639,9 +690,14 @@ function PkgEditor({ initial, onClose, onSaved }: { initial: PkgRow; onClose: ()
         <L label="패키지명 *"><In value={f.name} onChange={(v) => set("name", v)} placeholder="예: Real Connect" /></L>
         <L label="라벨"><In value={f.sub} onChange={(v) => set("sub", v)} placeholder="예: 대면 컨설팅" /></L>
         <L label="강조 스펙"><In value={f.detail} onChange={(v) => set("detail", v)} placeholder="예: 90분 1회 / 시간 제한 없음" /></L>
-        <L label="정가"><In value={f.price} onChange={(v) => set("price", v)} placeholder="예: 68만원" /></L>
-        <L label="할인가 (비우면 할인 없음)"><In value={f.sale_price ?? ""} onChange={(v) => set("sale_price", v)} placeholder="예: 48만원" /></L>
         <L label="노출 순서"><In type="number" value={String(f.sort_order)} onChange={(v) => set("sort_order", Number(v) || 0)} /></L>
+        <L label="정가 표시 문구"><In value={f.price} onChange={(v) => set("price", v)} placeholder="예: 68만원" /></L>
+        <L label="할인가 표시 문구 (비우면 할인 없음)"><In value={f.sale_price ?? ""} onChange={(v) => set("sale_price", v)} placeholder="예: 48만원" /></L>
+      </div>
+      <div className="mt-4 grid grid-cols-2 gap-4 rounded-lg border border-terracotta/25 bg-sand p-4">
+        <L label="실제 결제 금액(원) *"><In type="number" value={f.amount_krw == null ? "" : String(f.amount_krw)} onChange={(v) => set("amount_krw", v ? Number(v) : null)} placeholder="예: 680000" /></L>
+        <L label="할인 결제 금액(원)"><In type="number" value={f.sale_amount_krw == null ? "" : String(f.sale_amount_krw)} onChange={(v) => set("sale_amount_krw", v ? Number(v) : null)} placeholder="예: 480000" /></L>
+        <p className="col-span-2 -mt-2 text-xs text-terracotta">실제 토스페이먼츠 결제 금액입니다. 위 표시 문구와 별개로 관리되니 반드시 정확히 입력하세요. 비워두면 이 패키지는 온라인 결제 버튼이 비활성화됩니다.</p>
       </div>
       <L label="혜택 항목 (한 줄에 하나)"><Area value={feat} onChange={setFeat} rows={6} /></L>
       <label className="mt-3 flex items-center gap-2 text-sm text-slate-600"><input type="checkbox" checked={f.featured} onChange={(e) => set("featured", e.target.checked)} className="accent-sage" />인기 패키지로 강조</label>

@@ -7,8 +7,12 @@ export type Pkg = {
   name: string;      // "Real Connect"
   sub: string;       // 라벨 "대면 컨설팅"
   detail: string;    // 강조 "90분 1회" | "시간 제한 없음"
-  price: string;     // 정가 "68만원"
-  sale_price: string; // 할인가 "48만원" (빈 문자열이면 할인 없음)
+  price: string;     // 정가 표시 문구 "68만원" (화면 표시용, 결제 금액 아님)
+  sale_price: string; // 할인가 표시 문구 "48만원" (화면 표시용, 빈 문자열이면 할인 없음)
+  /** 실제 결제(정가) 금액, 원 단위. null이면 온라인 결제 버튼이 비활성화된다. */
+  amount_krw: number | null;
+  /** 할인 적용 시 결제 금액, 원 단위. null이면 할인가로 결제 불가(정가로 결제). */
+  sale_amount_krw: number | null;
   features: string[];
   featured: boolean;
   published: boolean;
@@ -69,6 +73,8 @@ export function rowToPkg(r: Record<string, unknown>): Pkg {
     detail: (r.detail as string) ?? "",
     price: (r.price as string) ?? "",
     sale_price: (r.sale_price as string) ?? "",
+    amount_krw: (r.amount_krw as number) ?? null,
+    sale_amount_krw: (r.sale_amount_krw as number) ?? null,
     features: (r.features as string[]) ?? [],
     featured: Boolean(r.featured),
     published: r.published === undefined ? true : Boolean(r.published),
@@ -82,10 +88,18 @@ export function pkgToRow(p: Pkg) {
     detail: p.detail,
     price: p.price,
     sale_price: p.sale_price || null,
+    amount_krw: p.amount_krw,
+    sale_amount_krw: p.sale_amount_krw,
     features: p.features,
     featured: p.featured,
     published: p.published,
   };
+}
+
+/** 프로모션 적용 여부에 따른 실제 결제 금액(원). 설정이 안 돼 있으면 null(결제 불가). */
+export function pkgPayableAmount(p: Pkg, promoEnabled: boolean): number | null {
+  if (promoEnabled && p.sale_amount_krw != null) return p.sale_amount_krw;
+  return p.amount_krw;
 }
 
 export function rowToReview(r: Record<string, unknown>): Review {
@@ -153,7 +167,7 @@ export const FALLBACK_TICKERS: string[] = [
 export const FALLBACK_PACKAGES: Pkg[] = [
   {
     sort_order: 1, name: "Real Connect", sub: "대면 컨설팅", detail: "90분 1회",
-    price: "68만원", sale_price: "48만원", featured: false, published: true,
+    price: "68만원", sale_price: "48만원", amount_krw: 680000, sale_amount_krw: 480000, featured: false, published: true,
     features: [
       "입사지원서 컨설팅 or 면접 준비 컨설팅(택1)",
       "지원 직무·업계 현직자 관점의 컨설팅",
@@ -164,7 +178,7 @@ export const FALLBACK_PACKAGES: Pkg[] = [
   },
   {
     sort_order: 2, name: "Real Bridge", sub: "대면 컨설팅", detail: "90분 2회",
-    price: "126만원", sale_price: "88만원", featured: false, published: true,
+    price: "126만원", sale_price: "88만원", amount_krw: 1260000, sale_amount_krw: 880000, featured: false, published: true,
     features: [
       "입사지원서·면접·커리어 단계적 컨설팅",
       "지원 직무·업계 현직자 관점의 컨설팅",
@@ -176,7 +190,7 @@ export const FALLBACK_PACKAGES: Pkg[] = [
   },
   {
     sort_order: 3, name: "Real Success", sub: "대면 컨설팅 3회", detail: "시간 제한 없음",
-    price: "164만원", sale_price: "115만원", featured: true, published: true,
+    price: "164만원", sale_price: "115만원", amount_krw: 1640000, sale_amount_krw: 1150000, featured: true, published: true,
     features: [
       "Real Bridge의 모든 혜택 포함",
       "타 지원자와 Grouping으로 객관적 위치 파악",

@@ -687,9 +687,11 @@ function SectionHead({ eyebrow, title, lead }: { eyebrow: string; title: string;
 }
 
 function PriceCard({ pkg, promo }: { pkg: Pkg; promo: SiteSettings }) {
-  const { name, sub, detail, price, sale_price, features, featured } = pkg;
+  const { id, name, sub, detail, price, sale_price, features, featured } = pkg;
   const showDiscount = promo.promo_enabled && !!sale_price;
   const bigPrice = showDiscount ? sale_price : price;
+  const ctaHref = id ? `/checkout/${id}` : "/contact";
+  const ctaLabel = id ? "결제하기" : "이 패키지로 상담받기";
 
   if (featured) {
     return (
@@ -723,9 +725,10 @@ function PriceCard({ pkg, promo }: { pkg: Pkg; promo: SiteSettings }) {
               </li>
             ))}
           </ul>
-          <Link href="/contact" className="mt-6 inline-flex items-center justify-center gap-[7px] rounded-full bg-white py-[13px] text-[14px] font-bold text-sage no-underline hover:bg-sand">
-            이 패키지로 상담받기 <Arrow color="#2F3A2E" size={15} />
+          <Link href={ctaHref} className="mt-6 inline-flex items-center justify-center gap-[7px] rounded-full bg-white py-[13px] text-[14px] font-bold text-sage no-underline hover:bg-sand">
+            {ctaLabel} <Arrow color="#2F3A2E" size={15} />
           </Link>
+          {id && <p className="mt-3 text-center text-[12px] text-white/60"><Link href="/contact" className="underline hover:text-white">결제 전 상담이 필요하신가요?</Link></p>}
         </div>
       </div>
     );
@@ -760,9 +763,10 @@ function PriceCard({ pkg, promo }: { pkg: Pkg; promo: SiteSettings }) {
             </li>
           ))}
         </ul>
-        <Link href="/contact" className="mt-6 inline-flex items-center justify-center gap-[7px] rounded-full bg-sage py-[13px] text-[14px] font-bold text-white no-underline hover:bg-sage-600">
-          이 패키지로 상담받기 <Arrow size={15} />
+        <Link href={ctaHref} className="mt-6 inline-flex items-center justify-center gap-[7px] rounded-full bg-sage py-[13px] text-[14px] font-bold text-white no-underline hover:bg-sage-600">
+          {ctaLabel} <Arrow size={15} />
         </Link>
+        {id && <p className="mt-3 text-center text-[12px] text-soft-3"><Link href="/contact" className="underline hover:text-terracotta">결제 전 상담이 필요하신가요?</Link></p>}
       </div>
     </div>
   );

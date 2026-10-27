@@ -86,6 +86,16 @@ This version has breaking changes — APIs, conventions, and file structure may 
   → Supabase 호출은 **브라우저(클라이언트)에서 직접** 수행한다. 상담 폼은
   `app/(marketing)/contact/page.tsx`에서 `@/lib/supabase/client`로 **client-side insert**.
   서버 라우트 `/api/contact`는 미사용(배포 환경 백업용으로 남겨둠). 연동 검증은 브라우저/배포로.
+  → 같은 이유로 `/api/orders/confirm`(토스페이먼츠 결제 승인)·`/api/notify-consultation`(웹 푸시)도
+  로컬 `next dev`에서는 외부 호출이 막혀 끝까지 테스트할 수 없다. 배포(Vercel) 환경에서 확인할 것.
+- **결제(토스페이먼츠) 연동**: `packages.amount_krw`/`sale_amount_krw`(원 단위 정수, `/admin` 서비스
+  비용 탭에서 입력)가 실제 결제 금액의 단일 소스. 화면 표시용 `price`/`sale_price`(예: "68만원") 문자열과는
+  분리되어 있으며 서로 자동 동기화되지 않으니 가격 변경 시 **양쪽 다** 수정할 것. 결제 흐름:
+  `/checkout/[pkgId]`(구매자 정보 입력 + `@tosspayments/tosspayments-sdk`의 `requestPayment` 호출) →
+  토스 결제창 → `/checkout/success`(또는 `/fail`) → `app/api/orders/confirm`(서버에서 `orders.amount`와
+  대조 후 토스 결제 승인 API 호출, `SUPABASE_SERVICE_ROLE_KEY`로 DB 갱신). 주문 데이터는 Supabase
+  `orders` 테이블(`supabase/orders.sql`), 관리자 조회는 `/admin` 주문 내역 탭.
+  `NEXT_PUBLIC_TOSS_CLIENT_KEY`/`TOSS_SECRET_KEY` 필요(테스트 키부터 시작 — `.env.example` 참고).
 
 ## 기술 스택
 
