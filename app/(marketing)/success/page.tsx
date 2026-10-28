@@ -432,7 +432,7 @@ export default function SuccessStoriesPage() {
           <div className="flex items-center">
             <BrandWordmark className="text-[16px] text-ink" />
           </div>
-          <span className="text-[12.5px] text-soft-3">© 2026 REal BridgE (REBE). {BUSINESS.email} · {BUSINESS.phone}</span>
+          <span className="text-[12.5px] text-soft-3">© 2026 REal BridgE (REBE). {BUSINESS.email}</span>
         </div>
       </footer>
 

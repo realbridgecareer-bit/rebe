@@ -90,7 +90,6 @@ export default function PrivacyPage() {
           <ul className="list-disc space-y-1 pl-5">
             <li>책임자: {BUSINESS.brandName} 대표 {BUSINESS.ceo}</li>
             <li>이메일: {BUSINESS.email}</li>
-            <li>전화: {BUSINESS.phone}</li>
           </ul>
         </Section>
 

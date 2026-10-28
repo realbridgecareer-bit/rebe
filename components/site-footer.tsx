@@ -36,7 +36,7 @@ export function SiteFooter() {
             상호: {BUSINESS.brandName} · 대표: {BUSINESS.ceo} · 사업자등록번호: {BUSINESS.registrationNumber}{" "}
             <a href={FTC_VERIFY_URL} target="_blank" rel="noopener noreferrer" className="underline hover:text-terracotta">사업자정보확인</a>
           </p>
-          <p className="mt-1">전화: {BUSINESS.phone} · 이메일: {BUSINESS.email}</p>
+          <p className="mt-1">이메일: {BUSINESS.email}</p>
           <p className="mt-3">© 2026 Real Bridge. All rights reserved.</p>
         </div>
       </div>

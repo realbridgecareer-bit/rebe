@@ -5,7 +5,8 @@ export const BUSINESS = {
   ceo: "엄은혜",
   registrationNumber: "833-58-00890",
   address: "경기도 의왕시 복지로 151, 103동 104호(내손동, 인덕원 퍼스비엘)",
-  phone: "02-541-8248",
+  // 전화번호는 의도적으로 미게시(전자상거래법 제13조상 표시 권장 항목이지만, 개인 번호
+  // 노출을 피하려고 생략하기로 한 사용자의 명시적 결정 — 리스크 인지 후 수용).
   email: "realbridge.career@gmail.com",
   hours: "평일 09:00 - 18:00",
 } as const;
