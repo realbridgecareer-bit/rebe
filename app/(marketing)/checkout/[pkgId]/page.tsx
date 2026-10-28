@@ -168,7 +168,7 @@ export default function CheckoutPage() {
           {status === "error" && <p className="text-sm text-rose-500">{errorMsg}</p>}
 
           <button type="submit" disabled={status === "submitting"} className="w-full rounded-full bg-sage py-3.5 text-[15px] font-bold text-white transition hover:bg-sage-600 disabled:opacity-50">
-            {status === "submitting" ? "결제 요청 중..." : `${amount.toLocaleString()}원 결제하기`}
+            {status === "submitting" ? "결제 요청 중..." : "결제하기"}
           </button>
           <p className="text-center text-xs text-slate-400">결제 전 상담이 필요하신가요? <a href="/contact" className="underline hover:text-terracotta">문의하기</a></p>
         </form>
