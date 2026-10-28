@@ -9,3 +9,10 @@ export const BUSINESS = {
   email: "realbridge.career@gmail.com",
   hours: "평일 09:00 - 18:00",
 } as const;
+
+/**
+ * 공정거래위원회 "사업자정보확인" 팝업. 통신판매업 신고 시스템에 등록된 정보를
+ * 보여주는데, 간이과세자는 그 신고가 면제라 조회 결과가 비어있을 수 있다.
+ * 비어있으면 BUSINESS.address를 그대로 노출하거나 신고를 검토할 것.
+ */
+export const FTC_VERIFY_URL = `https://www.ftc.go.kr/bizCommPop.do?wrkr_no=${BUSINESS.registrationNumber.replace(/-/g, "")}`;

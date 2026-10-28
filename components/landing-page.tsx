@@ -6,7 +6,7 @@ import { BrandWordmark } from "@/components/icons";
 import { createClient } from "@/lib/supabase/client";
 import { Lightbox } from "@/components/lightbox";
 import { FALLBACK_PACKAGES, FALLBACK_SETTINGS, rowToPkg, rowToReview, rowToMentor, type Pkg, type Review, type SiteSettings, type Mentor } from "@/lib/site-content";
-import { BUSINESS } from "@/lib/business";
+import { BUSINESS, FTC_VERIFY_URL } from "@/lib/business";
 // 멘토 네트워크 로고월은 'logo/로고 정리.pptx'를 PowerPoint로 렌더한 슬라이드 이미지를 사용
 // (public/logos/network-wall/, scripts/network-wall.cjs 생성).
 
@@ -814,8 +814,10 @@ export function SiteFooterFull() {
           </div>
         </div>
         <div className="mt-11 border-t border-line pt-7 text-[11.5px] leading-[1.7] text-soft-3">
-          <p>상호: {BUSINESS.brandName} · 대표: {BUSINESS.ceo} · 사업자등록번호: {BUSINESS.registrationNumber}</p>
-          <p className="mt-[3px]">주소: {BUSINESS.address}</p>
+          <p>
+            상호: {BUSINESS.brandName} · 대표: {BUSINESS.ceo} · 사업자등록번호: {BUSINESS.registrationNumber}{" "}
+            <a href={FTC_VERIFY_URL} target="_blank" rel="noopener noreferrer" className="underline hover:text-terracotta">사업자정보확인</a>
+          </p>
           <p className="mt-[3px]">전화: {BUSINESS.phone} · 이메일: {BUSINESS.email}</p>
           <p className="mt-4">© 2026 REal BridgE. All rights reserved. 합격 후기는 실제 고객의 경험을 바탕으로 작성되었습니다.</p>
         </div>
