@@ -102,6 +102,25 @@ export function pkgPayableAmount(p: Pkg, promoEnabled: boolean): number | null {
   return p.amount_krw;
 }
 
+/**
+ * "68만원", "480,000원", "480000" 같은 표시용 가격 문구에서 원 단위 정수를 추출한다.
+ * 관리자가 표시 문구를 바꿀 때 결제 금액 입력을 자동으로 맞춰주는 용도 — 최종 금액은
+ * 여전히 숫자 필드에 그대로 보여주고 저장 전 확인/수정할 수 있게 해서, 파싱 실수가
+ * 바로 결제 금액으로 굳어지지 않게 한다. 형식을 못 읽으면 null을 반환한다.
+ */
+export function parseKRW(input: string): number | null {
+  const s = input.replace(/[,원\s]/g, "");
+  if (!s) return null;
+  const manMatch = s.match(/^(\d+(?:\.\d+)?)만(\d+)?$/);
+  if (manMatch) {
+    const man = parseFloat(manMatch[1]) * 10000;
+    const rest = manMatch[2] ? parseInt(manMatch[2], 10) : 0;
+    return Math.round(man + rest);
+  }
+  if (/^\d+$/.test(s)) return parseInt(s, 10);
+  return null;
+}
+
 export function rowToReview(r: Record<string, unknown>): Review {
   return {
     id: r.id as string,

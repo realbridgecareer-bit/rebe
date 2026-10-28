@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { VAPID_PUBLIC_KEY, urlBase64ToUint8Array } from "@/lib/push";
 import { Lightbox } from "@/components/lightbox";
 import { computeLogoFit } from "@/lib/logo-fit";
+import { parseKRW } from "@/lib/site-content";
 
 type Consultation = {
   id: string; created_at: string; name: string; phone: string;
@@ -676,6 +677,14 @@ function PkgEditor({ initial, onClose, onSaved }: { initial: PkgRow; onClose: ()
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState("");
   const set = <K extends keyof PkgRow>(k: K, v: PkgRow[K]) => setF((p) => ({ ...p, [k]: v }));
+  function setPrice(v: string) {
+    const parsed = parseKRW(v);
+    setF((p) => ({ ...p, price: v, ...(parsed != null ? { amount_krw: parsed } : {}) }));
+  }
+  function setSalePrice(v: string) {
+    const parsed = parseKRW(v);
+    setF((p) => ({ ...p, sale_price: v, ...(parsed != null ? { sale_amount_krw: parsed } : {}) }));
+  }
   async function save() {
     if (!f.name.trim()) { setErr("패키지명은 필수입니다."); return; }
     setSaving(true); setErr("");
@@ -691,13 +700,13 @@ function PkgEditor({ initial, onClose, onSaved }: { initial: PkgRow; onClose: ()
         <L label="라벨"><In value={f.sub} onChange={(v) => set("sub", v)} placeholder="예: 대면 컨설팅" /></L>
         <L label="강조 스펙"><In value={f.detail} onChange={(v) => set("detail", v)} placeholder="예: 90분 1회 / 시간 제한 없음" /></L>
         <L label="노출 순서"><In type="number" value={String(f.sort_order)} onChange={(v) => set("sort_order", Number(v) || 0)} /></L>
-        <L label="정가 표시 문구"><In value={f.price} onChange={(v) => set("price", v)} placeholder="예: 68만원" /></L>
-        <L label="할인가 표시 문구 (비우면 할인 없음)"><In value={f.sale_price ?? ""} onChange={(v) => set("sale_price", v)} placeholder="예: 48만원" /></L>
+        <L label="정가 표시 문구"><In value={f.price} onChange={setPrice} placeholder="예: 68만원" /></L>
+        <L label="할인가 표시 문구 (비우면 할인 없음)"><In value={f.sale_price ?? ""} onChange={setSalePrice} placeholder="예: 48만원" /></L>
       </div>
       <div className="mt-4 grid grid-cols-2 gap-4 rounded-lg border border-terracotta/25 bg-sand p-4">
         <L label="실제 결제 금액(원) *"><In type="number" value={f.amount_krw == null ? "" : String(f.amount_krw)} onChange={(v) => set("amount_krw", v ? Number(v) : null)} placeholder="예: 680000" /></L>
         <L label="할인 결제 금액(원)"><In type="number" value={f.sale_amount_krw == null ? "" : String(f.sale_amount_krw)} onChange={(v) => set("sale_amount_krw", v ? Number(v) : null)} placeholder="예: 480000" /></L>
-        <p className="col-span-2 -mt-2 text-xs text-terracotta">실제 토스페이먼츠 결제 금액입니다. 위 표시 문구와 별개로 관리되니 반드시 정확히 입력하세요. 비워두면 이 패키지는 온라인 결제 버튼이 비활성화됩니다.</p>
+        <p className="col-span-2 -mt-2 text-xs text-terracotta">위 표시 문구를 바꾸면 이 금액도 자동으로 맞춰집니다. 실제 받으실 금액과 다르면 이 숫자를 직접 수정하세요(저장되는 건 이 숫자입니다). &quot;12만5천원&quot;처럼 자동 인식이 안 되는 형식이면 직접 입력해 주세요.</p>
       </div>
       <L label="혜택 항목 (한 줄에 하나)"><Area value={feat} onChange={setFeat} rows={6} /></L>
       <label className="mt-3 flex items-center gap-2 text-sm text-slate-600"><input type="checkbox" checked={f.featured} onChange={(e) => set("featured", e.target.checked)} className="accent-sage" />인기 패키지로 강조</label>
