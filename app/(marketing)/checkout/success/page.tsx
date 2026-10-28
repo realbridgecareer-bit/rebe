@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { BUSINESS } from "@/lib/business";
 
 type Status = "confirming" | "done" | "error";
 
@@ -48,7 +49,7 @@ function CheckoutSuccessInner() {
         <h1 className="text-2xl font-bold text-ink">결제 확인에 실패했습니다</h1>
         <p className="mt-4 text-slate-500">{errorMsg}</p>
         <p className="mt-6 text-sm text-slate-400">
-          결제가 이미 진행되었다면 <a href="mailto:realbridge.career@gmail.com" className="text-terracotta underline">realbridge.career@gmail.com</a>으로 문의해 주세요.
+          결제가 이미 진행되었다면 <a href={`mailto:${BUSINESS.email}`} className="text-terracotta underline">{BUSINESS.email}</a>으로 문의해 주세요.
         </p>
       </div>
     );

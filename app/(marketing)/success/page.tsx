@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Lightbox } from "@/components/lightbox";
 import { rowToStory, rowToShot, type Story, type ReviewShot } from "@/lib/stories";
 import { FALLBACK_SETTINGS, type SiteSettings } from "@/lib/site-content";
+import { BUSINESS } from "@/lib/business";
 
 function Arrow({ color = "#fff", size = 17, w = 2.2 }: { color?: string; size?: number; w?: number }) {
   return (
@@ -431,7 +432,7 @@ export default function SuccessStoriesPage() {
           <div className="flex items-center">
             <BrandWordmark className="text-[16px] text-ink" />
           </div>
-          <span className="text-[12.5px] text-soft-3">© 2026 REal BridgE (REBE). realbridge.career@gmail.com · 02-541-8248</span>
+          <span className="text-[12.5px] text-soft-3">© 2026 REal BridgE (REBE). {BUSINESS.email} · {BUSINESS.phone}</span>
         </div>
       </footer>
 

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BrandLockup } from "@/components/icons";
+import { BUSINESS } from "@/lib/business";
 
 export function SiteFooter() {
   return (
@@ -31,13 +32,9 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-4 text-xs leading-relaxed text-slate-400">
-          <p>상호: 리얼브릿지(Real Bridge) · 대표: 엄은혜 · 사업자등록번호: 833-58-00890</p>
-          <p className="mt-1">
-            경기도 의왕시 복지로 151, 103동 104호(내손동, 인덕원 퍼스비엘)
-          </p>
-          <p className="mt-1">
-            전화: 02-541-8248 · 이메일: realbridge.career@gmail.com
-          </p>
+          <p>상호: {BUSINESS.brandName} · 대표: {BUSINESS.ceo} · 사업자등록번호: {BUSINESS.registrationNumber}</p>
+          <p className="mt-1">{BUSINESS.address}</p>
+          <p className="mt-1">전화: {BUSINESS.phone} · 이메일: {BUSINESS.email}</p>
           <p className="mt-3">© 2026 Real Bridge. All rights reserved.</p>
         </div>
       </div>

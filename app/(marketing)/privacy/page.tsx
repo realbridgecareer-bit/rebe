@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { BUSINESS } from "@/lib/business";
 
 export const metadata: Metadata = {
   title: "개인정보처리방침",
@@ -87,9 +88,9 @@ export default function PrivacyPage() {
 
         <Section title="8. 개인정보 보호책임자">
           <ul className="list-disc space-y-1 pl-5">
-            <li>책임자: 리얼브릿지 대표 엄은혜</li>
-            <li>이메일: realbridge.career@gmail.com</li>
-            <li>전화: 02-541-8248</li>
+            <li>책임자: {BUSINESS.brandName} 대표 {BUSINESS.ceo}</li>
+            <li>이메일: {BUSINESS.email}</li>
+            <li>전화: {BUSINESS.phone}</li>
           </ul>
         </Section>
 

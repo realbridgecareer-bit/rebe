@@ -1,6 +1,7 @@
 import webpush, { type PushSubscription } from "web-push";
 import { createClient } from "@supabase/supabase-js";
 import { VAPID_PUBLIC_KEY } from "@/lib/push";
+import { BUSINESS } from "@/lib/business";
 
 // web-push는 Node 런타임 필요(Edge 불가)
 export const runtime = "nodejs";
@@ -35,7 +36,7 @@ export async function POST(req: Request) {
     /* 빈 payload 허용 */
   }
 
-  webpush.setVapidDetails("mailto:realbridge.career@gmail.com", VAPID_PUBLIC_KEY, vapidPrivate);
+  webpush.setVapidDetails(`mailto:${BUSINESS.email}`, VAPID_PUBLIC_KEY, vapidPrivate);
   const supabase = createClient(SUPA_URL, serviceKey);
 
   const { data: subs } = await supabase

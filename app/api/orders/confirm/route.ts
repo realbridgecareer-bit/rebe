@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import webpush, { type PushSubscription } from "web-push";
 import { VAPID_PUBLIC_KEY } from "@/lib/push";
+import { BUSINESS } from "@/lib/business";
 
 // web-push·Buffer 사용 때문에 Node 런타임 필요(Edge 불가)
 export const runtime = "nodejs";
@@ -74,7 +75,7 @@ export async function POST(req: Request) {
   try {
     const vapidPrivate = clean(process.env.VAPID_PRIVATE_KEY);
     if (vapidPrivate) {
-      webpush.setVapidDetails("mailto:realbridge.career@gmail.com", VAPID_PUBLIC_KEY, vapidPrivate);
+      webpush.setVapidDetails(`mailto:${BUSINESS.email}`, VAPID_PUBLIC_KEY, vapidPrivate);
       const { data: subs } = await supabase.from("push_subscriptions").select("endpoint, subscription");
       const payload = JSON.stringify({
         title: "결제 완료",

@@ -6,6 +6,7 @@ import { BrandWordmark } from "@/components/icons";
 import { createClient } from "@/lib/supabase/client";
 import { Lightbox } from "@/components/lightbox";
 import { FALLBACK_PACKAGES, FALLBACK_SETTINGS, rowToPkg, rowToReview, rowToMentor, type Pkg, type Review, type SiteSettings, type Mentor } from "@/lib/site-content";
+import { BUSINESS } from "@/lib/business";
 // 멘토 네트워크 로고월은 'logo/로고 정리.pptx'를 PowerPoint로 렌더한 슬라이드 이미지를 사용
 // (public/logos/network-wall/, scripts/network-wall.cjs 생성).
 
@@ -651,7 +652,7 @@ export default function LandingPage() {
           <div className="mt-11 border-t border-white/15 pt-8">
             <div className="text-[18px] font-extrabold text-white">REal BridgE (REBE)</div>
             <p className="mt-1.5 text-[14px] text-white/60">부동산·금융업 취업 컨설팅의 새로운 표준</p>
-            <p className="mt-2 text-[14px] text-white/50">realbridge.career@gmail.com · 02-541-8248</p>
+            <p className="mt-2 text-[14px] text-white/50">{BUSINESS.email} · {BUSINESS.phone}</p>
           </div>
         </div>
       </section>
@@ -807,15 +808,15 @@ export function SiteFooterFull() {
           <div>
             <div className="text-[14px] font-extrabold text-ink">문의</div>
             <div className="mt-4 flex flex-col gap-[11px] text-[13.5px] text-soft">
-              <span className="flex gap-2"><svg className="mt-px flex-none" width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="#A79D8B" strokeWidth="1.8" /><path d="M4 7l8 6 8-6" stroke="#A79D8B" strokeWidth="1.8" /></svg>realbridge.career@gmail.com</span>
-              <span className="flex gap-2"><svg className="mt-px flex-none" width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#A79D8B" strokeWidth="1.8" /><path d="M12 7v5l3 2" stroke="#A79D8B" strokeWidth="1.8" strokeLinecap="round" /></svg>평일 09:00 - 18:00</span>
+              <span className="flex gap-2"><svg className="mt-px flex-none" width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="#A79D8B" strokeWidth="1.8" /><path d="M4 7l8 6 8-6" stroke="#A79D8B" strokeWidth="1.8" /></svg>{BUSINESS.email}</span>
+              <span className="flex gap-2"><svg className="mt-px flex-none" width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#A79D8B" strokeWidth="1.8" /><path d="M12 7v5l3 2" stroke="#A79D8B" strokeWidth="1.8" strokeLinecap="round" /></svg>{BUSINESS.hours}</span>
             </div>
           </div>
         </div>
         <div className="mt-11 border-t border-line pt-7 text-[11.5px] leading-[1.7] text-soft-3">
-          <p>상호: 리얼브릿지(Real Bridge) · 대표: 엄은혜 · 사업자등록번호: 833-58-00890</p>
-          <p className="mt-[3px]">주소: 경기도 의왕시 복지로 151, 103동 104호(내손동, 인덕원 퍼스비엘)</p>
-          <p className="mt-[3px]">전화: 02-541-8248 · 이메일: realbridge.career@gmail.com</p>
+          <p>상호: {BUSINESS.brandName} · 대표: {BUSINESS.ceo} · 사업자등록번호: {BUSINESS.registrationNumber}</p>
+          <p className="mt-[3px]">주소: {BUSINESS.address}</p>
+          <p className="mt-[3px]">전화: {BUSINESS.phone} · 이메일: {BUSINESS.email}</p>
           <p className="mt-4">© 2026 REal BridgE. All rights reserved. 합격 후기는 실제 고객의 경험을 바탕으로 작성되었습니다.</p>
         </div>
       </div>
