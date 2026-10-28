@@ -35,7 +35,12 @@ export const metadata: Metadata = {
   },
   verification: {
     other: {
-      "naver-site-verification": "ac4fd1305e5d42024d76b148addf21abe8d14e62",
+      // 네이버가 realbridge.co.kr / www.realbridge.co.kr 를 별도 속성으로 취급해서
+      // 속성마다 다른 인증코드를 발급함 — 둘 다 남겨둔다.
+      "naver-site-verification": [
+        "ac4fd1305e5d42024d76b148addf21abe8d14e62",
+        "b27f3842653af762da6a327c160cb151484224f0",
+      ],
     },
   },
 };
