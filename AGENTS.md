@@ -73,6 +73,12 @@ This version has breaking changes — APIs, conventions, and file structure may 
   `STORIES` 배열(회사 로고 전면 + before→after + 풀 인용구 + 3문단 + 강조 태그 + 서비스 필터).
   ⚠️ 사이트 어디에도 "크몽" 노출 금지(우리 자체 서비스). (이전 successStories `videoId` 유튜브
   모달 기능은 리디자인에서 제거됨.)
+- **후기 개별 링크(로그인 없음)**: `/admin` "후기 링크" 탭에서 이름을 넣어 1회용 링크(`/review/<토큰>`)를
+  발급 → 고객이 설문 제출 → `supabase/review_invites.sql`의 RPC(`get_review_invite`,
+  `submit_review_by_token`)가 `reviews`(또는 합격 시 `success_stories`)에 `published=false`로 저장 →
+  기존 "컨설팅 후기/합격 사례" 탭에서 승인해야 홈·`/success`에 노출. 테이블(`review_invites`)은 관리자만 접근하고
+  비로그인 고객은 RPC로만 접근. 실명(`customer_name`)은 관리자 전용, 공개는 마스킹 표기("김ㅇㅇ 님").
+  개선 의견(`internal_feedback`)은 비공개. 기존 로그인형 `/review`·`/success/submit`과 병행.
 - **사업자 정보(푸터)**: 2026-10-01 사업자등록 완료, 브랜드/서비스명과 사업자명이
   **리얼브릿지(Real Bridge)**로 일원화됨(이전엔 사업자명 "부프로"로 브랜드와 별개였음 — 폐기).
   저작권 표기는 `© Real Bridge`, 법정 사업자 정보 블록에 `상호: 리얼브릿지(Real Bridge)`로 표기.

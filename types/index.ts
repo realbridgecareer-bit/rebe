@@ -43,6 +43,30 @@ export interface StorySubmissionInput {
   agreePrivacy: boolean;
 }
 
+/** 개별 링크 후기 설문 제출 데이터 (RPC submit_review_by_token 에 전달) */
+export interface InviteSubmissionPayload {
+  /** 현재 상황: 최종 합격 / 진행 중 / 방향 정리 / 기타 */
+  status: "hired" | "progress" | "direction" | "other";
+  service: string;
+  persona: string;
+  /** 합격(hired)일 때만 채움 */
+  company: string;
+  before: string;
+  after: string;
+  /** 한 줄 후기 */
+  quote: string;
+  /** 본문 문단 */
+  paragraphs: string[];
+  /** 도움받은 부분 태그 */
+  tags: string[];
+  rating: number;
+  /** 개선 의견 (비공개) */
+  feedback: string;
+  agree_privacy: boolean;
+  agree_publish: boolean;
+  agree_truth: boolean;
+}
+
 /** 블로그 / 취업정보 게시글 */
 export interface Post {
   slug: string;

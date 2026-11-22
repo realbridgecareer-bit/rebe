@@ -35,6 +35,11 @@ type Settings = { id: number; promo_enabled: boolean; promo_label: string; promo
 type TickerRow = { id?: string; sort_order: number; published: boolean; text: string };
 type MentorRow = { id?: string; sort_order: number; published: boolean; name: string; company: string; background: string; expertise: string };
 type ShotRow = { id?: string; sort_order: number; published: boolean; image_url: string; label: string };
+type InviteRow = {
+  id: string; token: string; created_at: string; customer_name: string; display_name: string;
+  service: string; expires_at: string; submitted_at: string | null;
+  result_kind: "story" | "review" | null; rating: number | null; internal_feedback: string | null;
+};
 type OrderRow = {
   id: string; created_at: string; order_id: string; package_name: string; amount: number;
   buyer_name: string; buyer_phone: string; buyer_email: string | null;
@@ -42,7 +47,7 @@ type OrderRow = {
 };
 
 type State = "loading" | "denied" | "ready";
-type Tab = "consultations" | "orders" | "stories" | "packages" | "reviews" | "shots" | "tickers" | "mentors" | "settings";
+type Tab = "consultations" | "orders" | "stories" | "packages" | "reviews" | "invites" | "shots" | "tickers" | "mentors" | "settings";
 const SERVICES = ["Real Connect", "Real Bridge", "Real Success"];
 const STATUSES = ["new", "contacted", "done"];
 const STATUS_LABEL: Record<string, string> = { new: "신규", contacted: "연락함", done: "완료" };
@@ -63,6 +68,7 @@ export default function AdminPage() {
   const [stories, setStories] = useState<StoryRow[]>([]);
   const [packages, setPackages] = useState<PkgRow[]>([]);
   const [reviews, setReviews] = useState<ReviewRow[]>([]);
+  const [invites, setInvites] = useState<InviteRow[]>([]);
   const [tickers, setTickers] = useState<TickerRow[]>([]);
   const [mentors, setMentors] = useState<MentorRow[]>([]);
   const [shots, setShots] = useState<ShotRow[]>([]);
@@ -81,7 +87,7 @@ export default function AdminPage() {
       if (!sess.session) { router.replace("/login"); return; }
       const { data: adminRow } = await supabase.from("admins").select("user_id").eq("user_id", sess.session.user.id).maybeSingle();
       if (!adminRow) { setState("denied"); return; }
-      await Promise.all([loadConsultations(), loadOrders(), loadStories(), loadPackages(), loadReviews(), loadTickers(), loadMentors(), loadShots(), loadSettings()]);
+      await Promise.all([loadConsultations(), loadOrders(), loadStories(), loadPackages(), loadReviews(), loadInvites(), loadTickers(), loadMentors(), loadShots(), loadSettings()]);
       setState("ready");
     })();
   }, [router]);
@@ -105,6 +111,11 @@ export default function AdminPage() {
   async function loadReviews() {
     const { data } = await createClient().from("reviews").select("*").order("sort_order");
     if (data) setReviews(data.map((r) => ({ ...r, photo_urls: r.photo_urls ?? [] })) as ReviewRow[]);
+  }
+  async function loadInvites() {
+    // review_invites.sql 을 아직 실행하지 않았다면 error가 나므로 목록은 빈 채로 둔다.
+    const { data } = await createClient().from("review_invites").select("id, token, created_at, customer_name, display_name, service, expires_at, submitted_at, result_kind, rating, internal_feedback").order("created_at", { ascending: false });
+    if (data) setInvites(data as InviteRow[]);
   }
   async function loadTickers() {
     const { data } = await createClient().from("tickers").select("*").order("sort_order");
@@ -190,6 +201,7 @@ export default function AdminPage() {
     ["stories", `합격 사례 (${stories.length}${storyPendingCount ? ` · 승인대기 ${storyPendingCount}` : ""})`],
     ["packages", `서비스 비용 (${packages.length})`],
     ["reviews", `컨설팅 후기 (${reviews.length}${reviewPendingCount ? ` · 승인대기 ${reviewPendingCount}` : ""})`],
+    ["invites", `후기 링크 (${invites.length}${invites.some((i) => i.submitted_at) ? ` · 제출 ${invites.filter((i) => i.submitted_at).length}` : ""})`],
     ["shots", `후기 캡쳐 (${shots.length})`],
     ["tickers", `성과 티커 (${tickers.length})`],
     ["mentors", `멘토진 (${mentors.length})`],
@@ -217,6 +229,7 @@ export default function AdminPage() {
       {tab === "stories" && <StoriesView stories={stories} onAdd={() => setEditingStory(emptyStory(stories.length + 1))} onEdit={setEditingStory} onDelete={(id) => del("success_stories", id, loadStories)} onApprove={approveStory} onMove={(id, dir) => reorder("success_stories", id, stories, dir, loadStories)} onMoveTop={(id) => moveToTop("success_stories", id, stories, loadStories)} />}
       {tab === "packages" && <PackagesView packages={packages} onAdd={() => setEditingPkg(emptyPkg(packages.length + 1))} onEdit={setEditingPkg} onDelete={(id) => del("packages", id, loadPackages)} onMove={(id, dir) => reorder("packages", id, packages, dir, loadPackages)} onMoveTop={(id) => moveToTop("packages", id, packages, loadPackages)} />}
       {tab === "reviews" && <ReviewsView reviews={reviews} onAdd={() => setEditingReview(emptyReview(reviews.length + 1))} onEdit={setEditingReview} onDelete={(id) => del("reviews", id, loadReviews)} onApprove={approveReview} onMove={(id, dir) => reorder("reviews", id, reviews, dir, loadReviews)} onMoveTop={(id) => moveToTop("reviews", id, reviews, loadReviews)} />}
+      {tab === "invites" && <InvitesView invites={invites} onChanged={loadInvites} onDelete={(id) => del("review_invites", id, loadInvites)} />}
       {tab === "shots" && <ShotsView shots={shots} onAdd={() => setEditingShot(emptyShot(shots.length + 1))} onEdit={setEditingShot} onDelete={(id) => del("review_shots", id, loadShots)} onMove={(id, dir) => reorder("review_shots", id, shots, dir, loadShots)} onMoveTop={(id) => moveToTop("review_shots", id, shots, loadShots)} />}
       {tab === "tickers" && <TickersView tickers={tickers} onAdd={() => setEditingTicker(emptyTicker(tickers.length + 1))} onEdit={setEditingTicker} onDelete={(id) => del("tickers", id, loadTickers)} onMove={(id, dir) => reorder("tickers", id, tickers, dir, loadTickers)} onMoveTop={(id) => moveToTop("tickers", id, tickers, loadTickers)} />}
       {tab === "mentors" && <MentorsView mentors={mentors} onAdd={() => setEditingMentor(emptyMentor(mentors.length + 1))} onEdit={setEditingMentor} onDelete={(id) => del("mentors", id, loadMentors)} onMove={(id, dir) => reorder("mentors", id, mentors, dir, loadMentors)} onMoveTop={(id) => moveToTop("mentors", id, mentors, loadMentors)} />}
@@ -446,6 +459,114 @@ function ShotsView({ shots, onAdd, onEdit, onDelete, onMove, onMoveTop }: { shot
         </div>
       ))}
     </ListShell>
+  );
+}
+
+/* ---------- 후기 개별 링크 ---------- */
+// 홈페이지 표기용 마스킹 이름 ("김ㅇㅇ 님") — 후기 제출 폼과 같은 규칙
+const maskName = (full: string) => (full.trim() ? `${full.trim()[0]}ㅇㅇ 님` : "");
+const inviteUrl = (token: string) => `${window.location.origin}/review/${token}`;
+
+function InvitesView({ invites, onChanged, onDelete }: { invites: InviteRow[]; onChanged: () => Promise<void>; onDelete: (id?: string) => void }) {
+  const [name, setName] = useState("");
+  const [service, setService] = useState("Real Connect");
+  const [days, setDays] = useState("60");
+  const [saving, setSaving] = useState(false);
+  const [err, setErr] = useState("");
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [openId, setOpenId] = useState<string | null>(null);
+  const [now] = useState(() => Date.now());
+
+  async function copy(id: string, token: string) {
+    try {
+      await navigator.clipboard.writeText(inviteUrl(token));
+      setCopiedId(id);
+      setTimeout(() => setCopiedId((c) => (c === id ? null : c)), 2000);
+    } catch {
+      prompt("아래 링크를 복사해 주세요.", inviteUrl(token));
+    }
+  }
+
+  async function create() {
+    const n = name.trim();
+    if (!n) { setErr("이름을 입력해 주세요."); return; }
+    const d = Math.max(1, Math.min(365, Number(days) || 60));
+    setSaving(true); setErr("");
+    const { data, error } = await createClient().from("review_invites").insert({
+      customer_name: n,
+      display_name: maskName(n),
+      service,
+      expires_at: new Date(Date.now() + d * 86400000).toISOString(),
+    }).select("id, token").single();
+    setSaving(false);
+    if (error || !data) { setErr("링크 생성 실패: " + (error?.message ?? "review_invites.sql을 실행했는지 확인하세요.")); return; }
+    setName("");
+    await onChanged();
+    await copy(data.id as string, data.token as string);
+  }
+
+  async function extend(id: string, current: string) {
+    const base = Math.max(new Date(current).getTime(), Date.now());
+    const { error } = await createClient().from("review_invites").update({ expires_at: new Date(base + 30 * 86400000).toISOString() }).eq("id", id);
+    if (error) { alert("연장 실패: " + error.message); return; }
+    await onChanged();
+  }
+
+  const KIND_LABEL = { story: "합격 사례 탭에서 승인", review: "컨설팅 후기 탭에서 승인" } as const;
+
+  return (
+    <div>
+      <div className="rounded-xl border border-line bg-ivory p-5">
+        <h2 className="text-base font-bold text-ink">새 후기 링크 만들기</h2>
+        <p className="mt-1 text-xs text-slate-500">
+          이름은 관리자만 볼 수 있고, 홈페이지에는 &quot;{maskName(name) || "김ㅇㅇ 님"}&quot;처럼 가려서 표시됩니다. 링크는 1회용이며 제출되면 닫힙니다. 만들면 링크가 자동 복사됩니다.
+        </p>
+        <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_180px_110px_auto]">
+          <In value={name} onChange={setName} placeholder="이름 (예: 김상진)" />
+          <Sel value={service} onChange={setService} />
+          <In type="number" value={days} onChange={setDays} placeholder="유효기간(일)" />
+          <button onClick={create} disabled={saving} className="cursor-pointer rounded-full bg-sage px-5 py-2 text-sm font-bold text-white hover:bg-sage-600 disabled:opacity-50">{saving ? "만드는 중…" : "링크 만들기"}</button>
+        </div>
+        {err && <p className="mt-2 text-sm text-rose-500">{err}</p>}
+      </div>
+
+      <div className="mt-6 space-y-3">
+        {invites.length === 0 && <p className="rounded-xl border border-dashed border-line p-6 text-center text-sm text-slate-400">발급한 링크가 없습니다. (오류가 나면 supabase/review_invites.sql을 실행했는지 확인하세요.)</p>}
+        {invites.map((inv) => {
+          const submitted = !!inv.submitted_at;
+          const expired = !submitted && new Date(inv.expires_at).getTime() < now;
+          return (
+            <div key={inv.id} className="rounded-xl border border-line bg-white p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex min-w-0 flex-wrap items-center gap-2">
+                  <span className="text-sm font-bold text-ink">{inv.customer_name}</span>
+                  <span className="text-xs text-slate-400">→ {inv.display_name}</span>
+                  <span className="rounded bg-ivory px-2 py-0.5 text-xs font-bold text-slate-500">{inv.service}</span>
+                  {submitted
+                    ? <span className="rounded-full bg-sage px-2 py-0.5 text-[11px] font-bold text-white">제출됨{inv.rating ? ` · ★${inv.rating}` : ""}</span>
+                    : expired
+                      ? <span className="rounded-full bg-rose-100 px-2 py-0.5 text-[11px] font-bold text-rose-500">만료</span>
+                      : <span className="rounded-full bg-sand px-2 py-0.5 text-[11px] font-bold text-terracotta">대기 중</span>}
+                  <span className="text-xs text-slate-400">{new Date(inv.created_at).toLocaleDateString("ko-KR")} 발급 · {new Date(inv.expires_at).toLocaleDateString("ko-KR")}까지</span>
+                </div>
+                <div className="flex flex-none gap-2">
+                  {!submitted && <button onClick={() => copy(inv.id, inv.token)} className="cursor-pointer rounded-lg border border-line px-3 py-1.5 text-sm font-semibold text-slate-600 hover:bg-ivory">{copiedId === inv.id ? "복사됨 ✓" : "링크 복사"}</button>}
+                  {expired && <button onClick={() => extend(inv.id, inv.expires_at)} className="cursor-pointer rounded-lg border border-line px-3 py-1.5 text-sm font-semibold text-slate-600 hover:bg-ivory">30일 연장</button>}
+                  {submitted && <button onClick={() => setOpenId(openId === inv.id ? null : inv.id)} className="cursor-pointer rounded-lg border border-line px-3 py-1.5 text-sm font-semibold text-slate-600 hover:bg-ivory">{openId === inv.id ? "접기" : "결과 보기"}</button>}
+                  <button onClick={() => onDelete(inv.id)} className="cursor-pointer rounded-lg border border-rose-200 px-3 py-1.5 text-sm font-semibold text-rose-500 hover:bg-rose-50">삭제</button>
+                </div>
+              </div>
+              {submitted && openId === inv.id && (
+                <div className="mt-3 space-y-2 rounded-lg bg-ivory p-3 text-sm text-slate-600">
+                  {inv.result_kind && <p><b className="text-ink">다음 단계:</b> {KIND_LABEL[inv.result_kind]}해 주세요. (승인 전에는 홈페이지에 보이지 않습니다.)</p>}
+                  <p><b className="text-ink">개선 의견(비공개):</b> {inv.internal_feedback || "없음"}</p>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 
